@@ -1,0 +1,24 @@
+\begin{table*}[]
+\caption{This table contains Slowdowns of ParLOT and Callgrind (slowdowns are relative to pure run). The input size is \textbf{B}.  NAS benchmark input sizes are as follows : $size(A) < size(B) < size (C) < size(D) $. In later tables and charts I show that ParLOT has better performance on larger inputs (like C and D). I was not able to run Callgrind with input size of C and D since it was time consuming, crashing and wasting SUs. Also I only included the results for up to 16 nodes (256 cores) in this table. Almost all of the experiments with Callgrind on 64 nodes (1024 cores) crashed [I documented all sort of crashing reasons of Callgrind on 1024 cores]. ParLOT results of 64 nodes will appear in later tables. I grouped the results of experiments with similar input sizes and nodes (group of 3 rows). Each row is in this format \textbf{Tool.Input.Nodes}. Last column of the table (GM) is GeoMean of all values in that row. By comparing the values of GM row, we can see that ParLOT(both main and all) has better performance comparing to Callgrind. However, it seems that Callgrind scales better (more about this in next table). ( Fig \ref{chartAvg_sd_B_p3_5})}
+\label{sd_pMpAcg_B_int_p3.5}
+\begin{center}
+\begin{tabular}{|l|rrrrrrrr|r|}
+\hline
+                &    bt &    cg &    ep &   ft &    is &    lu &    mg &    sp &    GM \\
+\hline
+ pinMain.B.1    &  1.60 &  1.81 &  3.93 & 1.53 &  3.05 &  1.21 &  3.61 &  1.53 &  2.08 \\
+ pinAll.B.1     &  2.01 &  3.03 &  4.63 & 2.43 &  6.86 &  1.66 &  9.10 &  1.56 &   3.20 \\
+ callgrind.B.1  & 12.47 & 19.56 & 17.07 & 9.67 &  7.82 & 11.32 & 15.66 &  10.50 & 12.47 \\
+\hline
+ pinMain.B.4    &  1.67 &  3.78 &  2.43 & 2.91 &  4.04 &  2.83 &  3.54 &  2.93 &  2.92 \\
+ pinAll.B.4     &  3.95 &  8.96 &  3.52 & 7.67 & 10.25 &  5.83 &  6.18 &   3.70 &  5.81 \\
+ callgrind.B.4  &  7.83 & 12.64 &  6.07 & 6.18 &  2.89 & 20.14 &   4.70 & 12.04 &  7.69 \\
+ \hline
+ pinMain.B.16   &  3.68 &   7.8 &   9.9 & 5.45 &  4.41 &  3.81 &  3.51 &  2.41 &  4.65 \\
+ pinAll.B.16    &  6.55 & 12.53 &  6.47 & 10.4 &  5.45 &  4.01 &  6.35 &  4.73 &  6.61 \\
+ callgrind.B.16 & 10.95 & 28.44 &  9.23 &  7.9 &  4.04 &  8.89 &  8.55 &  6.16 &     9.00 \\
+
+\hline
+\end{tabular}
+\end{center}
+\end{table*}

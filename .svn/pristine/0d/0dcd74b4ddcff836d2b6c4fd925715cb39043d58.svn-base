@@ -1,0 +1,136 @@
+
+\subsection{ParLOT vs.~Callgrind}
+ParLOT can capture the function calls and returns at two major levels: 1) \textit{Main}, where it only traces the functions of the main image and 2) \textit{All}, which includes all library functions as well.
+
+In this subsection, we compare the overhead of ParLOT(main) and ParLOT(all) with Callgrind, which is the most similar tool that we could find.
+However, Callgrind does not use any significant compression (except for the name of functions) and stores the trace files in ASCII format. It only records enough information to produce the dynamic call graph and only for the main image, which may not be sufficient for finding the root cause of a failure since it might happen at lower levels or not be reflected in the call graph.
+Fig.\ref{sd.pin.cg} and table \ref{t_sd.pin.cg} show the runtime normalized to the native runtime for different NAS apps and different configurations .
+It seems that Callgrind has better results on larger number of cores but overall, the geomean of average slowdowns for both ParLOT(main) (1.56) and ParLOT(all) (1.63) is smaller than Callgrind (5.51).
+
+Fig \ref{ts} and table \ref{t_ts} shows the required bandwidth for traces per core for ParLOT next to Callgrind.
+The average trace bandwidth per core is less than 4 kB for ParLOT and is more 10 kB for Callgrind. Considering that Callgrind applies very poor compression of traces, ParLOT's maximum compression ratio of 13K (table \ref{t_compRatio},  shows the capability of ParLOT to store almost 50 MB worth of data in just 4 kB per core per second. The story becomes more impressive when you think about running any application on hundreds of cores and running ParLOT on top of that with smaller overhead than Callgrind but more sophisticated, informative and useful.
+More importantly, 4 kB per core should be no problem for the local file system to handle and leaves most of the bandwidth for the application.
+
+\subsection{Overheads}
+The overall overhead adds to the original application due to instrumentation and tracing is a product of pure Pin overheaad, instrumentation, recording traces, compression and storing data(I/O).
+In this section, we show the results of a set of experiments with disabling some or all features of ParLOT to see how much impact each component (fig \ref{overview}) has on the final overhead.
+We categorized the overall overhead added to the native application into 1) pure overhead by Pin, 2) overhead by tracing (with and without compression) and 3) I/O overhead\\
+We designed these variations of ParLOT to extract detailed overhead added by each category:
+\begin{itemize}
+\item \textbf{npin}: Every phase of ParLOT is disabled except Pin-Init (fig \ref{overview}) in \textit{npin} and it shows the pure overhead added by Pin. 
+\item \textbf{wpin}: Compression is disabled in \textit{wpin} and all collected data would be stored as is to the disk. The results of this tools shows how much efficiency our compression approach adds to ParLOT. 
+\item \textbf{dpin}: It is almost identical to ParLOT except it stores the generated compressed traces to "/dev/null". The purpose of \textit{dpin} is to see how much of the overall overhead is because of I/O.
+\end{itemize}
+
+Last row of the table \ref{t_overhead} shows the average overhead that each of above testing tools adds to the native execution. For each configuration, the differences between the average slowdown of dpin and pin is very insignificant which shows that ParLOT is not an I/O-bounded tool. 
+Capturing, collecting and storing the data using ParLOT but without any compression, would cause up to more than 130X slowdown. Again it is another proof for the efficiency that our compression method within ParLOT provides for tracing.
+
+Table \ref{} shows how much overhead each factor in the rows adds to the execution during PatLOT process.The smallest impact belongs to I/O.
+
+\subsection{Compression Ratio and required bandwidth}
+
+As we discussed in section ??, full function-call-invocation trace at granularity of library function calls, can help us gain information about the general control flow of the application to the point to detect bug manifestation and finding the root cause of the bug.
+Our experiments shows that ParLOT compression algorithm can compress this type of information with high compression ratio up to 16k on average. 
+
+Table \ref{t-compRatio} shows the average compression ratio. 
+
+
+
+
+
+This table shows the average ParLOT compression ratios for different NAS applications from the generated traces. For column \textbf{ep} the ratio is high up to 16k.
+
+
+
+\textbf{npin}: Every phase of ParLOT is disabled except Pin-Init (fig \ref{overview}) in \textit{npin} and it shows the pure overhead added by Pin. 
+\textbf{wpin}: Compression is disabled in \textit{wpin} and all collected data would be stored as is to the disk. The results of this tools shows how much efficiency our compression approach adds to ParLOT. 
+\textbf{dpin}: It is almost identical to ParLOT except it stores the generated compressed traces to "/dev/null". The purpose of \textit{dpin} is to see how much of the overall overhead is because of I/O.
+Last row of the table \ref{t_overhead} shows the average overhead that each of above testing tools adds to the native execution. For each configuration, the differences between the average slowdown of dpin and pin is very insignificant which shows that ParLOT is not an I/O-bounded tool. 
+Capturing, collecting and storing the data using ParLOT but without any compression, would cause up to more than 130X slowdown. Again it is another proof for the efficiency that our compression method within ParLOT provides for tracing.
+
+Slowdown of ParLOT(main and all) and Callgrind. This table and chart \ref{sd_pin_cg} shows the advantage of ParLoT over callgrind. The geomean of average slowdowns for both ParLOT(main) (1.56) and ParLOT(all) (1.63) is way smaller than Callgrind (5.51). Callgrind scales better (slowdown decreases with larger number of cores) and ParLOT's overhead slightly increases for larger scales.
+
+
+Trace bandwidth (kB/s) per core. Average trace bandwidth per core (kB/s) for ParLOT and Callgrind. ParLOT(main) collects very similar call-graph to what Callgrind collects and the average bandwidth required for ParLOT(main) \textbf{4.22} is less half of Callgrind \textbf{8.62}. Also the rate of increasing bandwidth per core for Callgrind is almost twice as ParLOT(look at the \text under line numbers in the table)
+    
+    
+    
+    
+    \begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in,height=5in]{figs.chpc/overview.png}
+\caption{Overview of ParLOT}
+\label{overview}
+\end{figure}
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs.stampede/sd_pin_cg.png}
+\caption{Average slowdown of ParLOT(main and all) and Callgrind for 16, 64, and 256 processes. This chart and table \ref{t_compRatio} shows the advantage of ParLoT over callgrind. The geomean of average slowdowns for both ParLOT(main) (1.56) and ParLOT(all) (1.63) is way smaller than Callgrind (5.51). Callgrind scales better (slowdown decreases with larger number of cores) and ParLOT's overhead slightly increases for larger scales.}
+\label{sd_pin_cg}
+\end{figure}
+
+\begin{table*}[]
+\centering
+\label{t_sd.pin.cg}
+\input{tabs.stampede/t_sd.pin.cg.tex}
+\end{table*}
+
+\begin{table*}[]
+\centering
+\label{t_ts.cg}
+\input{tabs.stampede/t_ts.tex}
+\end{table*}
+
+
+\begin{table*}[]
+\centering
+\label{t_overhead}
+\input{tabs.stampede/t_overhead.tex}
+\end{table*}
+
+
+
+
+
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs.stampede/ts.png}
+\caption{Average trace bandwidth per core (kB/s) for ParLOT and Callgrind. ParLOT(main) collects very similar call-graph to what Callgrind collects and the average bandwidth required for ParLOT(main) \textbf{4.22} is less half of Callgrind \textbf{8.62}. Also the rate of increasing bandwidth per core for Callgrind is almost twice as ParLOT(look at the \text under line numbers in the table).  }
+\label{ts}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs.stampede/overhead.png}
+\caption{
+Average overhead added to the NPB applications by ParLOT, with and without compression. Shows the high impact of compression. This chart is a summary of Table \ref{t_overhead}. }
+\label{overhead}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs.stampede/overhead2.png}
+\caption{
+(this table is subset of fig \ref{overhead}. Fig \ref{overhead} focuses on the impact of compression and this fig focuses on the overall )
+Average overhead added to the NPB applications by ParLOT, I believe this chart shows the low efficiency of ParLOT idea. PIN is considered as \textbf(light-weight) binary instrumentation framework and when you compare the overhead added by Pin and our approach, it is impressive.}
+\label{overhead2}
+\end{figure}
+
+
+\begin{table}[]
+\centering
+\label{t_compRatio}
+\input{tabs.stampede/t_compRatio.tex}
+\end{table}
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs.stampede/compRatio.png}
+\caption{Compression ratio}
+\label{compRatio}
+\end{figure}

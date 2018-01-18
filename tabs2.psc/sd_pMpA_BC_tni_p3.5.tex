@@ -1,0 +1,38 @@
+\begin{table*}[]
+\caption{The purpose of this table is to show that ParLOT is doing better job on larger input sizes. NAS benchmark input sizes are as follows : $size(A) < size(B) < size (C) < size(D) $. The overhead it adds to the application is smaller for input size C and I believe the reason is the redundant captured data (function calls) for each run helps the performance of compressing process, thus helps the overall performance. I can run these experiments with smaller input size (A) or larger (D) and include them in this table. Running NAS applications with \textit{A} makes running times so small (less than a second for some of applications) and running with \textit{D} is going to consume a lot of SUs, if we decide to do that. Also these are the results when I use the latest version of \textit{Pin} which is \textbf{3.5}. Table \ref{sd_pMpA_BC_tni_p3.0} (next one) is identical to this table but using version \textbf{3.0} of \textit{Pin}}
+ \label{sd_pMpA_BC_tni_p3.5}
+\begin{center}
+\begin{tabular}{|l|rrrrrrrr|r|}
+\hline
+              &   bt &    cg &   ep &   ft &    is &   lu &   mg &   sp &   GM \\
+\hline
+ pinMain.B.1  &  1.6 &  1.81 & 3.93 & 1.53 &  3.05 & 1.21 & 3.61 & 1.53 & 2.08 \\
+ pinMain.C.1  & 1.39 &  1.26 & 3.12 & 1.22 &  1.95 & 1.07 & 1.49 & 1.21 &  1.50 \\
+ \hline
+ pinMain.B.4  & 1.67 &  3.78 & 2.43 & 2.91 &  4.04 & 2.83 & 3.54 & 2.93 & 2.92 \\
+ pinMain.C.4  & 1.79 &  2.79 & 3.22 & 1.78 &  3.35 & 1.38 & 2.93 & 1.63 & 2.24 \\
+ \hline
+ pinMain.B.16 & 3.68 &   7.80 &  9.90 & 5.45 &  4.41 & 3.81 & 3.51 & 2.41 & 4.65 \\
+ pinMain.C.16 & 2.88 &  4.38 & 4.38 & 3.53 &  5.14 & 3.24 &  3.50 & 2.17 & 3.54 \\
+ \hline
+ pinMain.B.64 & 5.07 &  9.31 & 7.78 & 6.67 & 10.19 & 6.73 & 5.56 &  5.30 & 6.87 \\
+ pinMain.C.64 & 5.08 &  8.56 & 6.61 & 7.35 &  7.44 & 5.21 & 3.94 & 3.81 & 5.77 \\
+ \hline
+ pinAll.B.1   & 2.01 &  3.03 & 4.63 & 2.43 &  6.86 & 1.66 &  9.10 & 1.56 &  3.20 \\
+ pinAll.C.1   & 1.49 &  1.56 & 3.72 & 1.41 &  3.25 & 1.22 & 2.65 & 1.16 & 1.87 \\
+ \hline
+ pinAll.B.4   & 3.95 &  8.96 & 3.52 & 7.67 & 10.25 & 5.83 & 6.18 &  3.70 & 5.81 \\
+ pinAll.C.4   & 2.27 &  3.42 & 4.08 & 2.52 &   5.00 & 2.15 & 4.78 & 1.83 & 3.05 \\
+ \hline
+ pinAll.B.16  & 6.55 & 12.53 & 6.47 & 10.40 &  5.45 & 4.01 & 6.35 & 4.73 & 6.61 \\
+ pinAll.C.16  & 4.89 &  3.75 & 5.48 & 4.38 &  6.21 & 3.82 & 5.04 & 2.56 & 4.38 \\
+ \hline
+ pinAll.B.64  & 7.38 &  8.72 & 6.58 & 5.88 &  8.31 & 7.78 & 6.88 & 9.37 & 7.53 \\
+ pinAll.C.64  & 7.37 &   7.30 & 5.77 & 6.38 &   6.40 &  4.8 & 4.53 & 5.19 & 5.88 \\
+ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+

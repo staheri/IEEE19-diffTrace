@@ -1,0 +1,30 @@
+
+\caption{Trace bandwidth (kB/s) per core. Average trace bandwidth per core (kB/s) for ParLOT and Callgrind. ParLOT(main) collects very similar call-graph to what Callgrind collects and the average bandwidth required for ParLOT(main) \textbf{4.22} is less half of Callgrind \textbf{8.62}. Also the rate of increasing bandwidth per core for Callgrind is almost twice as ParLOT(look at the \text under line numbers in the table).}
+
+\begin{tabular}{|
+>{\columncolor[HTML]{FFFFFF}}c |
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r |}
+\hline
+TOOL & \multicolumn{4}{c|}{\cellcolor[HTML]{FFFFFF}ParLOT(main)} & \multicolumn{4}{c|}{\cellcolor[HTML]{FFFFFF}ParLOT(all)} & \multicolumn{4}{c|}{\cellcolor[HTML]{FFFFFF}Callgrind} \\ \hline
+cores & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}16} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}64} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}256} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}Avg} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}16} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}64} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}256} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}Avg} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}16} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}64} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}256} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}Avg} \\ \hline
+bt & 0.89 & 4.86 & 7.33 & 4.36 & 10.97 & 36.97 & 55.44 & 34.46 & 0.35 & 2.44 & 5.51 & 2.44 \\
+cg & 0.50 & 10.58 & 15.17 & 8.75 & 35.30 & 62.26 & 71.75 & 56.44 & 3.63 & 10.49 & 17.69 & 10.49 \\
+ep & 2.24 & 1.59 & 0.85 & 1.56 & 15.29 & 25.85 & 32.86 & 24.67 & 2.27 & 12.80 & 26.65 & 12.80 \\
+ft & 0.93 & 1.81 & 4.75 & 2.50 & 14.62 & 32.37 & 52.82 & 33.27 & 1.25 & 7.35 & 15.33 & 7.35 \\
+is & 0.21 & 1.14 & 1.81 & 1.05 & 45.31 & 42.99 & 35.53 & 41.28 & 21.44 & 30.61 & 24.96 & 30.61 \\
+lu & 0.91 & 21.39 & 29.24 & 17.18 & 21.51 & 56.75 & 72.97 & 50.41 & 0.76 & 3.96 & 8.00 & 3.96 \\
+mg & 1.84 & 4.86 & 4.69 & 3.80 & 39.1 & 45.13 & 49.31 & 44.51 & 7.66 & 24.89 & 41.66 & 24.89 \\
+sp & 0.6 & 11.84 & 17.35 & 9.93 & 12.59 & 46.64 & 99.28 & 52.84 & 0.82 & 4.19 & 8.54 & 4.19 \\ \hline
+GeoMean & 0.82 & \underline{4.61} & \underline{4.73} & \textbf{4.22} & 21.25 & 42.11 & 55.31 & \textbf{40.89} & \underline{2.09} & \underline{8.62} & \underline{15.19} & \textbf{8.62} \\ \hline
+\end{tabular}

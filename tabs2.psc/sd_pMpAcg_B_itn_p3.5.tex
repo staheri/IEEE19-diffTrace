@@ -1,0 +1,50 @@
+\begin{table*}[]
+\caption{The values in this table is identical to table \ref{sd_pMpAcg_B_int_p3.5} but grouped differently to show the scalability of each tool. The slowdown of Callgrind drops drastically with increasing cores from 16 to 64. For ParLOT (for both main and all), slowdowns are higher for larger number of cores. However, the average GeoMean of all slowdowns (numbers in bold) show that ParLOT has better overall performance. The \textbf{AVG} rows contain the average of its above 3 values.( Fig \ref{chartAvg_sd_B_p3_5})}
+\label{sd_pMpAcg_B_itn_p3.5}
+\begin{center}
+\begin{tabular}{|l|rrrrrrrr|r|}
+\hline
+                &    bt &    cg &    ep &   ft &    is &    lu &    mg &    sp &    GM \\
+\hline
+ pinMain.B.1    &  1.60 &  1.81 &  3.93 & 1.53 &  3.05 &  1.21 &  3.61 &  1.53 &  2.08 \\
+ pinMain.B.4    &  1.67 &  3.78 &  2.43 & 2.91 &  4.04 &  2.83 &  3.54 &  2.93 &  2.92 \\
+ pinMain.B.16   &  3.68 &  7.80 &  9.90 & 5.45 &  4.41 &  3.81 &  3.51 &  2.41 &  4.65 \\
+ \hline
+ AVG            &  2.32 &  4.46 &  5.42 & 3.30 &  3.83 &  2.62 &  3.55 &  2.29 &  \textbf{3.22} \\
+ \hline
+ pinAll.B.1     &  2.01 &  3.03 &  4.63 & 2.43 &  6.86 &  1.66 &   9.1 &  1.56 &   3.2 \\
+ pinAll.B.4     &  3.95 &  8.96 &  3.52 & 7.67 & 10.25 &  5.83 &  6.18 &   3.7 &  5.81 \\
+ pinAll.B.16    &  6.55 & 12.53 &  6.47 & 10.4 &  5.45 &  4.01 &  6.35 &  4.73 &  6.61 \\
+ \hline
+ AVG            &  4.17 &  8.17 &  4.87 & 6.83 &  7.52 &  3.83 &  7.21 &  3.33 &  \textbf{5.21} \\
+ \hline
+ callgrind.B.1  & 12.47 & 19.56 & 17.07 & 9.67 &  7.82 & 11.32 & 15.66 & 10.50 & 12.47 \\
+ callgrind.B.4  &  7.83 & 12.64 &  6.07 & 6.18 &  2.89 & 20.14 &  4.70 & 12.04 &  7.69 \\
+ callgrind.B.16 & 10.95 & 28.44 &  9.23 & 7.90 &  4.04 &  8.89 &  8.55 &  6.16 &  9.00 \\
+ \hline
+ AVG            & 10.42 & 20.21 & 10.79 & 7.92 &  4.92 & 13.45 &  9.64 &  9.57 &  \textbf{9.72}\\
+ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+
+
+
+
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.psc/chartAvg_sd_B_p3_5.png}
+\caption{ Slowdown of ParLOT(main,all) and Callgrind. Each bar is the average slowdown of each tool on each application for 1, 4 and 16 nodes (16, 64 and 256 cores). Last group of bars is GeoMean (from bold numbers in table \ref{sd_pMpAcg_B_itn_p3.5}). 
+}
+\label{chartAvg_sd_B_p3_5}
+\end{figure*}
+
+
+
+
+

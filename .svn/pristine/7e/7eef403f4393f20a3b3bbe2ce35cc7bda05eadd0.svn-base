@@ -1,0 +1,73 @@
+The act of rendering any software design into code invariably
+introduces bugs.
+%
+The code is tested till it stops readily revealing bugs, and then it is
+put into production.
+%
+The remaining lurking bugs often remain dormant, but
+rear their head when the inputs are changed or the code
+is ported to new platforms.
+%
+While traditional software engineering often achieves high
+quality control, these methods are largely inapplicable to HPC
+where concurrency combined with problem-scale and the
+presence of very sophisticated domain-specific math
+makes programming really hard.
+%
+Good quality HPC software almost always requires extremely skilled
+developers.
+%
+Unfortunately, good developers are rare, and the need to deploy HPC software
+only keeps growing, thus putting a lot of burden on the shoulders of those
+who still are maturing.
+%
+The only solution is that debugging tools must begin doing far more heavy lifting
+than traditionally expected.
+
+
+In HPC, bugs are a function of both flawed program logic as well as unspecified
+and illegal interactions between various concurrency models ({\em e.g.}, PThreads,
+MPI, OpenMP, etc.) that coexist in any
+large application.
+%
+The best hope for debugging in many cases
+lies in being able to efficiently capture detailed execution
+traces and compare them against traces emerging from previous (and more stable) 
+software versions.
+%
+This paper offers ParLot, an efficient binary-level tracing tool that 
+(1)~traces compiled applications with very little overhead, (2)~employs
+advanced data compression methods to bring out traces across the memory
+hierarchy with dramatically reduced bandwidth needs, and (3)~provides debuggers
+(humans and debugging tools) with traces that capture many valuable pieces of
+information such as function call/return chains, function call frequencies, and
+the total number of various instruction types executed.
+%
+The shocking thing is that despite being at the threshold of exascale computing,
+the community does not have a tracing tool that has anywhere near the level
+of efficacy that ParLot has.
+
+
+This paper itself does not propose debugging methods.
+%
+Instead, the purpose of this paper is to really take stock of what else is
+available for tracing and debugging large-scale applications, and perform 
+a fairly thorough evaluation of their capabilities vis-a-vis ParLot.
+%
+Thus, we aim to scientifically establish that we indeed have solved the
+tracing problem better than anyone else has.
+%
+We then appeal to past work (some of it being our own past successes) showing that we now are in
+a position to breathe new life into such tracing-based debugging tools, now that
+ParLot will be able to efficiently provide trace information to them.
+
+Here are the main contribution of this paper:
+\begin{itemize}
+\item Tracing
+\item Compression
+\item Stack correction
+\end{itemize}
+
+The remainder of this paper is organized as follows. In section
+\ref{sec:background}, we introduce the basic ideas and infrastructures behind ParLot. Section \ref{sec:reltools} describes existing tracing tools and techniques and their relevance
+to our approach. We present the implementation of Parlot in Section \ref{sec:impl}. Section \ref{sec:evalmeth} and \ref{sec:results} shows our evaluation of different aspects of Parlot and its comparsion with \textit{Callgrind}.

@@ -1,0 +1,17 @@
+
+\caption{Slowdown of ParLOT(main and all) and Callgrind. This table and chart \ref{sd_pin_cg} shows the advantage of ParLoT over callgrind. The geomean of average slowdowns for both ParLOT(main) (1.56) and ParLOT(all) (1.63) is way smaller than Callgrind (5.51). Callgrind scales better (slowdown decreases with larger number of cores) and ParLOT's overhead slightly increases for larger scales.}
+
+\begin{tabular}{c|rrrr|rrrr|rrrr|}
+\cline{2-13}
+\multicolumn{1}{l|}{} & \multicolumn{4}{c|}{ParLOT(main)} & \multicolumn{4}{c|}{ParLOT(all)} & \multicolumn{4}{c|}{Callgrind} \\ \cline{2-13} 
+\multicolumn{1}{l|}{} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} \\ \hline
+\multicolumn{1}{|c|}{bt} & 1.63 & 1.86 & 2.11 & 1.87 & 1.49 & 1.65 & 1.52 & 1.55 & 11.04 & 12.93 & 8.86 & 10.94 \\
+\multicolumn{1}{|c|}{cg} & 1.28 & 1.79 & 2.07 & 1.71 & 1.31 & 1.6 & 2.17 & 1.69 & 4.86 & 4.71 & 3.21 & 4.26 \\
+\multicolumn{1}{|c|}{ep} & 3.06 & 1.77 & 1.38 & 2.07 & 3.13 & 2.17 & 1.49 & 2.26 & 12.95 & 6.08 & 2.99 & 7.34 \\
+\multicolumn{1}{|c|}{ft} & 1.69 & 1.47 & 1.69 & 1.62 & 1.71 & 1.62 & 1.69 & 1.67 & 12.04 & 6.48 & 3.58 & 7.37 \\
+\multicolumn{1}{|c|}{is} & 1.15 & 1.27 & 1.38 & 1.27 & 1.4 & 1.56 & 2.06 & 1.67 & 2.51 & 1.98 & 3.38 & 2.62 \\
+\multicolumn{1}{|c|}{lu} & 1.19 & 1.28 & 1.42 & 1.30 & 1.22 & 1.36 & 1.76 & 1.45 & 7.79 & 7.15 & 7.3 & 7.41 \\
+\multicolumn{1}{|c|}{mg} & 1.27 & 1.41 & 1.49 & 1.39 & 1.43 & 1.66 & 1.67 & 1.59 & 4.99 & 3.33 & 2.64 & 3.65 \\
+\multicolumn{1}{|c|}{sp} & 1.13 & 1.28 & 1.91 & 1.44 & 1.08 & 1.4 & 1.51 & 1.33 & 3.85 & 6.1 & 4.32 & 4.76 \\ \hline
+\multicolumn{1}{|c|}{GeoMean} & 1.46 & 1.50 & 1.66 & \textbf{1.56} & 1.51 & 1.61 & 1.72 & \textbf{1.63} & 6.49 & 5.37 & 4.14 & \textbf{5.51} \\ \hline
+\end{tabular}

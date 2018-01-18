@@ -1,0 +1,42 @@
+\begin{table*}[]
+
+\caption{This table is showing the required bandwidth for each application (KiloBytes per core per second). $ReqBW_x = TraceSize_x (KB) / (\# of cores)_x / Runtime_x (S)$
+Because of the crashing problems of Callgrind on \textit{C} input and 64 nodes, I only include \textit{B} input and 1, 4, and 16 nodes results. Clearly ParLOT(main) is beating Callgrind while they both generate the same information (I still believe ParLOT(main) generated traces are more informative and rich). ParLOT(all) bandwidth is the highest but with capturing all of the function calls within a single execution, there is no surprise. Another interesting fact from this table is, for ParLOT(main), bandwidth drops from \textbf{0.62} for 16 cores to \textbf{0.27} for 256 cores (good scalability). It is the opposite for Callgrind where the required bandwidth jumps from \textbf{3.28} (KB/s) for 16 cores to \textbf{33.06} (KB/S) for 256 cores. I also have the results of required bandwidth of ParLOT for 64 nodes(1024 cores) and Input C but I did not include them here because I did not have them for Callgrind (explained above).  Fig \ref{chartAvg_bw_B_p3_5} visualize these numbers (Average values)}
+
+\label{bw_pMpAcg_B_itn_p3.5} 
+\begin{center}
+\begin{tabular}{|l|rrrrrrrr|r|}
+\hline
+                &    bt &    cg &    ep &    ft &    is &    lu &    mg &    sp &    GM \\
+\hline
+ pinMain.B.1    &  2.54 & 22.73 &  0.99 &  0.33 &  0.46 &   0.1 &  0.43 &  0.06 &  0.62 \\
+ pinMain.B.4    &   3.2 & 18.31 &  0.52 &   0.2 &  0.12 &  0.11 &  0.23 &   0.1 &  0.46 \\
+ pinMain.B.16   &   2.2 &  9.66 &  0.09 &  0.14 &  0.06 &  0.08 &  0.19 &  0.13 &  0.27 \\
+ \hline
+ AVG            &  2.65 &  16.9 &  0.53 &  0.22 &  0.21 &   0.1 &  0.28 &   0.1 &  0.45 \\
+ \hline
+ pinAll.B.1     &  20.8 & 39.89 & 14.75 & 21.05 &    31 & 19.55 & 34.37 & 12.37 & 22.53 \\
+ pinAll.B.4     & 21.85 &  33.1 & 22.15 & 17.05 & 16.19 & 35.84 & 34.53 & 35.99 & 25.81 \\
+ pinAll.B.16    & 25.31 & 29.33 & 23.31 & 20.07 & 23.78 & 56.58 & 29.09 & 42.96 & 29.57 \\
+ \hline
+ AVG            & 22.65 & 34.11 & 20.07 & 19.39 & 23.66 & 37.32 & 32.66 & 30.44 & 25.97 \\
+ \hline
+ callgrind.B.1  &   0.9 &   2.4 &  2.53 &  4.02 & 24.33 &  1.39 & 14.64 &  1.22 &  3.28 \\
+ callgrind.B.4  &  4.27 &  9.11 & 12.02 & 16.78 & 59.03 &  2.97 & 35.78 &   5.2 & 11.25 \\
+ callgrind.B.16 & 17.48 & 12.87 & 46.08 & 51.94 & 87.05 & 19.13 &    48 & 33.18 & 33.06 \\
+ \hline
+ AVG            &  7.55 &  8.13 & 20.21 & 24.25 &  56.8 &  7.83 & 32.81 &  13.2 & 15.86 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.psc/chartAvg_bw_B_p3_5.png}
+\caption{ Required Bandwidth (KB) per core per second for ParLOT and Callgrind.  
+(Input: B)}
+\label{chartAvg_bw_B_p3_5}
+\end{figure*}

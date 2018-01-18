@@ -1,0 +1,32 @@
+\label{t_overhead}
+
+\caption{\textbf{npin}: Every phase of ParLOT is disabled except Pin-Init (fig \ref{overview}) in \textit{npin} and it shows the pure overhead added by Pin. 
+\textbf{wpin}: Compression is disabled in \textit{wpin} and all collected data would be stored as is to the disk. The results of this tools shows how much efficiency our compression approach adds to ParLOT. 
+\textbf{dpin}: It is almost identical to ParLOT except it stores the generated compressed traces to "/dev/null". The purpose of \textit{dpin} is to see how much of the overall overhead is because of I/O.
+Last row of the table \ref{t-pin-det} shows the average overhead that each of above testing tools adds to the native execution. For each configuration, the differences between the average slowdown of dpin and pin is very insignificant which shows that ParLOT is not an I/O-bounded tool. 
+Capturing, collecting and storing the data using ParLOT but without any compression, would cause up to more than 130X slowdown. Again it is another proof for the efficiency that our compression method within ParLOT provides for tracing.}
+
+
+\begin{tabular}{|c|c|rrrr|rrrr|rrrr|}
+\hline
+\multicolumn{1}{|l|}{\multirow{2}{*}{}} & Cores & \multicolumn{4}{c|}{16} & \multicolumn{4}{c|}{64} & \multicolumn{4}{c|}{256} \\ \cline{2-14} 
+\multicolumn{1}{|l|}{} & Tools & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{pin} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{pin} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{pin} & \multicolumn{1}{c|}{wpin} \\ \cline{2-14} 
+\multirow{8}{*}{Main} & bt & 1.04 & 1.39 & 1.4 & 10.00 & 1.26 & 1.59 & 1.51 & 10.00 & 2.16 & 2.51 & 2.58 & 10.00 \\
+ & cg & 1.24 & 1.21 & 1.23 & 10.00 & 1.83 & 1.86 & 1.9 & 10.00 & 2.71 & 2.94 & 3.1 & 10.00 \\
+ & ep & 1.3 & 3.32 & 3.3 & 10.00 & 2.14 & 3.17 & 3.16 & 10.00 & 3.53 & 3.28 & 3.31 & 10.00 \\
+ & ft & 1.38 & 1.5 & 1.48 & 10.00 & 1.51 & 1.52 & 1.48 & 10.00 & 2.1 & 2.2 & 2.18 & 10.00 \\
+ & is & 0.95 & 1.6 & 1.62 & 10.00 & 2.51 & 2.57 & 2.55 & 10.00 & 2.78 & 2.77 & 2.6 & 10.00 \\
+ & lu & 1.09 & 0.89 & 1.05 & 10.00 & 1.37 & 1.3 & 1.3 & 10.00 & 2.5 & 2.43 & 2.56 & 10.00 \\
+ & mg & 1.24 & 1.17 & 1.35 & 10.00 & 2.61 & 2.4 & 2.46 & 10.00 & 3.95 & 4.81 & 4.88 & 10.00 \\
+ & sp & 1.42 & 1.17 & 1.18 & 10.00 & 1.14 & 1.37 & 1.39 & 10.00 & 2.04 & 2.12 & 2.2 & 10.00 \\ \hline
+\multicolumn{2}{|c|}{GeoMean} & \textbf{1.20} & \textbf{1.42} & \textbf{1.48} & \textbf{10.00} & \textbf{1.72} & \textbf{1.88} & \textbf{1.87} & \textbf{10.00} & \textbf{2.65} & \textbf{2.79} & \textbf{2.83} & \textbf{10.00} \\ \hline
+\multirow{8}{*}{All} & bt & 1.11 & 1.41 & 1.47 & 20.00 & 1.45 & 1.74 & 1.82 & 20.00 & 2.62 & 2.78 & 6.92 & 20.00 \\
+ & cg & 1.35 & 1.41 & 1.55 & 20.00 & 2.38 & 2.44 & 2.63 & 20.00 & 4.97 & 3.9 & 9.87 & 20.00 \\
+ & ep & 1.68 & 3.77 & 3.72 & 20.00 & 2.68 & 4.2 & 4.02 & 20.00 & 4.1 & 4.9 & 8.75 & 20.00 \\
+ & ft & 1.54 & 1.61 & 1.68 & 20.00 & 1.68 & 1.9 & 1.84 & 20.00 & 2.52 & 2.45 & 3.91 & 20.00 \\
+ & is & 1.84 & 2.04 & 2.2 & 20.00 & 3.22 & 3.26 & 3.25 & 20.00 & 3.28 & 2.99 & 5.02 & 20.00 \\
+ & lu & 1.13 & 1.12 & 1.14 & 20.00 & 1.6 & 1.51 & 1.54 & 20.00 & 2.95 & 2.78 & 6.16 & 20.00 \\
+ & mg & 1.86 & 2 & 1.9 & 20.00 & 3.57 & 3.6 & 3.24 & 20.00 & 5.64 & 6.89 & 9.78 & 20.00 \\
+ & sp & 1.18 & 1.08 & 1.49 & 20.00 & 1.35 & 1.31 & 1.45 & 20.00 & 2.54 & 2.4 & 3.02 & 20.00 \\ \hline
+\multicolumn{2}{|c|}{GeoMean} & \textbf{1.43} & \textbf{1.67} & \textbf{1.78} & \textbf{20.00} & \textbf{2.11} & \textbf{2.30} & \textbf{2.32} & \textbf{20.00} & \textbf{3.42} & \textbf{3.40} & \textbf{6.18} & \textbf{20.00} \\ \hline
+\end{tabular}

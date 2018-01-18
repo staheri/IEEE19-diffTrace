@@ -1,0 +1,561 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage[normalem]{ulem}
+\usepackage{soul}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{ParLOT: A Low-Overhead Tracing Approach for Large-Scale Parallel Programs\\
+\thanks{Identify applicable funding agency here. If none, delete this.}
+}
+
+\author{
+	\IEEEauthorblockN{Sindhu Devale}
+	\IEEEauthorblockA{Department of Computer Science\\
+		Texas State University\\
+		San Marcos, Texas, U.S.A.\\
+		Email: sindhu.devale@gmail.com}
+	\and
+	\IEEEauthorblockN{Saeed Taheri}
+	\IEEEauthorblockA{School of Computing\\
+		University of Utah\\
+		Salt Lake City, Utah, U.S.A.\\
+		Email: staheri@cs.utah.edu}
+	\and
+	\IEEEauthorblockN{Martin Burtscher}
+	\IEEEauthorblockA{Department of Computer Science\\
+		Texas State University\\
+		San Marcos, Texas, U.S.A.\\
+		Email: burtscher@cs.txstate.edu}
+	\and
+	\IEEEauthorblockN{Ganesh Gopalakrishnan}
+	\IEEEauthorblockA{School of Computing\\
+		University of Utah\\
+		Salt Lake City, Utah, U.S.A.\\
+		Email: ganesh@cs.utah.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+Some parallel-based bugs only manifest themselves when a program is executed at scale. Such bugs are expensive to reproduce and collecting information about the flow of execution tends to be challenging due to overhead it adds to the application in term of runtime and memory. Existing profiler and debugger tools for large applications either add too much overhead to the actual application or their collected data does not bring significant insight about the execution flow. 
+We believe gathering enough information at low cost using a light-weight on-the-fly incremental compression mechanism would overcome large-scale verification challenges. We implemented our idea in a proof-of-concept tool called ParLOT that incrementally compresses the gathered information before it is written to memory or disk. ParLOT can track every function call entry and exit event of any HPC applications running on supercomputers with low overhead added to execution time while compressing the collected information by a factor of 100, resulting in only a few kilobytes per second of trace data being emitted by each processor.
+
+\end{abstract}
+
+
+\begin{IEEEkeywords}
+tracing, HPC, compression;
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+% no \IEEEPARstart
+A failure, such as a crash, hang, or wrong answer, can happen during the execution of most programs. There are different approaches to overcome a failure, first by detecting what is causing it and then applying a fix. Moreover, there are different approaches used by tools for detecting performance bottlenecks or semantic bugs. However, one common idea among many of them is to gather information during the execution of the application and mine the collected data to identify the cause of the failure.
+
+Tracing is the method used to record a log of events (e.g., control flow [Callgrind], data flow and memory [TAU], and hardware events [VTune, PAPI]) that occur during execution. Tracing can incur significant overhead on processors, data buses, memory, I/O, etc.
+
+Multi-core systems are now commonplace and thus popular for processing and analyzing massive amounts of data in large data centers or performing large-scale simulations [NAS].  Unfortunately, the more cores a program uses, the harder, more expensive, and more time consuming it becomes to debug the code. Moreover, buggy code can drastically reduce productivity. It is estimated that the US loses \$60 billion every year due to software glitches [???].
+
+Imagine a large-scale climate simulation that, after days of running, turns out to be buggy and crashes. It would be huge drain on the computing resources to have to rerun the application, this time with a tracing tool attached to collect the data needed to track down the bug.
+
+Thus, there is an urgent need for light-weight tools to collect enough information about the behavior of large-scale application runs, e.g., to make always-on tracing possible.
+Most of the existing tracing techniques perform poorly when scaled. One of the reasons is the overhead of collecting large amounts of runtime information, which increases in proportion to the number of running processes and/or threads. What information to extract from the program, how to best extract it, and how to keep the run-time and memory overheads low are additional challenges.
+
+One way to trace code is to statically insert extra statements into the source code to gather and record the traced information. However, Dynamic Binary Instrumentation (DBI) may be more suitable and easier for tracing large applications where it instruments the binary without the need to modify the source code. Intel's Pin [???] is a light-weight DBI that is used as the underlying framework in some performance profilers [Vtune] and debuggers [Inspector XE]. 
+
+We propose parLOT, a tracing tool based on Pin to capture function calls at different levels during the execution without the need for adding code to the source code or for recompilation. Our tool has a relatively low runtime overhead and employs on-the-fly data compression to minimize the amount of trace data that needs to be stored.
+
+This paper makes the following main contributions.
+	\begin{itemize}
+    	\item ParLOT, a light-weight full-trace function-call-and-return recorder for large-scale applications based on PIN.
+  		\item An efficient custom algorithm to incrementally compress the generated traces during the execution for better storage efficiency, lower runtime overhead, and minimizing the blocking of threads and therefore the perturbation of the application.
+        \item Stack correction.....
+	\end{itemize}
+    
+The rest of this paper is organized as follows. Section 2 ...
+
+\section{Background}
+
+\subsection{PIN}
+Recording a log of events during the execution of an application is essential for better understanding of the behavior of the program and, in case of a failure, to locate the problem. Recording this type of information requires instrumentation of the code either at the source-code or binary-code level. Instrumenting the source code is easier for developers but not for users since developers can add specific pieces of code to certain points of the source code to collect the needed information. But it requires modification of the source code and recompilation, which make it more difficult and less straight-forward for users. In addition, binary instrumentation makes the process of tracing language independent and portable. It also provides machine-level insight of the behavior of the application. Binary codes can be instrumented \textit{statically}, where the additional code is inserted into the binary before execution, which results in a persistent modified executable, or \textit{dynamically}, where the modification of the executable is not permanent. In dynamic binary instrumentation, code can be discovered at runtime, making it possible, for example, to handle dynamically-generated and self-modifying code. Furthermore, it may be possible to attach the instrumentation to running processes, which is particularly useful for long-running applications.
+
+We designed ParLOT on top of PIN [??], a dynamic binary instrumentation framework for the IA-32, x86-64, and MIC instruction-set architectures that enables the creation of dynamic program analysis tools. During execution, ParLOT tracks the function call stack and captures every entry (call) and exit (return) of every function. ParLOT not only captures the functions of the main image but also in library code.
+
+
+\subsection{Compression}
+When dealing with large-scale parallel programs, any attempt to generate traces will likely result in a huge amount of data. Moreover, such tracing will also incur significant overhead due to the need to transfer and store the vast amount of data. For example, collecting just one byte of information per executed instruction generates on the order of a gigabyte of data per second on a single high-end core.  Storing the resulting multi-gigabyte traces from many cores can be a challenge, even on today's large hard disks.
+
+Hence, we need a way to decrease the space and runtime overhead. A compression mechanism to encode the generated data into a smaller number of bits makes transmitting and storing more efficient. Although every encoded data needs to be decoded for analysis, compressing and encoding the trace data while it is being collected enable us to gather much more information.
+
+In ParLOT, the traced information is incrementally compressed while the application is running, typically resulting in just a few kilobytes of data needing to be written per thread and per second.
+The traces are decompressed later (at no additional cost to the  execution of the application). From the decompressed full function-call trace, the complete call graph, the function call frequency, and the caller-callee relations can be extracted. This can be done at the granularity of a thread, group of threads, or the whole application. 
+
+
+\section{Tracing for Debugging}
+\hl{Maybe debugging story (case study) here???
+\\
+Ganesh will help with debugging story}
+
+\section{Related Tools}
+Tracing tools for Debugging and performance with one to two sentence about all or some of these tools:
+ ((to be added))
+	\begin{itemize}
+		\item VampirTrace
+        \item Score-p
+        \item Dyninst
+        \item Vtune
+        \item IPM
+        \item HPCToolkit
+        \item TAU
+        \item CSTG
+        \item STAT
+      	\item Valgrind-Callgrind
+        
+	\end{itemize}
+Here is how I will write this section
+	\begin{itemize}
+		\item one to two sentences about each tool like vampirTrace, Vtune, IPM and Dyninst and some material from NSF proposal that Ganesh gave me the link (CSTG and STAT)
+        \item more detail about Score-p and TAU (1 paragrpah in total)
+        \item Valgrind-Callgrind \\
+        \begin{itemize}
+        	\item Properties of Valgrind:
+            	\begin{itemize}
+            	\item A DBI (dynamic binary instrumentation) framework
+                \item A Shadow value tool, like \textit{Memcheck}:
+                	\begin{itemize}
+                		\item purely in software
+                    	\item map every register and memory value with another value that tells something about it
+                    	\item It is heavy-weight since involve large amount of data to collect and update in irregular pattern and instrument system calls and instructions such as loads, adds, shifts, etc.
+                	\end{itemize}
+            	\end{itemize}
+			\item What Callgrind collects:
+            	\begin{itemize}
+            		\item number of instructions executed
+                	\item their relationship to source lines
+                	\item the caller/callee relationship between functions
+                	\item and the numbers of such calls
+                	\item (optional) cache simulation 
+                	\item (optional) branch prediction 
+            	\end{itemize}
+			\item Down points of Callgrind:
+            	\begin{itemize}
+            		\item High overhead to the application
+                    \item Large size traces (no compression except for function names, stores immediate traces in ASCII)
+                    \item no sufficient information for bug hunting (probably)
+            	\end{itemize}
+        \end{itemize}
+	\end{itemize}
+
+\section{Implementation}
+Fig \ref{overview} shows the general overview of ParLOT's workflow. (a flowchart to be added ) and more explanations can be added here
+((I have read ParLOT source code and Sindhu's thesis and have a general overview about how you and Sindhu implemented this tool. How do you recommend me to write this section?
+
+Here are the main parts of Sindhu's thesis about implementation:
+\begin{itemize}
+\item Record Function Calls
+\item Stack Correction
+\item Compression 
+\item Trace Reader
+\end{itemize}
+))
+
+ParLOT is built on top of PIN. In particular, it instructs PIN to instrument every thread launch and thread termination in the application as well as every function call and return. The thread-launch code initializes the per-thread tracing variables and opens a file into which the trace data from that thread will be written. The thread-termination code finalizes any ongoing incremental compression (see below), flushes out the remaining buffer entries, and closes the trace file. ParLOT assigns every static function in each image (main program and all libraries) a unique ID, which it records in a separate file along with the image and function name. This file later serves to map IDs back to image/function-name pairs.
+
+For every function call, ParLOT executes extra code that has access to the thread ID, unique function ID, and current stack-pointer (SP) value. Based on the SP value, it performs call-stack correction if necessary (see below), adds the new function to a data structure it maintains to record the call stack, and emits the function ID into the trace file via an incremental compression algorithm (see below). All of this is done independently for each thread. Similarly, for every function return, ParLOT also executes extra code that has access to the thread ID, unique function ID, and current stack-pointer (SP) value. Based on the SP value, it performs call-stack correction if necessary, removes the function from its call-stack data structure, and emits a reserved function ID value (0) into the trace file to indicate a return. As before, this is done via an incremental compression algorithm. We use zero for all returns rather than emitting the function ID and a bit to specify whether it is a call or return because our approach results in more compressible output. After all, this way, half of the values in the trace will be zero.
+
+Call-stack correction:
+
+To be able to decode the trace information, i.e., to correctly associate each return with the function it belongs to, our trace reader maintains an identical call-stack data structure that is updated in exactly the same manner. Unfortunately, an as pointed out in the PIN documentation, it is not always possible to identify all function returns. For example, in highly optimized code, a function’s instructions may be inlined and interleaved with the caller’s instructions, making it not always feasible for PIN to identify the (now missing) return instruction. As a consequence, ParLOT has to work correctly even when PIN occasionally misses a return. This is where the SP values come into play.
+
+During tracing, ParLOT not only records the function IDs in its call-stack data structure but also the associated SP value. This enables it detect missing returns and to correct the call stack appropriately. Whenever a function is called, it checks if there is at least one entry in the call stack and, if so, whether its SP value is higher than that of the current call. If it is lower or the same, we must have missed at least one re-turn since the runtime stack grows downwards and, therefore, the SP value decreases with every call and increases with every return. If a missing return is detected in this manner, ParLOT pops the top element from its call stack and emits a zero to indicate a return. It repeats this procedure until the stack is empty or its top entry has a sufficiently high SP value. The same call-stack correction technique is applied for every return if the SP value is inconsistent. Note that the SP values are only used for this purpose and are not included in the emitted trace data.
+
+The result is an internally consistent trace of function calls and returns, meaning that parsing the trace will yield a correct call stack. This is essential so that the trace can be decoded correctly. Moreover, it means that the trace includes returns that truly happened in the application but that were missed by PIN. Note, however, that our call-stack correction is a best-effort approach and may, in rare cases, temporarily not reflect what the application actually did. For example, if ParLOT sees a call to function f with a particular SP value followed by a call to function g with the same SP value, it does not know whether it missed the return from f or whether f called g but g does not allocate a frame on the runtime stack (e.g., because it is inlined).
+
+Incremental compression:
+
+ParLOT instantly compresses the traced information even before it is written to memory. In other words, it compresses each function ID before the next function ID is known. Conventional approaches first record (uncompressed) function IDs in a buffer and only compress the whole buffer once it fills up. This is how most compression algorithms work. Unfortunately, this makes the processing time very non-uniform. Almost all function IDs can be recorded very quickly as they just have to be written to an array. But processing the last function ID that fills the buffer will take a very long time as it triggers the compression of the buffer data. More later...
+
+
+\section{Evaluation methodology}
+We executed all of our experiments on TACC supercomputer (Stampede)[???]. Each computing node on Stampede has two Xeon E5-2680 8-core Sandy Bridge processors.\\
+
+The NAS Parallel Benchmarks (NPB) [???] are a  set of programs designed to help evaluation of parallel supercomputers and tools. NPB has a variety of applications, like \textit{Conjugate Gradient} (cg) with irregular memory accesss and communication and \textit{Lower-Upper} (lu) a Gauss-Seidel solver.
+All NPB applications have been compiled with MVAPICH2.2.1 and -g and -O1 optimization flag.
+
+We designed our experimental evaluation  with focus on scalability and efficiency of ParLOT. We executed ParLOT and some other similar tools like Callgrind on NPB applications on up to 1024 cores.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in, angle=-90]{figs1/overview.png}
+\caption{Overview of ParLOT}
+\label{overview}
+\end{figure}
+
+
+\section{Results}
+
+
+
+\subsection{ParLOT vs.~Callgrind}
+ParLOT can capture the function calls and returns at two major levels: 1) \textit{Main}, where it only traces the functions of the main image and 2) \textit{All}, which includes all library functions as well.
+
+In this subsection, we compare the overhead of ParLOT(main) and ParLOT(all) with Callgrind, which is the most similar tool that we could find.
+However, Callgrind does not use any significant compression (except for the name of functions) and stores the trace files in ASCII format. It only records enough information to produce the dynamic call graph and only for the main image, which may not be sufficient for finding the root cause of a failure since it might happen at lower levels or not be reflected in the call graph.
+Fig.~\ref{sd_pin_cg} and Table \ref{t_sd_pin_cg} show the runtime normalized to the native runtime for different NAS apps and different configurations .
+It seems that Callgrind has better results on larger number of cores but overall, the geomean of average slowdowns for both ParLOT(main) (4.41) and ParLOT(all) (3.22) is smaller than Callgrind (5.20).
+
+Fig \ref{ts_pin_cg_percore_persec} and table \ref{t_ts_pin_cg_percore_persec} shows the trace data generated per second and core for ParLOT next to Callgrind. ((Saeed: Also fig \ref{ts_pin_cg_percore} shows the trace data generated per core.))\\
+The average trace size per core per second is less than 4 kB for ParLOT and is more 10 kB for Callgrind. Considering that Callgrind applies very poor compression of traces, and maximum compression ratio of ?? (more in section ??) of ParLOT, can show the capability of ParLOT to store almost (4 kB * $1/compression_ratio$) of worth of data in just 4 kB per core per second. This capability becomes more impressive when you think about running any application on hundreds of cores and running ParLOT on top of that with smaller overhead than Callgrind but more sophisticated, informative and useful.
+(Martin: more importantly, 4 kB per core should be no problem for the local file system to handle and leaves most of the bandwidth for the application.)
+
+\subsection{Overheads:}
+The overall overhead adds to the original application due to instrumentation and tracing is a product of pure Pin overheaad, instrumentation, recording traces, compression and storing data(I/O).
+In this section, we show the results of a set of experiments with disabling some or all features of ParLOT to see how much impact each phase (fig \ref{overview}) has on the final overhead
+We categorized the overall overhead added to the native application into 1) pure overhead by Pin, 2) overhead by tracing (with and without compression) and 3) I/O overhead\\
+We designed these variations of ParLOT to extract detailed overhead added by each category
+\begin{itemize}
+\item \textbf{npin}: Every phase of ParLOT is disabled except Pin-Init (fig \ref{overview}) in \textit{npin} and it shows the pure overhead added by Pin. 
+\item \textbf{wpin}: Compression is disabled in \textit{wpin} and all collected data would be stored as is to the disk. The results of this tools shows how much efficiency our compression approach adds to ParLOT. 
+\item \textbf{dpin}: It is almost identical to ParLOT except it stores the generated compressed traces to "/dev/null". The purpose of \textit{dpin} is to see how much of the overall overhead is because of I/O.
+\end{itemize}
+
+Last row of the table \ref{t-pin-det} shows the average overhead that each of above testing tools adds to the native execution. For each configuration, the differences between the average slowdown of dpin and pin is very insignificant which shows that ParLOT is not an I/O-bounded tool. 
+Capturing, collecting and storing the data using ParLOT but without any compression, would cause up to more than 130X slowdown. Again it is another proof for the efficiency that our compression method within ParLOT provides for tracing.
+
+Table \ref{} shows how much overhead each factor in the rows adds to the execution during PatLOT process.The smallest impact belongs to I/O.
+
+\subsection{Compression Ratio and required bandwidth}
+
+As we discussed in section ??, full function-call-invocation trace at granularity of library function calls, can help us gain information about the general control flow of the application to the point to detect bug manifestation and finding the root cause of the bug.
+Our experiments shows that ParLOT compression algorithm can compress this type of information with high compression ratio up to 16k on average. 
+
+Table \ref{t-compRatio} shows the average compression ratio. 
+    
+
+    
+
+\section{Summary, Conclusion and Future Work}
+\subsection{Summary and Conclusion}
+\subsection{Future Work}
+
+
+
+
+
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs1/sd-med-pin-cg-avg.png}
+\caption{Average slowdown of ParLOT(main and all) and Callgrind for 16, 64, and 256 processes. This chart and table \ref{t_sd_pin_cg} shows the advantage of ParLoT over callgrind. The geomean of average slowdowns for both ParLOT(main) (1.56) and ParLOT(all) (1.63) is way smaller than Callgrind (5.51). Callgrind scales better (slowdown decreases with larger number of cores) and ParLOT's overhead slightly increases for larger scales.}
+\label{sd_pin_cg}
+\end{figure}
+
+
+
+\begin{table*}[]
+\centering
+\caption{Slowdown of ParLOT(main and all) and Callgrind. This table and chart \ref{sd_pin_cg} shows the advantage of ParLoT over callgrind. The geomean of average slowdowns for both ParLOT(main) (1.56) and ParLOT(all) (1.63) is way smaller than Callgrind (5.51). Callgrind scales better (slowdown decreases with larger number of cores) and ParLOT's overhead slightly increases for larger scales.}
+\label{t_sd_pin_cg}
+\begin{tabular}{c|rrrr|rrrr|rrrr|}
+\cline{2-13}
+\multicolumn{1}{l|}{} & \multicolumn{4}{c|}{ParLOT(main)} & \multicolumn{4}{c|}{ParLOT(all)} & \multicolumn{4}{c|}{Callgrind} \\ \cline{2-13} 
+\multicolumn{1}{l|}{} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} \\ \hline
+\multicolumn{1}{|c|}{bt} & 1.63 & 1.86 & 2.11 & 1.87 & 1.49 & 1.65 & 1.52 & 1.55 & 11.04 & 12.93 & 8.86 & 10.94 \\
+\multicolumn{1}{|c|}{cg} & 1.28 & 1.79 & 2.07 & 1.71 & 1.31 & 1.6 & 2.17 & 1.69 & 4.86 & 4.71 & 3.21 & 4.26 \\
+\multicolumn{1}{|c|}{ep} & 3.06 & 1.77 & 1.38 & 2.07 & 3.13 & 2.17 & 1.49 & 2.26 & 12.95 & 6.08 & 2.99 & 7.34 \\
+\multicolumn{1}{|c|}{ft} & 1.69 & 1.47 & 1.69 & 1.62 & 1.71 & 1.62 & 1.69 & 1.67 & 12.04 & 6.48 & 3.58 & 7.37 \\
+\multicolumn{1}{|c|}{is} & 1.15 & 1.27 & 1.38 & 1.27 & 1.4 & 1.56 & 2.06 & 1.67 & 2.51 & 1.98 & 3.38 & 2.62 \\
+\multicolumn{1}{|c|}{lu} & 1.19 & 1.28 & 1.42 & 1.30 & 1.22 & 1.36 & 1.76 & 1.45 & 7.79 & 7.15 & 7.3 & 7.41 \\
+\multicolumn{1}{|c|}{mg} & 1.27 & 1.41 & 1.49 & 1.39 & 1.43 & 1.66 & 1.67 & 1.59 & 4.99 & 3.33 & 2.64 & 3.65 \\
+\multicolumn{1}{|c|}{sp} & 1.13 & 1.28 & 1.91 & 1.44 & 1.08 & 1.4 & 1.51 & 1.33 & 3.85 & 6.1 & 4.32 & 4.76 \\ \hline
+\multicolumn{1}{|c|}{GeoMean} & 1.46 & 1.50 & 1.66 & \textbf{1.56} & 1.51 & 1.61 & 1.72 & \textbf{1.63} & 6.49 & 5.37 & 4.14 & \textbf{5.51} \\ \hline
+\end{tabular}
+\end{table*}
+
+
+
+
+
+
+
+\begin{table*}[]
+\centering
+\caption{Trace bandwidth (kB/s) per core. Average trace bandwidth per core (kB/s) for ParLOT and Callgrind. ParLOT(main) collects very similar call-graph to what Callgrind collects and the average bandwidth required for ParLOT(main) \textbf{4.22} is less half of Callgrind \textbf{8.62}. Also the rate of increasing bandwidth per core for Callgrind is almost twice as ParLOT(look at the \text under line numbers in the table).}
+\label{t_ts_pin_cg_percore_persec}
+\begin{tabular}{|
+>{\columncolor[HTML]{FFFFFF}}c |
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r 
+>{\columncolor[HTML]{FFFFFF}}r |
+>{\columncolor[HTML]{FFFFFF}}r |}
+\hline
+TOOL & \multicolumn{4}{c|}{\cellcolor[HTML]{FFFFFF}ParLOT(main)} & \multicolumn{4}{c|}{\cellcolor[HTML]{FFFFFF}ParLOT(all)} & \multicolumn{4}{c|}{\cellcolor[HTML]{FFFFFF}Callgrind} \\ \hline
+cores & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}16} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}64} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}256} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}Avg} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}16} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}64} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}256} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}Avg} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}16} & \multicolumn{1}{c}{\cellcolor[HTML]{FFFFFF}64} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}256} & \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}Avg} \\ \hline
+bt & 0.89 & 4.86 & 7.33 & 4.36 & 10.97 & 36.97 & 55.44 & 34.46 & 0.35 & 2.44 & 5.51 & 2.44 \\
+cg & 0.50 & 10.58 & 15.17 & 8.75 & 35.30 & 62.26 & 71.75 & 56.44 & 3.63 & 10.49 & 17.69 & 10.49 \\
+ep & 2.24 & 1.59 & 0.85 & 1.56 & 15.29 & 25.85 & 32.86 & 24.67 & 2.27 & 12.80 & 26.65 & 12.80 \\
+ft & 0.93 & 1.81 & 4.75 & 2.50 & 14.62 & 32.37 & 52.82 & 33.27 & 1.25 & 7.35 & 15.33 & 7.35 \\
+is & 0.21 & 1.14 & 1.81 & 1.05 & 45.31 & 42.99 & 35.53 & 41.28 & 21.44 & 30.61 & 24.96 & 30.61 \\
+lu & 0.91 & 21.39 & 29.24 & 17.18 & 21.51 & 56.75 & 72.97 & 50.41 & 0.76 & 3.96 & 8.00 & 3.96 \\
+mg & 1.84 & 4.86 & 4.69 & 3.80 & 39.1 & 45.13 & 49.31 & 44.51 & 7.66 & 24.89 & 41.66 & 24.89 \\
+sp & 0.6 & 11.84 & 17.35 & 9.93 & 12.59 & 46.64 & 99.28 & 52.84 & 0.82 & 4.19 & 8.54 & 4.19 \\ \hline
+GeoMean & 0.82 & \underline{4.61} & \underline{4.73} & \textbf{4.22} & 21.25 & 42.11 & 55.31 & \textbf{40.89} & \underline{2.09} & \underline{8.62} & \underline{15.19} & \textbf{8.62} \\ \hline
+\end{tabular}
+\end{table*}
+
+
+
+
+\begin{table*}[]
+\centering
+\caption{\textbf{npin}: Every phase of ParLOT is disabled except Pin-Init (fig \ref{overview}) in \textit{npin} and it shows the pure overhead added by Pin. 
+\textbf{wpin}: Compression is disabled in \textit{wpin} and all collected data would be stored as is to the disk. The results of this tools shows how much efficiency our compression approach adds to ParLOT. 
+\textbf{dpin}: It is almost identical to ParLOT except it stores the generated compressed traces to "/dev/null". The purpose of \textit{dpin} is to see how much of the overall overhead is because of I/O.
+Last row of the table \ref{t-pin-det} shows the average overhead that each of above testing tools adds to the native execution. For each configuration, the differences between the average slowdown of dpin and pin is very insignificant which shows that ParLOT is not an I/O-bounded tool. 
+Capturing, collecting and storing the data using ParLOT but without any compression, would cause up to more than 130X slowdown. Again it is another proof for the efficiency that our compression method within ParLOT provides for tracing.}
+\label{t-pin-det}
+
+
+\begin{tabular}{|c|c|rrrr|rrrr|rrrr|}
+\hline
+\multicolumn{1}{|l|}{\multirow{2}{*}{}} & Cores & \multicolumn{4}{c|}{16} & \multicolumn{4}{c|}{64} & \multicolumn{4}{c|}{256} \\ \cline{2-14} 
+\multicolumn{1}{|l|}{} & Tools & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} \\ \cline{2-14} 
+\multirow{8}{*}{Main} & bt & 1.54 & 1.57 & 1.63 & 7.75 & 1.74 & 1.60 & 1.86 & 18.60 & 1.48 & 0.98 & 2.11 & 32.69 \\
+ & cg & 1.21 & 1.28 & 1.28 & 1.42 & 1.41 & 1.17 & 1.79 & 43.56 & 1.82 & 1.74 & 2.07 & 73.89 \\
+ & ep & 2.18 & 2.76 & 3.06 & 26.91 & 1.63 & 1.69 & 1.77 & 11.65 & 1.24 & 1.08 & 1.38 & 3.40 \\
+ & ft & 1.21 & 1.56 & 1.69 & 8.82 & 1.29 & 1.16 & 1.47 & 8.54 & 1.81 & 0.99 & 1.69 & 24.13 \\
+ & is & 1.28 & 0.81 & 1.15 & 0.78 & 1.34 & 0.81 & 1.27 & 2.90 & 1.69 & 2.08 & 1.38 & 16.06 \\
+ & lu & 1.18 & 1.19 & 1.19 & 1.22 & 1.30 & 1.42 & 1.28 & 10.21 & 1.62 & 1.33 & 1.42 & 34.29 \\
+ & mg & 1.26 & 1.05 & 1.27 & 1.20 & 1.39 & 0.98 & 1.41 & 15.97 & 1.38 & 0.89 & 1.49 & 23.76 \\
+ & sp & 1.06 & 1.03 & 1.13 & 1.57 & 1.25 & 1.12 & 1.28 & 16.62 & 1.39 & 1.11 & 1.91 & 52.31 \\ \hline
+\multicolumn{2}{|c|}{GeoMean} & \textbf{1.33} & \textbf{1.32} & \textbf{1.46} & \textbf{2.88} & \textbf{1.41} & \textbf{1.21} & \textbf{1.50} & \textbf{12.60} & \textbf{1.54} & \textbf{1.27} & \textbf{1.66} & \textbf{24.63} \\ \hline
+\multirow{8}{*}{All} & bt & 1.56 & 1.45 & 1.49 & 8.00 & 1.67 & 1.47 & 1.65 & 20.48 & 1.36 & 1.10 & 1.52 & 39.70 \\
+ & cg & 1.27 & 1.17 & 1.31 & 2.15 & 1.52 & 1.20 & 1.60 & 49.62 & 2.02 & 1.37 & 2.17 & 83.40 \\
+ & ep & 2.31 & 2.89 & 3.13 & 26.96 & 1.77 & 1.61 & 2.17 & 9.92 & 1.34 & 0.96 & 1.49 & 3.33 \\
+ & ft & 1.28 & 1.56 & 1.71 & 8.85 & 1.41 & 1.30 & 1.62 & 9.00 & 1.58 & 1.17 & 1.69 & 28.11 \\
+ & is & 1.47 & 1.10 & 1.40 & 1.36 & 1.53 & 1.04 & 1.56 & 2.87 & 1.94 & 1.12 & 2.06 & 16.53 \\
+ & lu & 1.21 & 1.17 & 1.22 & 2.65 & 1.36 & 1.21 & 1.36 & 11.91 & 1.60 & 1.21 & 1.76 & 42.06 \\
+ & mg & 1.41 & 1.22 & 1.43 & 2.15 & 1.56 & 1.15 & 1.66 & 17.24 & 1.66 & 1.27 & 1.67 & 24.70 \\
+ & sp & 1.08 & 1.10 & 1.08 & 2.65 & 1.32 & 1.16 & 1.40 & 19.58 & 1.60 & 1.22 & 1.51 & 59.47 \\ \hline
+\multicolumn{2}{|c|}{GeoMean} & \textbf{1.41} & \textbf{1.38} & \textbf{1.51} & \textbf{4.13} & \textbf{1.51} & \textbf{1.26} & \textbf{1.61} & \textbf{13.41} & \textbf{1.62} & \textbf{1.17} & \textbf{1.72} & \textbf{27.39} \\ \hline
+\end{tabular}
+\end{table*}
+
+
+
+
+
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs1/ts-percore-persec.png}
+\caption{Average trace bandwidth per core (kB/s) for ParLOT and Callgrind. ParLOT(main) collects very similar call-graph to what Callgrind collects and the average bandwidth required for ParLOT(main) \textbf{4.22} is less half of Callgrind \textbf{8.62}. Also the rate of increasing bandwidth per core for Callgrind is almost twice as ParLOT(look at the \text under line numbers in the table).  }
+\label{ts-percore-persec}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs1/summary-detail-overhead-revised.png}
+\caption{
+Average overhead added to the NPB applications by ParLOT, with and without compression. Shows the high impact of compression. This chart is a summary of Table \ref{t-pin-det}. }
+\label{pin-det-overhead}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs1/summary-detail-overhead-revised2.png}
+\caption{
+(this table is subset of fig \ref{pin-det-overhead}. Fig \ref{pin-det-overhead} focuses on the impact of compression and this fig focuses on the overall )
+Average overhead added to the NPB applications by ParLOT, I believe this chart shows the low efficiency of ParLOT idea. PIN is considered as \textbf(light-weight) binary instrumentation framework and when you compare the overhead added by Pin and our approach, it is impressive.}
+\label{pin-det-overhead2}
+\end{figure}
+
+
+\begin{table}[]
+\centering
+\caption{This table shows the average ParLOT compression ratios for different NAS applications from the generated traces. For column \textbf{ep} the ratio is high up to 16k. }
+
+\label{t-compRatio}
+\begin{tabular}{ccrrrrrrrr|r|}
+\hline
+\multicolumn{2}{|c|}{} & \multicolumn{1}{c}{bt} & \multicolumn{1}{c}{cg} & \multicolumn{1}{c}{ep} & \multicolumn{1}{c}{ft} & \multicolumn{1}{c}{is} & \multicolumn{1}{c}{lu} & \multicolumn{1}{c}{mg} & \multicolumn{1}{c|}{sp} & \multicolumn{1}{c|}{GeoMean} \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{Main}} & \multicolumn{1}{c|}{16} & 13895.02 & 5069.90 & 16851.22 & 21035.00 & 50.61 & 418.89 & 344.30 & 3035.00 & 2202.21 \\
+\multicolumn{1}{|c|}{} & \multicolumn{1}{c|}{64} & 2157.98 & 339.99 & 15867.32 & 6512.02 & 755.23 & 109.59 & 247.08 & 447.49 & 955.32 \\
+\multicolumn{1}{|c|}{} & \multicolumn{1}{c|}{256} & 1742.45 & 261.08 & 14264.38 & 1329.09 & 1176.63 & 166.81 & 484.99 & 295.08 & 837.60 \\ \hline
+\multicolumn{1}{|c|}{\multirow{3}{*}{All}} & \multicolumn{1}{c|}{16} & 2186.68 & 161.18 & 9522.48 & 5501.74 & 256.13 & 501.60 & 248.08 & 789.60 & 908.65 \\
+\multicolumn{1}{|c|}{} & \multicolumn{1}{c|}{64} & 573.47 & 178.04 & 4043.44 & 1158.27 & 291.89 & 243.27 & 233.64 & 308.42 & 471.60 \\
+\multicolumn{1}{|c|}{} & \multicolumn{1}{c|}{256} & 598.73 & 351.75 & 1937.89 & 436.18 & 617.08 & 421.28 & 359.26 & 207.67 & 492.34 \\ \hline 
+\end{tabular}
+\end{table}
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{figs1/compRatio_revised.png}
+\caption{Compression ratio}
+\label{compRatio}
+\end{figure}
+
+
+
+\section{Appendix}
+
+
+
+   
+
+
+
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation Results}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command, the
+% \label for the overall figure must come after \caption.
+% \hfil must be used as a separator to get equal spacing.
+% The subfigure.sty package works much the same way, except \subfigure is
+% used instead of \subfloat.
+%
+%\begin{figure*}[!t]
+%\centerline{\subfloat[Case I]\includegraphics[width=2.5in]{subfigcase1}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{subfigcase2}%
+%\label{fig_second_case}}}
+%\caption{Simulation results}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+
+
+% An example of a floating table. Note that, for IEEE style tables, the 
+% \caption command should come BEFORE the table. Table text will default to
+% \footnotesize as IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that IEEE does not put floats in the very first column - or typically
+% anywhere on the first page for that matter. Also, in-text middle ("here")
+% positioning is not used. Most IEEE journals/conferences use top floats
+% exclusively. Note that, LaTeX2e, unlike IEEE journals/conferences, places
+% footnotes above bottom floats. This can be corrected via the \fnbelowfloat
+% command of the stfloats package.
+
+
+
+% conference papers do not normally have an appendix
+
+
+% use section* for acknowledgement
+\section*{Acknowledgment}
+
+...
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+%\begin{thebibliography}
+
+
+
+
+%\end{thebibliography}
+
+
+
+
+% that's all folks
+\end{document}
+
+
+
+

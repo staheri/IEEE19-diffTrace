@@ -1,0 +1,16 @@
+\label{t_sd.pin.cg}
+\caption{Slowdown of ParLOT(main and all) and Callgrind. This table and chart \ref{sd_pin_cg} shows the advantage of ParLoT over callgrind. The geomean of average slowdowns for both ParLOT(main) (1.56) and ParLOT(all) (1.63) is way smaller than Callgrind (5.51). Callgrind scales better (slowdown decreases with larger number of cores) and ParLOT's overhead slightly increases for larger scales.}
+\begin{tabular}{c|rrrr|rrrr|rrrr|}
+\cline{2-13}
+\multicolumn{1}{l|}{} & \multicolumn{4}{c|}{ParLOT(main)} & \multicolumn{4}{c|}{ParLOT(all)} & \multicolumn{4}{c|}{Callgrind} \\ \cline{2-13} 
+\multicolumn{1}{l|}{} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{256} & \multicolumn{1}{c|}{Avg} \\ \hline
+\multicolumn{1}{|c|}{bt} & 1.40 & 1.51 & 2.58 & 1.83 & 1.47 & 1.82 & 6.92 & 3.40 & 11.05 & 11.41 & 10.57 & 11.01 \\
+\multicolumn{1}{|c|}{cg} & 1.23 & 1.90 & 3.10 & 2.08 & 1.55 & 2.63 & 9.87 & 4.68 & 11.95 & 10.46 & 9.98 & 10.80 \\
+\multicolumn{1}{|c|}{ep} & 3.30 & 3.16 & 3.31 & 3.26 & 3.72 & 4.02 & 8.75 & 5.50 & 17.53 & 18.54 & 10.73 & 15.60 \\
+\multicolumn{1}{|c|}{ft} & 1.48 & 1.48 & 2.18 & 1.71 & 1.68 & 1.84 & 3.91 & 2.48 & 9.23 & 5.99 & 18.57 & 11.26 \\
+\multicolumn{1}{|c|}{is} & 1.62 & 2.55 & 2.60 & 2.26 & 2.20 & 3.25 & 5.02 & 3.49 & 3.69 & 3.73 & 5.21 & 4.21 \\
+\multicolumn{1}{|c|}{lu} & 1.05 & 1.30 & 2.56 & 1.64 & 1.14 & 1.54 & 6.16 & 2.95 & 8.72 & 8.27 & 8.58 & 8.52 \\
+\multicolumn{1}{|c|}{mg} & 1.35 & 2.46 & 4.88 & 2.90 & 1.90 & 3.24 & 9.78 & 4.97 & 10.13 & 6.05 & 8.38 & 8.19 \\
+\multicolumn{1}{|c|}{sp} & 1.18 & 1.39 & 2.20 & 1.59 & 1.49 & 1.45 & 3.02 & 1.99 & 6.52 & 7.69 & 9.32 & 7.84 \\ \hline
+\multicolumn{1}{|c|}{GeoMean} & 1.48 & 1.87 & 2.83 & \textbf{2.09} & 1.78 & 2.32 & 6.18 & \textbf{3.49} & 9.06 & 8.13 & 9.62 & \textbf{9.13} \\ \hline
+\end{tabular}

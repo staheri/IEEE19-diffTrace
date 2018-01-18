@@ -1,0 +1,41 @@
+\begin{table*}[]
+%\caption{Stat: sd 
+% Tools: pinMain , pinAll ,  
+% Inputs: B , C ,  
+% Nodes: 1 , 4 , 16 , 64 ,  
+% Desc: Primary}
+
+\caption{This table is similar to previous one (table \ref{sd_pMpA_BC_tni_p3.5}) but with version \textbf{3.0} of Pin. There are some zeros in the table which shows those experiments have crashed (probably because of incompatiblity of Pin with current configuration on PSC nodes). Also some of the slowdowns are smaller than 1. Thus the values of this table are not accurate and probably invalid (at least for larger number of cores). But I just wanted to include them here, in the first draft of paper, to show some differences between Pin versions and in case you are wondering why the numbers that I had in October was much better than these numbers (tables that came previously), the reason is Pin versions.}
+\label{sd_pMpA_BC_tni_p3.0}
+\begin{center}
+\begin{tabular}{|l|rrrrrrrr|r|}
+\hline
+              &   bt &   cg &   ep &   ft &   is &   lu &   mg &   sp &   GM \\
+\hline
+ pinMain.B.1  & 1.54 & 1.81 & 3.92 & 1.71 & 4.74 & 1.37 & 3.88 & 1.47 & 2.26 \\
+ pinMain.C.1  & 1.40 & 1.25 & 3.60 & 1.30 & 2.98 & 1.24 & 1.64 & 1.27 & 1.68 \\
+ \hline
+ pinMain.B.4  & 2.59 & 3.58 & 3.76 & 2.71 & 4.62 & 2.20 & 7.22 & 2.57 & 3.40 \\
+ pinMain.C.4  & 1.66 & 2.70 & 3.59 & 1.82 & 3.01 & 1.57 & 2.82 & 1.61 & 2.24 \\
+ \hline
+ pinMain.B.16 & 3.57 & 4.71 & 3.79 & 4.48 & 3.77 & 3.18 & 1.91 & 2.25 & 3.32 \\
+ pinMain.C.16 & 0.95 & 3.30 & 6.55 & 1.88 & 1.96 & 3.09 & 3.75 & 0.00 & 0.00 \\
+ \hline
+ pinMain.B.64 & 5.39 & 3.04 & 2.42 & 3.65 & 0.00 & 3.01 & 2.83 & 1.48 & 0.00 \\
+ pinMain.C.64 & 1.91 & 6.75 & 1.82 & 5.03 & 4.21 & 1.56 & 6.91 & 0.89 & 2.88 \\
+ \hline
+ pinAll.B.1   & 1.69 & 2.31 & 5.00 & 1.99 & 5.96 & 1.54 & 5.57 & 1.57 & 2.73 \\
+ pinAll.C.1   & 1.43 & 0.52 & 4.42 & 1.39 & 3.34 & 1.30 & 1.97 & 1.30 & 1.63 \\
+ \hline
+ pinAll.B.4   & 1.69 & 3.89 & 4.36 & 5.15 & 4.40 & 2.97 & 5.25 & 3.54 & 3.71 \\
+ pinAll.C.4   & 2.09 & 2.48 & 4.32 & 1.99 & 3.46 & 1.89 & 3.35 & 0.45 & 2.14 \\
+ \hline
+ pinAll.B.16  & 4.48 & 5.09 & 7.41 & 2.96 & 4.70 & 5.13 & 2.67 & 3.45 & 4.27 \\
+ pinAll.C.16  & 2.71 & 6.39 & 6.02 & 2.66 & 8.30 & 3.89 & 3.22 & 3.53 & 4.23 \\
+ \hline
+ pinAll.B.64  & 9.06 & 2.65 & 2.81 & 0.68 & 3.08 & 2.88 & 3.22 & 4.20 & 2.93 \\
+ pinAll.C.64  & 6.57 & 0.00 & 4.65 & 1.74 & 2.38 & 2.56 & 0.00 & 3.66 & 0.00 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}

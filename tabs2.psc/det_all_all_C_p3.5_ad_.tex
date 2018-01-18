@@ -1,0 +1,49 @@
+\begin{table*}[]
+\caption{Detail slowdown - ParLOT(All) - Input C}
+\label{det_all_all_C_p3.5}
+\begin{center}
+\begin{tabular}{|c|c|rrrr|rrrr|rrrr|rrrr|}
+\hline
+\multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{Input: C}}} & \multicolumn{1}{r|}{Nodes :}       & \multicolumn{4}{c|}{1}                                                                                       & \multicolumn{4}{c|}{4}                                                                                       & \multicolumn{4}{c|}{16}                                                                                      & \multicolumn{4}{c|}{64}                                                                                      \\ \cline{2-18} 
+\multicolumn{1}{|l|}{}                                   & \multicolumn{1}{r|}{Detail Tools:} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{dpin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} \\ \hline
+\hline
+ \multirow{9}{*}{All} 
+ & bt &           1.4 &          1.43 &         1.49 &             0 &        1.47 &          1.88 &         2.27 &             0 &         2.61 &           4.94 &          4.89 &              0  &          6.22 &           6.75 &          7.37 &              0 \\
+ & cg &          1.47 &          2.27 &         1.56 &             0 &        3.03 &          2.96 &         3.42 &             0 &          3.2 &           3.31 &          3.75 &              0  &          8.32 &           6.56 &           7.3 &              0 \\
+ & ep &          3.84 &          3.48 &         3.72 &             0 &        3.14 &          3.92 &         4.08 &             0 &         4.85 &           5.16 &          5.48 &              0  &          5.06 &           5.33 &          5.77 &              0 \\
+ & ft &          1.48 &          1.41 &         1.41 &             0 &        2.15 &          2.16 &         2.52 &             0 &         3.79 &           4.09 &          4.38 &              0  &          7.48 &           7.74 &          6.38 &              0 \\
+ & is &          4.12 &          3.15 &         3.25 &             0 &        4.33 &          4.34 &            5 &             0 &         5.82 &           5.48 &          6.21 &              0  &          7.33 &           6.31 &           6.4 &              0 \\
+ & lu &          1.33 &          1.15 &         1.22 &             0 &        1.58 &          1.57 &         2.15 &             0 &         2.75 &            2.8 &          3.82 &              0  &          3.12 &           4.38 &           4.8 &              0 \\
+ & mg &          2.41 &          2.34 &         2.65 &             0 &        4.11 &          3.97 &         4.78 &             0 &         3.97 &           6.87 &          5.04 &              0  &           5.7 &           3.96 &          4.53 &              0 \\
+ & sp &          1.11 &           1.1 &         1.16 &             0 &        1.55 &          1.53 &         1.83 &             0 &         1.96 &           1.87 &          2.56 &              0  &          3.58 &           5.27 &          5.19 &              0 \\ \cline{2-18}
+ & GM &           1.9 &          1.87 &         1.87 &             0 &        2.45 &          2.58 &         3.05 &             0 &         3.43 &           4.02 &          4.38 &              0  &          5.56 &           5.66 &          5.88 &              0 \\ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.psc/chartDet_B_wc_byTool_p3_5.png}
+\caption{ Input size: \textbf{B}. Each bar is stacked value of slowdowns : $Native Run = 1$ , $Pure Pin = npin - 1$ , $Tracing = ParLOT - npin$. Label of each bar is, (main/all).(1/4/16/64). This graph shows why ParLOT does not scale that well. The overhead that Pin itself is adding to the native run is growing with higher number of cores. The green part of each bar (tracing) is the overhead that our approach is adding. Fig \ref{chartDet_B_woc_byTool_p3_5} shows the effectiveness of our compression approach}
+\label{chartDet_B_wc_byTool_p3_5}
+\end{figure*}
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.psc/chartDet_B_woc_byTool_p3_5.png}
+\caption{ Input size: \textbf{B}. Each bar is stacked value of slowdowns : $Native Run = 1$ , $Pure Pin = npin - 1$ , $Tracing (w/o \_compression) = wpin - npin$.
+This graph clearly shows how much impact our compression method has on the performance of ParLOT.
+}
+\label{chartDet_B_woc_byTool_p3_5}
+\end{figure*}
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.psc/chartDet_C_wc_byTool_p3_5.png}
+\caption{Input size: \textbf{C}. This chart is similar to fig \ref{chartDet_B_wc_byTool_p3_5} but for larger input size C. As I mentioned in the table description, ParLOT seem to have better performance on larger input sizes. General shape of this chart matches fig \ref{chartDet_B_wc_byTool_p3_5} which shows the deterministic behavior of our tool and application.}
+\label{chartDet_C_wc_byTool_p3_5}
+\end{figure*}

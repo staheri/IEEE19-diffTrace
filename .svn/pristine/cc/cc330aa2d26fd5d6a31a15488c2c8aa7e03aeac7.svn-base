@@ -1,0 +1,66 @@
+This is BibTeX, Version 0.99d (TeX Live 2017)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: HPDC18-Parlot.aux
+The style file: IEEEtran.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: bibs.bib
+A bad cross reference---entry "callgrind"
+refers to entry "DBLP:conf/ptw/2008", which doesn't exist
+A bad cross reference---entry "ipm"
+refers to entry "DBLP:conf/ptw/2009", which doesn't exist
+Warning--I didn't find a database entry for "memcheck"
+Warning--I didn't find a database entry for "scorep"
+Warning--I didn't find a database entry for "vtune"
+Warning--I didn't find a database entry for "DBLP:conf/ptw/2008"
+Warning--I didn't find a database entry for "DBLP:conf/ptw/2009"
+-- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+
+Done.
+You've used 11 entries,
+            4087 wiz_defined-function locations,
+            913 strings with 10444 characters,
+and the built_in function-call counts, 10530 in all, are:
+= -- 851
+> -- 267
+< -- 103
++ -- 145
+- -- 44
+* -- 538
+:= -- 1539
+add.period$ -- 23
+call.type$ -- 11
+change.case$ -- 12
+chr.to.int$ -- 243
+cite$ -- 11
+duplicate$ -- 702
+empty$ -- 797
+format.name$ -- 54
+if$ -- 2457
+int.to.chr$ -- 0
+int.to.str$ -- 11
+missing$ -- 122
+newline$ -- 64
+num.names$ -- 11
+pop$ -- 267
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 802
+stack$ -- 0
+substring$ -- 578
+swap$ -- 625
+text.length$ -- 22
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 11
+warning$ -- 0
+while$ -- 53
+width$ -- 13
+write$ -- 146
+(There were 2 error messages)
