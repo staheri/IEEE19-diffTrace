@@ -1,12 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  17 JAN 2018 19:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.2.3)  19 JAN 2018 04:54
 entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**HPDC18-Parlot.tex
-(./HPDC18-Parlot.tex
-LaTeX2e <2017-04-15>
-Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
-(./IEEEtran.cls
+**./HPDC18-ParLOT.tex
+(HPDC18-ParLOT.tex
+LaTeX2e <2015/10/01> patch level 2
+Babel <3.9n> and hyphenation patterns for 69 languages loaded.
+(IEEEtran.cls
 Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
 -- See the "IEEEtran_HOWTO" manual for usage information.
 -- http://www.michaelshell.org/tex/ieeetran/
@@ -19,7 +17,7 @@ Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
 \@IEEEtrantmptoksA=\toks14
 LaTeX Font Info:    Try loading font information for OT1+ptm on input line 503.
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 -- Using 8.5in x 11in (letter) paper.
@@ -115,49 +113,49 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \@IEEEtranrubishbin=\box27
 )
 ** ATTENTION: Overriding command lockouts (line 2).
-(/usr/local/texlive/2017/texmf-dist/tex/latex/tools/xspace.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\xspace.sty"
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/cite/cite.sty
+(C:\Users\saeedt5\AppData\Roaming\MiKTeX\2.9\tex\latex\cite\cite.sty
 LaTeX Info: Redefining \cite on input line 302.
 LaTeX Info: Redefining \nocite on input line 332.
 Package: cite 2015/02/27  v 5.5
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2016/11/05 v2.16a AMS math features
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
+Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip44
 
 For additional information on amsmath, use the `?' option.
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amstext.sty
-Package: amstext 2000/06/29 v2.01 AMS text
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
+Package: amstext 2000/06/29 v2.01
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsgen.sty
-File: amsgen.sty 1999/11/30 v2.0 generic functions
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks15
 \ex@=\dimen126
 ))
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsbsy.sty
-Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d
 \pmbraise@=\dimen127
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsopn.sty
-Package: amsopn 2016/03/08 v2.02 operator names
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
+Package: amsopn 1999/12/14 v2.01 operator names
 )
 \inf@bad=\count94
-LaTeX Info: Redefining \frac on input line 213.
+LaTeX Info: Redefining \frac on input line 210.
 \uproot@=\count95
 \leftroot@=\count96
-LaTeX Info: Redefining \overline on input line 375.
+LaTeX Info: Redefining \overline on input line 306.
 \classnum@=\count97
 \DOTSCASE@=\count98
-LaTeX Info: Redefining \ldots on input line 472.
-LaTeX Info: Redefining \dots on input line 475.
-LaTeX Info: Redefining \cdots on input line 596.
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
 \Mathstrutbox@=\box28
 \strutbox@=\box29
 \big@size=\dimen128
-LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \macc@depth=\count99
 \c@MaxMatrixCols=\count100
 \dotsspace@=\muskip10
@@ -178,26 +176,26 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 \multlinegap=\skip45
 \multlinetaggap=\skip46
 \mathdisplay@stack=\toks19
-LaTeX Info: Redefining \[ on input line 2817.
-LaTeX Info: Redefining \] on input line 2818.
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/amssymb.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
-(/usr/local/texlive/2017/texmf-dist/tex/latex/algorithms/algorithmic.sty
+(C:\Users\saeedt5\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithms\algorithmic.s
+ty
 Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
-
-(/usr/local/texlive/2017/texmf-dist/tex/latex/base/ifthen.sty
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ifthen.sty"
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/keyval.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks20
 )
@@ -208,44 +206,44 @@ Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \ALC@tlm=\skip47
 \algorithmicindent=\skip48
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphicx.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2017/04/14 v1.1b Standard LaTeX Graphics (DPC,SPQR)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
-Package graphics Info: Driver file: pdftex.def on input line 99.
+Package graphics Info: Driver file: pdftex.def on input line 94.
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-def/pdftex.def
-File: pdftex.def 2017/01/12 v0.06k Graphics/color for pdfTeX
+("C:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 )
-(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count110
 ))
 \Gin@req@height=\dimen135
 \Gin@req@width=\dimen136
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/color.sty
-Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\color.sty"
+Package: color 2014/10/28 v1.1a Standard LaTeX Color (DPC)
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/color.cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
-Package color Info: Driver file: pdftex.def on input line 147.
+Package color Info: Driver file: pdftex.def on input line 142.
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/base/textcomp.sty
-Package: textcomp 2017/04/05 v2.0i Standard LaTeX package
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\textcomp.sty"
+Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
 Package textcomp Info: Sub-encoding information:
 (textcomp)               5 = only ISO-Adobe without \textcurrency
 (textcomp)               4 = 5 + \texteuro
@@ -259,7 +257,7 @@ Package textcomp Info: Sub-encoding information:
 (textcomp)             See the documentation for details.
 Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 79.
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/base/ts1enc.def
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\ts1enc.def"
 File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
 )
 LaTeX Info: Redefining \oldstylenums on input line 334.
@@ -325,7 +323,7 @@ Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
 Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
-) (./ulem.sty
+) (ulem.sty
 \UL@box=\box30
 \UL@hyphenbox=\box31
 \UL@skip=\skip49
@@ -337,7 +335,7 @@ Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
 Package: ulem 2012/05/18
 \ULdepth=\dimen139
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/soul/soul.sty
+(C:\Users\saeedt5\AppData\Roaming\MiKTeX\2.9\tex\latex\soul\soul.sty
 Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@word=\toks22
 \SOUL@lasttoken=\toks23
@@ -348,26 +346,27 @@ Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@ttwidth=\dimen140
 \SOUL@uldp=\dimen141
 \SOUL@ulht=\dimen142
-) (./multirow.sty
+)
+(multirow.sty
 Package: multirow 2016/11/25 v2.2 Span multiple rows of a table
 \multirow@colwidth=\skip51
 \multirow@cntb=\count112
 \multirow@dima=\skip52
 \bigstrutjot=\dimen143
 )
-(/usr/local/texlive/2017/texmf-dist/tex/latex/xcolor/xcolor.sty
-Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+(C:\Users\saeedt5\AppData\Roaming\MiKTeX\2.9\tex\latex\xcolor\xcolor.sty
+Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/color.cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
 Package xcolor Info: Driver file: pdftex.def on input line 225.
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/colortbl/colortbl.sty
+(C:\Users\saeedt5\AppData\Roaming\MiKTeX\2.9\tex\latex\colortbl\colortbl.sty
 Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/tools/array.sty
-Package: array 2016/10/06 v2.4d Tabular extension package (FMi)
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\array.sty"
+Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
 \col@sep=\dimen144
 \extrarowheight=\dimen145
 \NC@list=\toks27
@@ -377,19 +376,24 @@ Package: array 2016/10/06 v2.4d Tabular extension package (FMi)
 \everycr=\toks28
 \minrowclearance=\skip55
 )
-LaTeX Info: Redefining \color on input line 709.
+LaTeX Info: Redefining \color on input line 702.
 \rownum=\count113
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
-Package xcolor Info: Model `RGB' extended on input line 1364.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
-) (./macros.tex) (./HPDC18-Parlot.aux)
-\openout1 = `HPDC18-Parlot.aux'.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
+Package xcolor Info: Model `RGB' extended on input line 1353.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
+) (macros.tex)
+(HPDC18-ParLOT.aux
+
+LaTeX Warning: Label `chartDet_B_wc_byTool_p3_5' multiply defined.
+
+)
+\openout1 = `HPDC18-ParLOT.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
 LaTeX Font Info:    ... okay on input line 20.
@@ -405,14 +409,13 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 20.
 LaTeX Font Info:    ... okay on input line 20.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 20.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 20.
-
-(/usr/local/texlive/2017/texmf-dist/tex/latex/base/ts1cmr.fd
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 20.
 
 -- Lines per column: 56 (exact).
-(/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(C:\Users\saeedt5\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count114
 \scratchdimen=\dimen146
@@ -425,70 +428,21 @@ LaTeX Font Info:    ... okay on input line 20.
 \MPnumerator=\count118
 \makeMPintoPDFobject=\count119
 \everyMPtoPDFconversion=\toks30
-) (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2017/03/19 v0.25 Utility functions of pdfTeX for LuaTeX (HO
-)
-
-(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
-)
-(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
-)
-Package pdftexcmds Info: LuaTeX not detected.
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-)
-(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
-
-(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
-
-(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
-))
-(/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
-
-(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
-
-(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
-Package etexcmds Info: Could not find \expanded.
-(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
-(etexcmds)             that some package has redefined \expanded.
-(etexcmds)             In the latter case, load this package earlier.
-)))
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-38.
-Package grfext Info: Graphics extension search list:
-(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 456.
-
-(/usr/local/texlive/2017/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
-(./abstract.tex
+) (abstract.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/sc' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/sc' tried instead on input line 13.
 
 
 LaTeX Warning: Reference `sd.pin.cg' on page 1 undefined on input line 30.
 
-) (./intro.tex
+) (intro.tex
 LaTeX Font Info:    Try loading font information for U+msa on input line 66.
- (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Try loading font information for U+msb on input line 66.
 
-(/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
@@ -500,11 +454,11 @@ LaTeX Warning: Reference `sec:evalmeth' on page 1 undefined on input line 73.
 
 LaTeX Warning: Reference `sec:results' on page 1 undefined on input line 73.
 
-) (./background.tex [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updma
-p/pdftex.map}
+) (background.tex [1{C:/Users/saeedt5/AppData/Local/MiKTeX/2.9/pdftex/config/pd
+ftex.map}
 
 
-]) (./related.tools.tex
+]) (related.tools.tex
 
 LaTeX Warning: Citation `memcheck' on page 2 undefined on input line 5.
 
@@ -514,7 +468,7 @@ LaTeX Warning: Citation `scorep' on page 2 undefined on input line 7.
 
 LaTeX Warning: Citation `vtune' on page 2 undefined on input line 7.
 
-) (./implementation.tex
+) (implementation.tex
 
 LaTeX Warning: Reference `overview' on page 2 undefined on input line 1.
 
@@ -528,51 +482,55 @@ Missing character: There is no ™ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [3]) (./pscResults.tex (./tabs.psc/sd_pMpAcg_B_int_p3.5.tex
+ [3]) (pscCometLs5Results.tex (tabs.psc/sd_pMpAcg_B_int_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/sc' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/sc' tried instead on input line 7.
-) (./tabs.ls5/ls5_sd_pMpAcg_B_int_p3.5.tex
+) (tabs.comet/comet_sd_pMpAcg_B_int_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
-) (./tabs.psc/sd_pMpAcg_B_itn_p3.5.tex
+) (tabs.ls5/ls5_sd_pMpAcg_B_int_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
-<figs.psc/chartAvg_sd_B_p3_5.png, id=17, 803.0pt x 501.875pt>
+) (tabs.psc/sd_pMpAcg_B_itn_p3.5.tex
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 1.
+
+<figs.psc/chartAvg_sd_B_p3_5.png, id=16, 803.0pt x 501.875pt>
 File: figs.psc/chartAvg_sd_B_p3_5.png Graphic file (type png)
 
 <use figs.psc/chartAvg_sd_B_p3_5.png>
 Package pdftex.def Info: figs.psc/chartAvg_sd_B_p3_5.png used on input line 43.
 
 (pdftex.def)             Requested size: 361.34999pt x 225.84932pt.
-) (./tabs.ls5/ls5_sd_pMpAcg_B_itn_p3.5.tex
+
+<figs.comet/comet_chartAvg_sd_B_p3_5.png, id=18, 803.0pt x 501.875pt>
+File: figs.comet/comet_chartAvg_sd_B_p3_5.png Graphic file (type png)
+
+<use figs.comet/comet_chartAvg_sd_B_p3_5.png>
+Package pdftex.def Info: figs.comet/comet_chartAvg_sd_B_p3_5.png used on input 
+line 52.
+(pdftex.def)             Requested size: 361.34999pt x 225.84932pt.
+)
+(tabs.comet/comet_sd_pMpAcg_B_itn_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
-) (./tabs.psc/sd_pMpA_BC_tni_p3.5.tex
+) (tabs.ls5/ls5_sd_pMpAcg_B_itn_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
-) (./tabs.psc/sd_pMpA_BC_tni_p3.0.tex
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 1.
-
-) (./tabs.ls5/ls5_sd_pMpA_BC_tni_p3.5.tex
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 1.
-
-) (./tabs.psc/bw_pMpAcg_B_itn_p3.5.tex
+) (tabs.psc/bw_pMpAcg_B_itn_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
@@ -584,17 +542,36 @@ File: figs.psc/chartAvg_bw_B_p3_5.png Graphic file (type png)
 Package pdftex.def Info: figs.psc/chartAvg_bw_B_p3_5.png used on input line 42.
 
 (pdftex.def)             Requested size: 361.34999pt x 225.84932pt.
-) (./tabs.psc/bw_pMpA_C_itn_p3.5.tex
+
+<figs.comet/comet_chartAvg_bw_B_p3_5.png, id=20, 803.0pt x 501.875pt>
+File: figs.comet/comet_chartAvg_bw_B_p3_5.png Graphic file (type png)
+
+<use figs.comet/comet_chartAvg_bw_B_p3_5.png>
+Package pdftex.def Info: figs.comet/comet_chartAvg_bw_B_p3_5.png used on input 
+line 51.
+(pdftex.def)             Requested size: 361.34999pt x 225.84932pt.
+)
+(tabs.comet/comet_bw_pMpAcg_B_itn_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
-) (./tabs.psc/cr_pMpA_BC_itn_p3.5.tex
+) (tabs.ls5/ls5_bw_pMpAcg_B_itn_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
-) (./tabs.psc/det_Main_all_B_p3.5.tex
+) (tabs.psc/cr_pMpA_BC_itn_p3.5.tex
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 1.
+
+) (tabs.comet/comet_cr_pMpA_B_itn_p3.5.tex
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 1.
+
+) (tabs.psc/det_Main_all_B_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
@@ -604,101 +581,109 @@ Overfull \hbox (40.84117pt too wide) in paragraph at lines 28--29
  [] 
  []
 
-<figs.psc/chartDet_B_wc_byTool_p3_5.png, id=20, 803.0pt x 602.25pt>
+) (tabs.comet/comet_det_Main_all_B_p3.5.tex
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 1.
+
+
+Overfull \hbox (48.1831pt too wide) in paragraph at lines 25--26
+ [] 
+ []
+
+) (tabs.ls5/ls5_det_Main_all_B_p3.5.tex
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 1.
+
+
+Overfull \hbox (41.93561pt too wide) in paragraph at lines 24--25
+ [] 
+ []
+
+) (tabs.psc/det_All_all_B_p3.5.tex
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 1.
+
+
+Overfull \hbox (28.36581pt too wide) in paragraph at lines 24--25
+ [] 
+ []
+
+<figs.psc/chartDet_B_wc_byTool_p3_5.png, id=21, 803.0pt x 602.25pt>
 File: figs.psc/chartDet_B_wc_byTool_p3_5.png Graphic file (type png)
 
 <use figs.psc/chartDet_B_wc_byTool_p3_5.png>
 Package pdftex.def Info: figs.psc/chartDet_B_wc_byTool_p3_5.png used on input l
-ine 39.
+ine 31.
 (pdftex.def)             Requested size: 361.34999pt x 271.01918pt.
 
-<figs.psc/chartDet_B_woc_byTool_p3_5.png, id=21, 803.0pt x 602.25pt>
+<figs.comet/comet_chartDet_B_wc_byTool_p3_5.png, id=22, 803.0pt x 602.25pt>
+File: figs.comet/comet_chartDet_B_wc_byTool_p3_5.png Graphic file (type png)
+
+<use figs.comet/comet_chartDet_B_wc_byTool_p3_5.png>
+Package pdftex.def Info: figs.comet/comet_chartDet_B_wc_byTool_p3_5.png used on
+ input line 39.
+(pdftex.def)             Requested size: 361.34999pt x 271.01918pt.
+
+<figs.psc/chartDet_B_woc_byTool_p3_5.png, id=23, 803.0pt x 602.25pt>
 File: figs.psc/chartDet_B_woc_byTool_p3_5.png Graphic file (type png)
 
 <use figs.psc/chartDet_B_woc_byTool_p3_5.png>
 Package pdftex.def Info: figs.psc/chartDet_B_woc_byTool_p3_5.png used on input 
-line 49.
+line 46.
 (pdftex.def)             Requested size: 361.34999pt x 271.01918pt.
 
-<figs.psc/chartDet_C_wc_byTool_p3_5.png, id=22, 803.0pt x 602.25pt>
-File: figs.psc/chartDet_C_wc_byTool_p3_5.png Graphic file (type png)
+<figs.comet/comet_chartDet_B_woc_byTool_p3_5.png, id=24, 803.0pt x 602.25pt>
+File: figs.comet/comet_chartDet_B_woc_byTool_p3_5.png Graphic file (type png)
 
-<use figs.psc/chartDet_C_wc_byTool_p3_5.png>
-Package pdftex.def Info: figs.psc/chartDet_C_wc_byTool_p3_5.png used on input l
-ine 59.
+<use figs.comet/comet_chartDet_B_woc_byTool_p3_5.png>
+Package pdftex.def Info: figs.comet/comet_chartDet_B_woc_byTool_p3_5.png used o
+n input line 56.
 (pdftex.def)             Requested size: 361.34999pt x 271.01918pt.
 )
-(./tabs.ls5/ls5_det_Main_all_B_p3.5.tex
+(tabs.comet/comet_det_All_all_B_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
 
-Overfull \hbox (41.93561pt too wide) in paragraph at lines 25--26
+Overfull \hbox (45.7358pt too wide) in paragraph at lines 25--26
  [] 
  []
 
-) (./tabs.psc/det_Main_all_C_p3.5.tex
+) (tabs.ls5/ls5_det_All_all_B_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
 
-Overfull \hbox (38.00623pt too wide) in paragraph at lines 21--22
+Overfull \hbox (48.98857pt too wide) in paragraph at lines 24--25
  [] 
  []
 
-) (./tabs.ls5/ls5_det_Main_all_C_p3.5.tex
+) (tabs.comet/comet_det_Main_all_B2_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
 
-Overfull \hbox (48.60114pt too wide) in paragraph at lines 25--26
+Overfull \hbox (51.26541pt too wide) in paragraph at lines 25--26
  [] 
  []
 
-) (./tabs.psc/det_All_all_B_p3.5.tex
+) (tabs.comet/comet_det_All_all_B2_p3.5.tex
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 1.
 
 
-Overfull \hbox (58.61041pt too wide) in paragraph at lines 21--22
+Overfull \hbox (49.02536pt too wide) in paragraph at lines 25--26
  [] 
  []
 
-) (./tabs.ls5/ls5_det_All_all_B_p3.5.tex
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 1.
-
-
-Overfull \hbox (48.98857pt too wide) in paragraph at lines 25--26
- [] 
- []
-
-) (./tabs.psc/det_All_all_C_p3.5.tex
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 1.
-
-
-Overfull \hbox (42.90085pt too wide) in paragraph at lines 21--22
- [] 
- []
-
-) (./tabs.ls5/ls5_det_All_all_C_p3.5.tex
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 1.
-
-
-Overfull \hbox (46.15382pt too wide) in paragraph at lines 25--26
- [] 
- []
-
-)) (./HPDC18-Parlot.bbl
+)) (HPDC18-ParLOT.bbl
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no ¼ in font ptmr7t!
 )
@@ -715,36 +700,39 @@ Before submitting the final camera ready copy, remember to:
 
 [4
 
-] [5] [6 <./figs.psc/chartAvg_sd_B_p3_5.png>] [7] [8] [9 <./figs.psc/chartAvg_b
-w_B_p3_5.png>] [10 <./figs.psc/chartDet_B_wc_byTool_p3_5.png>] [11 <./figs.psc/
-chartDet_B_woc_byTool_p3_5.png> <./figs.psc/chartDet_C_wc_byTool_p3_5.png>]
-[12] [13] (./HPDC18-Parlot.aux)
+] [5] [6] [7] [8] [9] [10 <./figs.psc/chartAvg_sd_B_p3_5.png> <./figs.comet/com
+et_chartAvg_sd_B_p3_5.png>] [11 <./figs.psc/chartAvg_bw_B_p3_5.png> <./figs.com
+et/comet_chartAvg_bw_B_p3_5.png>] [12 <./figs.psc/chartDet_B_wc_byTool_p3_5.png
+> <./figs.comet/comet_chartDet_B_wc_byTool_p3_5.png>] [13 <./figs.psc/chartDet_
+B_woc_byTool_p3_5.png> <./figs.comet/comet_chartDet_B_woc_byTool_p3_5.png>]
+[14] (HPDC18-ParLOT.aux)
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
  ) 
 Here is how much of TeX's memory you used:
- 4999 strings out of 492995
- 73442 string characters out of 6132704
- 372566 words of memory out of 5000000
- 8372 multiletter control sequences out of 15000+600000
- 49062 words of font info for 96 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 41i,12n,35p,2445b,292s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/tex
-live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texli
-ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
-2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/20
-17/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2017
-/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dis
-t/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/t
-imes/utmri8a.pfb>
-Output written on HPDC18-Parlot.pdf (13 pages, 233855 bytes).
+ 4646 strings out of 493634
+ 67240 string characters out of 3143739
+ 378781 words of memory out of 3000000
+ 7876 multiletter control sequences out of 15000+200000
+ 49062 words of font info for 96 fonts, out of 3000000 for 9000
+ 1025 hyphenation exceptions out of 8191
+ 41i,12n,35p,1846b,297s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb>
+<C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/urw/times/utmri8a.pfb>
+Output written on HPDC18-ParLOT.pdf (14 pages, 276771 bytes).
 PDF statistics:
- 95 PDF objects out of 1000 (max. 8388607)
- 60 compressed objects within 1 object stream
+ 102 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

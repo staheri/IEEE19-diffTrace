@@ -1,7 +1,0 @@
-\section{Evaluation methodology}
-We executed all of our experiments on TACC supercomputer (Stampede)\cite{tacc-url} . Each computing node on Stampede has two Xeon E5-2680 8-core Sandy Bridge processors.\\
-
-We evaluated our tool on The NAS Parallel Benchmarks (NPB) \cite{nas}. NPB has a variety of applications, like \textit{Conjugate Gradient} (cg) with irregular memory accesss and communication and \textit{Lower-Upper} (lu) a Gauss-Seidel solver.
-All NPB applications have been compiled with MVAPICH2.2.1 and -g and -O1 optimization flag.
-
-We designed our experimental evaluation  with focus on scalability and efficiency of \parlot. We executed \parlot and some other similar tools like Callgrind on NPB applications on up to 1024 cores.

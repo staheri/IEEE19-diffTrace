@@ -1,0 +1,31 @@
+\begin{table*}[]
+\caption{Server: \textbf{Comet} - 
+ Stat: \textbf{Detail Slowdown} -
+ Tools: pinMain , pinAll , callgrind - 
+ Inputs: B - 
+ Nodes: 1 , 4 , 16 , 64 - 
+ Desc: Primary - Similar to table \ref{sd_pMpAcg_B_int_p3.5} but numbers are from Comet}
+\label{comet_sd_pMpAcg_B_int_p3.5}\begin{center}
+\begin{tabular}{|l|rrrrrrrr|r|}
+\hline
+                &   bt &   cg &   ep &    ft &   is &   lu &   mg &   sp &   GM \\
+\hline
+ pinMain.B.1    & 1.55 & 1.82 & 2.68 &  2.11 & 2.48 & 1.31 & 2.57 & 1.33 & 1.91 \\
+ pinAll.B.1     & 1.85 & 2.73 & 4.21 &  2.85 & 4.52 & 1.74 & 5.57 & 1.73 & 2.87 \\
+ callgrind.B.1  & 8.68 & 6.07 & 9.31 & 10.33 & 2.64 & 7.61 & 3.39 & 6.62 & 6.24 \\
+  \hline
+ pinMain.B.4    & 1.76 & 1.85 & 1.92 &  1.74 & 1.79 & 1.77 & 1.83 & 1.76 & 1.80 \\
+ pinAll.B.4     & 2.63 & 3.11 & 3.41 &  2.86 & 3.03 & 2.82 & 3.10 & 2.76 & 2.96 \\
+ callgrind.B.4  & 6.13 & 3.63 & 2.95 &  3.50 & 1.46 & 5.41 & 1.43 & 5.98 & 3.34 \\
+  \hline
+ pinMain.B.16   & 2.19 & 2.62 & 2.39 &  1.93 & 1.82 & 2.80 & 2.43 & 2.23 & 2.28 \\
+ pinAll.B.16    & 3.73 & 4.20 & 4.36 &  2.96 & 2.84 & 4.30 & 4.49 & 3.71 & 3.77 \\
+ callgrind.B.16 & 4.31 & 3.26 & 2.39 &  2.20 & 1.73 & 4.70 & 1.92 & 4.65 & 2.93 \\
+ \hline
+ pinMain.B.64   & 2.45 & 2.72 & 2.45 &  1.99 & 4.34 & 4.56 & 2.31 & 2.46 & 2.79 \\
+ pinAll.B.64    & 4.22 & 4.19 & 4.55 &  3.13 & 5.46 & 4.73 & 4.17 & 4.23 & 4.29 \\
+ callgrind.B.64 & 2.85 & 2.71 & 1.86 &  2.16 & 4.13 & 4.10 & 1.87 & 3.54 & 2.77 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}

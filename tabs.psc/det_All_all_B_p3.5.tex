@@ -1,8 +1,11 @@
 \begin{table*}[]
-\caption{Input: B ,  All}
+\caption{server: \textbf{PSC} - \textbf{Detail Slowdown} -
+ Inputs: B -
+ Nodes: 1 , 4 , 16 , 64 -
+ Desc: Detail Report}
 \label{det_All_all_B_p3.5}
 \begin{center}
-\scalebox{0.95}{
+\scalebox{0.9}{
 \begin{tabular}{|c|c|rrrr|rrrr|rrrr|rrrr|} 
 \hline 
 \multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{Input: B}}} & \multicolumn{1}{r|}{Nodes :}    & \multicolumn{4}{c|}{1}  & \multicolumn{4}{c|}{4} & \multicolumn{4}{c|}{16}  & \multicolumn{4}{c|}{64} \\ \cline{2-18} 
@@ -22,3 +25,37 @@
 
 \end{center}
 \end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.psc/chartDet_B_wc_byTool_p3_5.png}
+\caption{Server: \textbf{PSC} - Input size: \textbf{B}. Each bar is stacked value of slowdowns : $Native Run = 1$ , $Pure Pin = npin - 1$ , $Tracing = ParLOT - npin$. Label of each bar is, (main/all).(1/4/16/64). This graph shows why ParLOT does not scale that well. The overhead that Pin itself is adding to the native run is growing with higher number of cores. The green part of each bar (tracing) is the overhead that our approach is adding. Fig \ref{chartDet_B_woc_byTool_p3_5} shows the effectiveness of our compression approach}
+\label{chartDet_B_wc_byTool_p3_5}
+\end{figure*}
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.comet/comet_chartDet_B_wc_byTool_p3_5.png}
+\caption{Server: \textbf{Comet} - Input size: \textbf{B}. Similar to fig \ref{chartDet_B_wc_byTool_p3_5}}
+\label{chartDet_B_wc_byTool_p3_5}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.psc/chartDet_B_woc_byTool_p3_5.png}
+\caption{ Server: \textbf{PSC} - Input size: \textbf{B}. Each bar is stacked value of slowdowns : $Native Run = 1$ , $Pure Pin = npin - 1$ , $Tracing (w/o \_compression) = wpin - npin$.
+This graph clearly shows how much impact our compression method has on the performance of ParLOT.
+}
+\label{chartDet_B_woc_byTool_p3_5}
+\end{figure*}
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=5in]{figs.comet/comet_chartDet_B_woc_byTool_p3_5.png}
+\caption{ Server: \textbf{Comet} - Input size: \textbf{B}. Each bar is stacked value of slowdowns : $Native Run = 1$ , $Pure Pin = npin - 1$ , $Tracing (w/o \_compression) = wpin - npin$.
+This graph clearly shows how much impact our compression method has on the performance of ParLOT.
+}
+\label{comet_chartDet_B_woc_byTool_p3_5}
+\end{figure*}
