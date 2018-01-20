@@ -1,21 +1,189 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slowdown vs Callgrind
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input{tabs.comet/comet_sd_pMpAcg_B_int_p3.5.tex}
-
-\input{tabs.comet/comet_sd_pMpAcg_B_itn_p3.5.tex}
-
-\input{tabs.comet/comet_bw_pMpAcg_B_itn_p3.5.tex}
-
-\input{tabs.comet/comet_cr_pMpA_B_itn_p3.5.tex}
-
-\input{tabs.comet/comet_det_Main_all_B_p3.5.tex}
-
-\input{tabs.comet/comet_det_All_all_B_p3.5.tex}
+\input{tabs.comet/comet_sd_pMpAcg_BC_int_p3.5.tex}
 
 
-\input{tabs.comet/comet_det_Main_all_B2_p3.5.tex}
+\input{tabs.comet/comet_sd_pMpAcg_BC_itn_p3.5.tex}
 
-\input{tabs.comet/comet_det_All_all_B2_p3.5.tex}
+Table \ref{comet_sd_pMpAcg_BC_int_p3.5} shows the slowdown of ParLOT (pinMain and pinAll) and Callgrind. It shows slowdowns of same configuration (number of nodes/cores and size of input) next to each other so that we can look into it in more detail.
 
+
+Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} contains same exact numbers but grouped differently. In big picture, as average, by looking at bold numbers of table \ref{comet_sd_pMpAcg_BC_itn_p3.5}, experiments well shows that ParLOT has better performance on larger input sizes which means longer runs. But for Callgrind it is opposite. For input size B, the average of geomeans of slowdowns is 3.82 and for input C it is 4.88. The key reason of this better performance is more repetition of target data to collect (which is function calls) on larger input sizes, I believe. 
+
+Even when ParLOT gathers system library function calls (pinAll), it has better performance than Callgrind. Figures \ref{comet_chartAvg_sd_B_p3_5} and \ref{comet_chartAvg_sd_C_p3_5} visualizes table \ref{comet_sd_pMpAcg_BC_itn_p3.5} numbers.
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_sd_B_p3_5.png}
+\caption{ Input: \textbf{B} - Slowdown of ParLOT(main,all) and Callgrind. Each bar is the average slowdown of each tool on each application for 1, 4 and 16 nodes (16, 64 and 256 cores). Last group of bars is GeoMean (from bold numbers in table \ref{comet_sd_pMpAcg_BC_itn_p3.5}). 
+}
+\label{comet_chartAvg_sd_B_p3_5}
+\end{figure*}
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_sd_C_p3_5.png}
+\caption{ Input: \textbf{C} - Slowdown of ParLOT(main,all) and Callgrind. Each bar is the average slowdown of each tool on each application for 1, 4 and 16 nodes (16, 64 and 256 cores). Last group of bars is GeoMean (from bold numbers in table \ref{comet_sd_pMpAcg_BC_itn_p3.5}). 
+}
+\label{comet_chartAvg_sd_C_p3_5}
+\end{figure*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bandwidth
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% Compression Ratio
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} shows the required bandwidth for each tool. In addition to big gap between average slowdown of ParLOT(main) and Callgrind, ParLOT(main) also beats Callgrind in required bandwidth, especially for smaller inputs. Intermediate generated traces by Callgrind are some numbered files contain pure ascii text. There is no compression involved (one of Callgrind options which can be enabled or disabled is compressing/encoding only the name of function calls which was enabled on these experiments by default). Each Callgrind trace file contains a sequence of function names (or their code) and a few other numbers for each function showing the parent callers. [ there is a tool callgrind\_ annotate which displays different reports from the generated traces. After I check all possible options, I add more analysis here. But according to table \ref{comet_cr_pMpA_BC_itn_p3.5}, for example for ParLOT(all) where the average compression ratio for input C is 644.38, and the correspondent required bandwidth which is 56.38, it shows that ParLOT can collect almost 36 MB worth of data per core per second where it only needs 56.38 KB/S bandwidth.] \\
+
+
+\input{tabs.comet/comet_bw_pMpAcg_BC_itn_p3.5.tex}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_bw_B_p3_5.png}
+\caption{ Input: \textbf{B} - Required Bandwidth per core (KB/s)
+}
+\label{comet_chartAvg_bw_B_p3_5}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_bw_C_p3_5.png}
+\caption{ Input: \textbf{C}  - Required Bandwidth per core (KB/s)
+}
+\label{comet_chartAvg_bw_C_p3_5}
+\end{figure*}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% Detail runtimes
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{tabs.comet/comet_cr_pMpA_BC_itn_p3.5.tex}
+
+
+
+\input{tabs.comet/comet_wo_det_Main_all_B_p3.5.tex}
+
+\input{tabs.comet/comet_wo_det_All_all_B_p3.5.tex}
+
+
+\input{tabs.comet/comet_wo_det_Main_all_C_p3.5.tex}
+
+\input{tabs.comet/comet_wo_det_All_all_C_p3.5.tex}
+
+
+
+
+\input{tabs.comet/comet_wa_det_Main_all_B_p3.5.tex}
+
+\input{tabs.comet/comet_wa_det_All_all_B_p3.5.tex}
+
+
+\input{tabs.comet/comet_wa_det_Main_all_C_p3.5.tex}
+
+\input{tabs.comet/comet_wa_det_All_all_C_p3.5.tex}
+
+
+
+%Figure b wc
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartDet_B_wc_byTool_p3_5.png}
+\caption{ Input: \textbf{B}
+}
+\label{comet_chartDet_B_wc_byTool_p3_5}
+\end{figure*}
+
+
+%Figure c wc
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartDet_C_wc_byTool_p3_5.png}
+\caption{ Input: \textbf{C}
+}
+\label{comet_chartDet_C_wc_byTool_p3_5}
+\end{figure*}
+
+
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartDet_B_woc_byTool_p3_5.png}
+\caption{ Input: \textbf{B}
+}
+\label{comet_chartDet_B_woc_byTool_p3_5}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartDet_C_woc_byTool_p3_5.png}
+\caption{ Input: \textbf{C}
+}
+\label{comet_chartDet_C_woc_byTool_p3_5}
+\end{figure*}
+
+
+
+
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_var_C_p3_5.png}
+\caption{ Input: \textbf{C}  - Variance of 3 Runtimes
+}
+\label{comet_chartAvg_var_C_p3_5}
+\end{figure*}
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_var_B_p3_5.png}
+\caption{ Input: \textbf{B}  - Variance of 3 Runtimes
+}
+\label{comet_chartAvg_var_B_p3_5}
+\end{figure*}
+
+
+
+
+
+
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_serr_C_p3_5.png}
+\caption{ Input: \textbf{C}  - Standard Error of 3 Runtimes
+}
+\label{comet_chartAvg_serr_C_p3_5}
+\end{figure*}
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=6in]{figs.comet/comet_chartAvg_serr_B_p3_5.png}
+\caption{ Input: \textbf{B}  - Standard Error of 3 Runtimes
+}
+\label{comet_chartAvg_serr_B_p3_5}
+\end{figure*}
 
 
 
