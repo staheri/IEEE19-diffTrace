@@ -9,18 +9,18 @@
 
 \input{tabs.comet/comet_sd_pMpAcg_BC_itn_p3.5.tex}
 
-Table \ref{comet_sd_pMpAcg_BC_int_p3.5} shows the slowdown of ParLOT (pinMain and pinAll) and Callgrind. It shows slowdowns of same configuration (number of nodes/cores and size of input) next to each other so that we can look into it in more detail.
+Table \ref{comet_sd_pMpAcg_BC_int_p3.5} shows the slowdown of \parlot (pinMain and pinAll) and \callgrind. It shows slowdowns of same configuration (number of nodes/cores and size of input) next to each other so that we can look into it in more detail.
 
 
-Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} contains same exact numbers but grouped differently. In big picture, as average, by looking at bold numbers of table \ref{comet_sd_pMpAcg_BC_itn_p3.5}, experiments well shows that ParLOT has better performance on larger input sizes which means longer runs. But for Callgrind it is opposite. For input size B, the average of geomeans of slowdowns is 3.82 and for input C it is 4.88. The key reason of this better performance is more repetition of target data to collect (which is function calls) on larger input sizes, I believe. 
+Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} contains same exact numbers but grouped differently. In big picture, as average, by looking at bold numbers of table \ref{comet_sd_pMpAcg_BC_itn_p3.5}, experiments well shows that \parlot has better performance on larger input sizes which means longer runs. But for \callgrind it is opposite. For input size B, the average of geomeans of slowdowns is 3.82 and for input C it is 4.88. The key reason of this better performance is more repetition of target data to collect (which is function calls) on larger input sizes, I believe. 
 
-Even when ParLOT gathers system library function calls (pinAll), it has better performance than Callgrind. Figures \ref{comet_chartAvg_sd_B_p3_5} and \ref{comet_chartAvg_sd_C_p3_5} visualizes table \ref{comet_sd_pMpAcg_BC_itn_p3.5} numbers.
+Even when \parlot gathers system library function calls (pinAll), it has better performance than \callgrind. Figures \ref{comet_chartAvg_sd_B_p3_5} and \ref{comet_chartAvg_sd_C_p3_5} visualizes table \ref{comet_sd_pMpAcg_BC_itn_p3.5} numbers.
 
 
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=6in]{figs.comet/comet_chartAvg_sd_B_p3_5.png}
-\caption{ Input: \textbf{B} - Slowdown of ParLOT(main,all) and Callgrind. Each bar is the average slowdown of each tool on each application for 1, 4 and 16 nodes (16, 64 and 256 cores). Last group of bars is GeoMean (from bold numbers in table \ref{comet_sd_pMpAcg_BC_itn_p3.5}). 
+\caption{ Input: \textbf{B} - Slowdown of \parlot(main,all) and \callgrind. Each bar is the average slowdown of each tool on each application for 1, 4 and 16 nodes (16, 64 and 256 cores). Last group of bars is GeoMean (from bold numbers in table \ref{comet_sd_pMpAcg_BC_itn_p3.5}). 
 }
 \label{comet_chartAvg_sd_B_p3_5}
 \end{figure*}
@@ -29,7 +29,7 @@ Even when ParLOT gathers system library function calls (pinAll), it has better p
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=6in]{figs.comet/comet_chartAvg_sd_C_p3_5.png}
-\caption{ Input: \textbf{C} - Slowdown of ParLOT(main,all) and Callgrind. Each bar is the average slowdown of each tool on each application for 1, 4 and 16 nodes (16, 64 and 256 cores). Last group of bars is GeoMean (from bold numbers in table \ref{comet_sd_pMpAcg_BC_itn_p3.5}). 
+\caption{ Input: \textbf{C} - Slowdown of \parlot(main,all) and \callgrind. Each bar is the average slowdown of each tool on each application for 1, 4 and 16 nodes (16, 64 and 256 cores). Last group of bars is GeoMean (from bold numbers in table \ref{comet_sd_pMpAcg_BC_itn_p3.5}). 
 }
 \label{comet_chartAvg_sd_C_p3_5}
 \end{figure*}
@@ -49,9 +49,9 @@ Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} shows the required bandwidth for each to
 \subsection{What does Callgrind produce?}
 
 (adapted from Related Tools section)
-Valgrind is shadow value DBI framework (explained in the background section) that maps and records every register and memory value. It gives developers the capability of instrumenting system calls and instructions. Many error detectors such as Memcheck have beeen built on top of Valgrind. Callgrind is a profiling tool  on Valgrind platform that records the call history among functions in a program's run as a call-graph by measuring the number of instructions executed and their relationship to source lines. 
-Intermediate generated traces by Callgrind are some numbered files contain pure ascii text. Callgrind enumerate the name of files and function calls and also, stores those numerical values as relative to previous numbers. These are the only data compression options available on Callgrind which is enabled by default. Each Callgrind trace file contains a sequence of function names (or their code) and a few other numbers for each function showing the that function relationships with other functions (caller-callee). There is a tool \textit{callgrind\_ annotate} which displays different reports from the generated traces. From the generated traces by Callgrind in my experiments, the richest report that \textit{callgrind\_ annotate} can produce is the tree of function calls with caller-callee relationship and cost of each function. Cost of each function is the number of Instruction Read which is collected during tracing by reading hardware counters. Cache simulation and branch prediction information also can be enabled to be collected and then \textit{callgrind\_ annotate} can produce different reports for cache and branch prediction. By default, cache simulation and branch prediction (which are originally from another tool Cachegrind) are disabled by Callgrind.
-According to table \ref{comet_cr_pMpA_BC_itn_p3.5}, for example for ParLOT(all) where the average compression ratio for input C is 644.38, and the correspondent required bandwidth which is 56.38, it shows that ParLOT can collect almost 36 MB worth of data per core per second where it only needs 56.38 KB/S bandwidth.] \\
+Valgrind is shadow value DBI framework (explained in the background section) that maps and records every register and memory value. It gives developers the capability of instrumenting system calls and instructions. Many error detectors such as \textit{Memcheck} have been built on top of Valgrind. \callgrind is a profiling tool  on Valgrind platform that records the call history among functions in a program's run as a call-graph by measuring the number of instructions executed and their relationship to source lines. 
+Intermediate generated traces by \callgrind are some numbered files contain pure ascii text. \callgrind enumerate the name of files and function calls and also, stores those numerical values as relative to previous numbers. These are the only data compression options available on \callgrind which is enabled by default. Each \callgrind trace file contains a sequence of function names (or their code) and a few other numbers for each function showing the that function relationships with other functions (caller-callee). There is a tool \textit{callgrind\_ annotate} which displays different reports from the generated traces. From the generated traces by \callgrind in my experiments, the richest report that \textit{callgrind\_ annotate} can produce is the tree of function calls with caller-callee relationship and cost of each function. Cost of each function is the number of Instruction Read which is collected during tracing by reading hardware counters. Cache simulation and branch prediction information also can be enabled to be collected and then \textit{callgrind\_ annotate} can produce different reports for cache and branch prediction. By default, cache simulation and branch prediction (which are originally from another tool Cachegrind) are disabled by \callgrind.
+According to table \ref{comet_cr_pMpA_BC_itn_p3.5}, for example for \parlot(all) where the average compression ratio for input C is 644.38, and the correspondent required bandwidth which is 56.38, it shows that \parlot can collect almost 36 MB worth of data per core per second where it only needs 56.38 KB/S bandwidth.] \\
 
 
 \input{tabs.comet/comet_bw_pMpAcg_BC_itn_p3.5.tex}
