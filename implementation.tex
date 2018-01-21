@@ -1,4 +1,6 @@
-Fig \ref{overview} shows the general overview of ParLOT's workflow. (a flowchart to be added) and more explanations can be added here.
+
+
+Figures \ref{overview} show the general overview of ParLOT's workflow.
 
 \subsection{Tracing Operation}
 
@@ -28,3 +30,11 @@ The LZ component implements a variant of the LZ77 algorithm. It uses a hash tabl
 
 The ZE component emits a bitmap in which each bit corresponds to one input byte. The bits indicates whether the corresponding bytes in the input are zero or not. Following each eight-bit bitmap, ZE emits the non-zero bytes.
 
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=2in]{overview.png}
+\caption{ Overview of \parlot}
+\label{overview}
+\end{figure}
