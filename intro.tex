@@ -1,3 +1,68 @@
+
+\begin{itemize}
+\item Why HPC Bugs matter?\\
+	\begin{itemize}
+	\item They are expensive:
+		\begin{itemize}
+		\item Expensive to reproduce because of non-determinancy of interleavings in HPC applications
+		\item Expensive to reproduce in record-and-replay fashion
+		\item Expensive for the non-parallel-programming-expert to find and solve the bug 
+		\end{itemize}
+	\item New bugs are introducing every day because of not well-known behavior of HPC applications:
+		\begin{itemize}
+		\item Heterogeneity: Disparities between processors, accelerators. memories and architectures.
+		\item New unexplored scalable algorithms
+		\item HPC applications are more domain-driven
+		\end{itemize}
+	\end{itemize}
+\item Debugging HPC
+	\begin{itemize}
+	\item Challenges
+		\begin{itemize}
+		\item Diversity of HPC applications
+		\item Applications are domain-specific 
+		\item Bugs introduce/manifest itself in different situations
+			\begin{enumerate}
+			\item Designing application
+			\item Modifying/optimizing applications
+			\item Upscaling applications
+			\item Using different compilers, compiler options and optimization flags
+			\end{enumerate}
+		\item In HPC debuggers, unlike traditional debuggers, there is no:
+			\begin{enumerate}
+			\item  Common benchmarks for driving verification tools
+			\item Bug-repositories one can mine to improve one’s tools
+			\item Thrusts of sharing bugs and building common solutions.				
+			\end{enumerate}
+		\item HPC applications are usually heavy. Collecting information and analysis of them are way heavier		 
+		\end{itemize}
+	\item Approaches
+		\begin{itemize}
+		\item Static Analysis
+		\item Dynamic Analysis (Valgrind \cite{valgrind}, ARCHER \cite{archer})
+		\item Formal Methods
+		\item Tracing for Debugging (STAT \cite{stat}, CSTG \cite{cstg}
+		\item Commercial Debugging (Allinea DDT \cite{ddt})
+		\end{itemize}
+	\item Problems with current state-of-the-art approaches
+		\begin{itemize}
+		\item They are domain specific
+		\item Usually heavy-weighted and adds much overhead to native execution
+		\item They are not all-purpose debuggers and targeting some specific type of bugs
+		\item They are not composable
+		\end{itemize}
+	\item Our Approach
+		\begin{itemize}
+		\item \textbf{WHY?} Desire for a dynamic, scalable, portable, low-overhead and enough generative (not-domain specific or bug-specific) is essential in HPC applications.
+		\item (From NSF proposal) Instead of developing a tool per problem or bug type, we seek a common way in which to present the debugging situation so that point-solution builders can easily plug their tools into our framework
+		\item \textbf{Current paper}: [From Martin's section in NSF proposal] We developed an advanced tracing method that permit applications to be launched on a multi 100 --- petaflop platform with tracing enabled from the get--- go. The mindset used here is \textit{“pay a little more upfront to dramatically reduce the number of overall debug iterations.”}. We will aim to produce traces replete with debugging information that help locate a variety of possible bug types through offline trace analysis (without needing application reruns) if/when the application runs into an error. To minimize application slowdown, we  developed advanced methods to compress traces so that their movement across the memory hierarchy becomes acceptably efficient. In contrast to all of this, in today’s approaches, failing applications must be rerun from scratch, each time with the goal of looking for a few bug classes. The tracing in such runs narrowly focuses on the bug types being searched for. Thus, multiple tracing runs are needed, consuming valuable compute resources. Also, we know of no actively used debugging methods that employ advanced compression methods.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+
+
+[From now on, this is old version of Introduction for our IPDPS attempt]
 The act of rendering any software design into code invariably
 introduces bugs.
 %
