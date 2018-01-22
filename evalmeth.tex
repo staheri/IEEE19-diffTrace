@@ -1,3 +1,20 @@
+\subsection{Experimental Setup}
 We executed all of our experiments on Comet \cite{comet} supercomputer at San Diego Supercomputer Center . Comet has 1944 total number of computing nodes and each node has a Dual-Socket Intel Xeon E5-2680v3 processors with total number of 24 cores (14 on each socket) and 128 GB of memory with NSF and Lustre filesystem.\\
 We evaluated our tool on NAS Parallel Benchmarks (NPB) \cite{nas}. NPB has a variety of MPI-based applications, like \textit{Conjugate Gradient} (cg) with irregular memory accesss and communication and \textit{Lower-Upper} (lu) a Gauss-Seidel solver. All NPB applications have been compiled with MVAPICH2.2.1 and -g and -O1 optimization flag.\\
-We evaluated \parlot with \pin version 3.5 and \callgrind version 3.13 on 1, 4, 16 and 64 nodes with 16 cores on each node (maximum of 1024 cores).
+We evaluated \parlot with \pin version 3.5 and \callgrind version 3.13.
+
+\subsection{Evaluation Parameters and Metrics}
+In order to evaluate \parlot and make a fair comparison with similar tools, we have to have tune our experimental configurations identically and define some metrics to measure and evaluate performance and required resources.
+\subsubsection{Parameters}
+\begin{itemize}
+\item \textbf{\# of Nodes}: We have been running all of the experiments on 1, 4, 16 and 64 number of nodes on Comet, with using 16 cores on each node (up to 1024 cores) to evaluate the behavior of \parlot on wide range of scales.
+\item \textbf{Application Input}: NPB applications can be executed on different size of inputs. We have used class size \textit{B}(small-medium) and \textit{C}(medium-large)
+\end{itemize}
+
+\subsubsection{Metrics}
+
+\begin{itemize}
+\item \textbf{Slowdown}
+\item \textbf{Required Bandwidth}
+\item \textbf{Compression Ratio}
+\end{itemize}
