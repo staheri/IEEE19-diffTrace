@@ -1,9 +1,91 @@
 ﻿
 Detecting and root causing HPC bugs is expensive. While traditional software engineering generally achieves high quality control, these methods are often inapplicable to HPC where concurrency combined with large problem scales and sophisticated domain-specific math can make programming extremely challenging. For example, it took months for scientists to debug an MPI laser-plasma interaction code~\cite{hpcdoe}.
 
-HPC bugs are typically a function of both flawed program logic as well as unspecified or illegal interactions between various concurrency models ({\em e.g.}, PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume enormous amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application in case of execution failure is therefore expensive, time consuming, and inefficient. The best hope for debugging lies in being able to efficiently capture detailed execution traces and compare them against traces from previous (stable) runs~\cite{cstg,stat}. However, collecting informative data during execution may require source-code modifications and recompilation or may add too much overhead to the runtime. Thus the need is great for a generic low-overhead tracing tool that collects effective execution information dynamically and that is portable to multiple parallel platforms.
+HPC bugs are typically a function of both flawed program logic as well as unspecified or illegal interactions between various concurrency models ({\em e.g.}, PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume enormous amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application in case of execution failure is therefore expensive, time consuming, and inefficient. 
+%The best hope for debugging lies in being able to efficiently capture detailed execution 
+A very natural and field-proven~\cite{stat,cstg} approach to large-scale debugging is to
+capture detailed execution traces
+compare these traces
+ against corresponding
+ traces from previous (stable) runs.
+%
+A {\em key requirement} is to do this collection {\em as efficiently as possible}
+and in {\em as general a manner} as possible.
+%
 
-This paper presents \parlot, an efficient binary-level tracing tool that captures traces replete with debugging information to help locate a variety of possible bug types through offline trace analysis (without needing application reruns) if/when the application runs into an error. The mindset used here is \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. This paper makes the following main contributions.
+Existing tools in this space
+do not meet our criteria for efficiency and generality.
+%
+For example, in STAT~\cite{stat}, such ``tracing and diffing'' is often done
+when a failure ({\em e.g.} a deadlock or hang) is encountered.
+%
+While STAT can be deployed in ``continuous collection'' mode, the overheads of
+doing so are unknown (and can be surmised to be non-trivial).
+%
+In the context of CSTGs~\cite{cstg}, the collection is orchestrated by the
+user around chosen collection points, and this approach also employs heavy-weight
+unix {\tt backtrace} calls.
+
+
+The thrust of the work in this paper is to avoid many of the drawbacks of existing
+tracing-based debugging methods.
+%
+We are interested in avoiding
+source-code modifications and recompilation --- thus making binary
+instrumentation-based tools the only practical and widely deployable recourse.
+%
+We also believe in the value
+of providing our tool in a manner that makes it {\em portable across a 
+wide variety of platforms}.
+%
+Previous tools (e.g. STAT) have relied on  mechanisms such as
+TBon~\cite{tbon-dorian} and MRNet~\cite{mrnet} to accelerate collection and
+aggregation of traces.
+%
+Our thrust is to not rely on such mechanisms for trace aggregation, but
+instead offer 
+a generic and low-overhead tracing tool that 
+(1)~collects many types of dynamic facts about executions (e.g., function
+calls and returns), 
+(2)~is easy to install, 
+(3)~and is also portable to multiple parallel platforms.
+%
+As discussed in this paper, {\em providing all these features in a single tool
+that operates based on binary instrumentation
+is an unsolved problem.}
+%
+In this paper, we describe how we have arrived at such a solution that is embodied
+in our ParLoT tool.
+
+
+This paper presents \parlot, an efficient binary-level tracing tool that captures traces 
+replete with debugging information to help locate a variety of possible bug types through 
+offline trace analysis (without needing application reruns) 
+if/when the application runs into an error. 
+%
+With ParLoT, the user can easily build a host of post-processors to examine
+executions from many vantage points.
+%
+For instance, they can write post-processors
+to detect unexpected (or ``outlier'') executions.
+%
+If needed, they can 
+drill down and detect abnormal behaviors {\em even going deep into the runtime and
+support library stack} such as MPI-level activities.
+%
+In HPC, it is well-known (especially on newer machines) that bugs are often due to
+broken libraries (MPI, OpenMP) or broken runtime or OS-level activities.
+%
+Having a single tool that can ``X-ray'' to any depth is a goal met by ParLoT -- again
+a unique feature in today's tool eco-system.
+
+
+One may be concerned that a tracing tool introduces execution slowdown.
+%
+ParLoT goes to great lengths to minimize these overheads.
+%
+However, our 
+ mindset  is \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. This paper makes the following main contributions.
 \begin{itemize}
 \item It introduces a new tracing approach that makes it possible to capture the full call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of even large-scale applications at low overhead in both space and time.
 \item It describes advanced data compression methods to drastically reduce the required tracing bandwidth, thus enabling the collection of a rich set of information, which would be infeasible without on-the-fly compression.
@@ -22,4 +104,8 @@ The remainder of this paper is organized as follows. Section \ref{sec:bgreltool}
 \item \parlot without compression is terrible. (high impact of compression method on performance) - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5}  - Fig \ref{comet_chartDet_B_woc_byTool_p3_5}, \ref{comet_chartDet_C_woc_byTool_p3_5} - \cite{subsec:compact}
 \end{itemize}
 
+\vspace{1ex}
+\noindent{\bf Ganesh note: Cite follow-on
+tools such as AutomaDeD~\cite{automaded} and Prodometer~\cite{prodometer} somewhere.}
+\vspace{1ex}
 
