@@ -1,4 +1,4 @@
-﻿
+
 Detecting and root causing HPC bugs is expensive. While traditional software engineering generally achieves high quality control, these methods are often inapplicable to HPC where concurrency combined with large problem scales and sophisticated domain-specific math can make programming extremely challenging. For example, it took months for scientists to debug an MPI laser-plasma interaction code~\cite{hpcdoe}.
 
 HPC bugs are typically a function of both flawed program logic as well as unspecified or illegal interactions between various concurrency models ({\em e.g.}, PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume enormous amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application in case of execution failure is therefore expensive, time consuming, and inefficient. 
@@ -97,12 +97,33 @@ The remainder of this paper is organized as follows. Section \ref{sec:bgreltool}
 \subsection{Key strong points of \parlot from results}
 
 \begin{itemize}
-\item Low Tracing overhead - Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} - Fig \ref{comet_chartAvg_sd_B_p3_5}, \ref{comet_chartAvg_sd_C_p3_5} - Section \ref{subsec:lowtoh}
-\item Very low required bandwidth - Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} - Fig \ref{comet_chartAvg_bw_B_p3_5}, \ref{comet_chartAvg_bw_C_p3_5} - Section \ref{subsec:lowbw}
-\item Enormous amount of rich data can be reproduced from compressed trace sizes with very low required bandwidth - Table \ref{comet_cr_pMpA_BC_itn_p3.5} - Fig \ref{comet_chartAvg_cr_B_p3_5}, \ref{comet_chartAvg_cr_C_p3_5} - Section \ref{subsec:cr}
-\item Majority of the overhead caused by Pin\_ init - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5} - Fig \ref{comet_chartDet_B_wc_byTool_p3_5}, \ref{comet_chartDet_C_wc_byTool_p3_5} - Section: \ref{subsec:pinit}
-\item \parlot without compression is terrible. (high impact of compression method on performance) - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5}  - Fig \ref{comet_chartDet_B_woc_byTool_p3_5}, \ref{comet_chartDet_C_woc_byTool_p3_5} - \cite{subsec:compact}
+\item \textsf{Low tracing overhead - Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} - Fig \ref{comet_chartAvg_sd_B_p3_5}, \ref{comet_chartAvg_sd_C_p3_5} - Section \ref{subsec:lowtoh}}
+	\begin{itemize}
+	\item \textsf{ On average, both \parlotm and \parlota has better performance than \callgrind and amount of informative data that \callgrind generates is smaller and less informative than other two. (bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} - Input B : \parlotm 2.20 : , \parlota : 3.47, \callgrind : 3.82). For input size C the results are even better (next bullet) \textbf{Conclusion: \parlot performance beats \callgrind (on average). However, \callgrind scales better}}
+	\item \textsf{By increasing the size of input, average of geometric means of overheads decreases for \parlotm and \parlota but increases for \callgrind. (bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} - Input C : \parlotm 1.98 : , \parlota : 2.83, \callgrind : 4.88). \textbf{Conclusion: \parlot performs better on larger input sizes}}
+	\end{itemize}
+\item \textsf{ Low required bandwidth, low tracing overhead and high compression ratio for makes \parlot work perfect to solve the the trade-off between "more overhead to add, more information to get"-Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} - Fig \ref{comet_chartAvg_bw_B_p3_5}, \ref{comet_chartAvg_bw_C_p3_5} - Section \ref{subsec:lowbw}}
+	\begin{itemize}
+	\item \textsf{ In addition to big gap between average overhead of \parlotm and \callgrind, \parlotm also beats \callgrind in required bandwidth, especially for smaller inputs.}
+	\item\textsf{ \textbf{\parlota vs. \callgrind}: According to table \ref{comet_cr_pMpA_BC_itn_p3.5} (from next subsection), for \parlota where the average compression ratio for input C is 644.38, and the correspondent required bandwidth which is 56.38 kB/s, it shows that \parlota can collect \textbf{more than 36 MB} worth of data per core per second where it only needs \textbf{56.38 kB/s} bandwidth, while \callgrind can only collects \textbf{less than 100 kB} of informative data and still adds more overhead comparing to either \parlota or \parlotm. \textbf{Conclusion: The amount of informative data can be collected with \parlota  are 360x larger than \callgrind and the overhead \parlota adds is less than 0.6x smaller than \callgrind}}
+	\item \textsf{\textbf{\parlotm vs. \callgrind} Above story is true also for \parlotm. According to table \ref{comet_cr_pMpA_BC_itn_p3.5}, for \parlotm where the average compression ratio for input C is 1117.01, and the correspondent required bandwidth which is 7.84 kB/s, shows that \parlotm can collect \textbf{more than 8.5 MB} worth of data per core per second where it only needs \textbf{7.84.38 kB/s} bandwidth, while \callgrind can only collects \textbf{less than 100 kB} of informative data and still adds more overhead comparing to either \parlota or \parlotm. \textbf{Conclusion: The amount of informative data can be collected with \parlotm  are 85x larger than \callgrind and the overhead \parlotm adds is about 0.4x smaller than \callgrind}}
+	\end{itemize}
+	
+	
+\item \textsf{High Compression Ratio Table \ref{comet_cr_pMpA_BC_itn_p3.5} - Fig \ref{comet_chartAvg_cr_B_p3_5}, \ref{comet_chartAvg_cr_C_p3_5} - Section \ref{subsec:cr}
+\textbf{Conclusion: I included some interesting facts about the charts and table of Compression Ratio in previous section}}
+\item \textsf{ Pin-init overhead - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5} - Fig \ref{comet_chartDet_B_wc_byTool_p3_5}, \ref{comet_chartDet_C_wc_byTool_p3_5} - Section: \ref{subsec:pinit}}
+	\begin{itemize}
+	\item \textsf{\textbf{most of the added overhead by \parlot is caused by Pin-init}. According to tables \ref{comet_wo_det_Main_all_B_p3.5}, \ref{comet_wo_det_All_all_B_p3.5}, on average, Pin-init adds 3.28 overhead and \parlota adds 3.42 overhead. \textbf{almost 96\% of \parlota overhead is happening on Pin-init - Numbers from \parlotm and other inputs are following the same pattern}}
+	\end{itemize}
+\item \textsf{ \parlot without compression  (high impact of compression method on performance) - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5}  - Fig \ref{comet_chartDet_B_woc_byTool_p3_5}, \ref{comet_chartDet_C_woc_byTool_p3_5} - Section \ref{subsec:compact}}
+
+\begin{itemize}
+\item \textsf{on average, \parlotnc slows down the application execution almost \textbf{2x} more than \parlota. (average overhead of geometric means of all overheads within table  \ref{comet_wo_det_All_all_B_p3.5} for \parlota is \textbf{3.42} and for its coresponding \parlotnc is \textbf{6.62}) . The numbers of \parlotm and input C is following the same pattern. For example, \parlot-nc slows down the application execution almost \textbf{1.66x} more than \parlotm)}
 \end{itemize}
+\end{itemize}
+
+\vspace{1ex}
 
 \vspace{1ex}
 \noindent{\bf Ganesh note: Cite follow-on
