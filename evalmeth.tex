@@ -12,9 +12,19 @@ In order to evaluate \parlot and make a fair comparison with similar tools, we h
 \end{itemize}
 
 \subsubsection{Metrics}
+In order to evaluate and make a fair comparison between similar tools, first we need to decide what specific aspects of any tool are we interested in. As discussed in earlier sections, in general, an HPC debugger that "adds less overhead while collecting more information" is a "better" debugger. Thus, we define below three metrics as the basis of our comparisons and evaluations
+\begin{itemize}
+\item \textbf{Tracing Overhead (TOH)} is simply saying how much longer the target application takes to execute when you run a tracing tool on top of it. Average \toh of different tools shows how time-efficient they are. \toh is the median runtime out of 3 identical execution of each tool on top of each target application relative to the median runtime of corresponding application with no tracing tool on top of it (native run). 
+\item  \textbf{Required Bandwidth per core (kB/s) (RBW)}. Tracing tools generates traces and consumes some of the system and core bandwidth. \rbw is the ratio of total intermediate generated trace sizes (kB) by each tool over its running time (s) divided by number of cores.
+\item \textbf{Compression Ratio (CR)} is the ratio of size of decompressed buffer from compressed traces over size of intermediate compressed traces.
+\end{itemize}
+
+
+
+\subsubsection{\parlot side tools / variations of \parlot}
+
 
 \begin{itemize}
-\item \textbf{Slowdown}
-\item \textbf{Required Bandwidth}
-\item \textbf{Compression Ratio}
+\item \textbf{Pin\_ Init} is a version of \parlot where the tracing process completely shut off/disabled. Purpose of \textit{Pin\_ init} is to see how much of the actual \toh added to native run is caused by initializing \pin and binary instrumentation (is this correct??).
+\item \textbf{ParLOT-NC} is basically \parlot with No Compression. It stores captured data during execution as is into disk. Purpose of this side tool is to show the impact of compression on overall performance of \parlot.
 \end{itemize}

@@ -5,13 +5,13 @@
 
 
 
-\input{tabs.comet/comet_sd_pMpAcg_BC_int_p3.5.tex}
+%\input{tabs.comet/comet_sd_pMpAcg_BC_int_p3.5.tex}
 
 
 \input{tabs.comet/comet_sd_pMpAcg_BC_itn_p3.5.tex}
 
 
-\subsection{Slowdown}
+\subsection{Tracing Overhead}
 
 The amount of time that instrumentation and collecting traces for offline analysis add to the native run is one of key metrics that can be measured to show the performance of any tool. In this section, our goal is to show how much \parlot slows down the native execution of target application and compare it with \callgrind, which is the closest tool to ours (dynamic binary instrumentation for collecting function call-graph). 
 Table \ref{comet_sd_pMpAcg_BC_int_p3.5} shows the slowdown caused by \parlot(main) (where \parlot collects function calls only from the main application image), \parlot(all) (where \parlot collects function calls from all images including system library function calls) and \callgrind on each application of NPB benchmark.
