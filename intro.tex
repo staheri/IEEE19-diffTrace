@@ -1,13 +1,9 @@
 
-Detecting and root causing HPC bugs is expensive. While traditional software engineering generally achieves high quality control, these methods are often inapplicable to HPC where concurrency combined with large problem scales and sophisticated domain-specific math can make programming extremely challenging. For example, it took months for scientists to debug an MPI laser-plasma interaction code~\cite{hpcdoe}.
+Detecting and root causing HPC bugs is expensive. While traditional software engineering generally achieves high quality control, these methods are often inapplicable to HPC where concurrency combined with large problem scales and sophisticated domain-specific math can make programming very challenging. For example, it took months for scientists to debug an MPI laser-plasma interaction code~\cite{hpcdoe}.
 
-HPC bugs are typically a function of both flawed program logic as well as unspecified or illegal interactions between various concurrency models ({\em e.g.}, PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume enormous amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application in case of execution failure is therefore expensive, time consuming, and inefficient. 
+HPC bugs may be a combination of both flawed program logic and unspecified or illegal interactions between various concurrency models (e.g., PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume vast amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application is therefore expensive and undesirable. 
 %The best hope for debugging lies in being able to efficiently capture detailed execution 
-A very natural and field-proven~\cite{stat,cstg} approach to large-scale debugging is to
-capture detailed execution traces
-compare these traces
- against corresponding
- traces from previous (stable) runs.
+A natural and field-proven approach for large-scale debugging is to capture detailed execution traces and compare the traces against corresponding traces from previous (stable) runs~\cite{stat,cstg}.
 %
 A {\em key requirement} is to do this collection {\em as efficiently as possible}
 and in {\em as general a manner} as possible.
@@ -16,14 +12,14 @@ and in {\em as general a manner} as possible.
 Existing tools in this space
 do not meet our criteria for efficiency and generality.
 %
-For example, in STAT~\cite{stat}, such ``tracing and diffing'' is often done
-when a failure ({\em e.g.} a deadlock or hang) is encountered.
+For example, in STAT~\cite{stat}, such ``tracing and diffing'' is usually only done
+when a failure (e.g., a deadlock or hang) is encountered.
 %
-While STAT can be deployed in ``continuous collection'' mode, the overheads of
-doing so are unknown (and can be surmised to be non-trivial).
+Whereas STAT can be deployed in ``continuous collection'' mode, the overheads of
+doing so are unknown (and can be surmised to be significant).
 %
-In the context of CSTGs~\cite{cstg}, the collection is orchestrated by the
-user around chosen collection points, and this approach also employs heavy-weight
+In CSTG~\cite{cstg}, the collection is orchestrated by the
+user around chosen collection points and employs heavy-weight
 unix {\tt backtrace} calls.
 
 
@@ -32,83 +28,75 @@ tracing-based debugging methods.
 %
 We are interested in avoiding
 source-code modifications and recompilation --- thus making binary
-instrumentation-based tools the only practical and widely deployable recourse.
+instrumentation-based tools the only practical and widely deployable option.
 %
 We also believe in the value
-of providing our tool in a manner that makes it {\em portable across a 
+of creating tools that are {\em portable across a 
 wide variety of platforms}.
 %
-Previous tools (e.g. STAT) have relied on  mechanisms such as
-TBon~\cite{tbon-dorian} and MRNet~\cite{mrnet} to accelerate collection and
-aggregation of traces.
+Previous tools (e.g., STAT) rely on mechanisms such as
+TBon~\cite{tbon-dorian} and MRNet~\cite{mrnet} to accelerate the collection and aggregation of traces.
 %
-Our thrust is to not rely on such mechanisms for trace aggregation, but
-instead offer 
+Our thrust is to not depend on such mechanisms for trace aggregation but to instead offer 
 a generic and low-overhead tracing tool that 
-(1)~collects many types of dynamic facts about executions (e.g., function
+(1)~collects many types of dynamic facts about executions (e.g., all function
 calls and returns), 
 (2)~is easy to install, 
-(3)~and is also portable to multiple parallel platforms.
+(3)~and is portable to multiple parallel platforms.
 %
-As discussed in this paper, {\em providing all these features in a single tool
+{\em Providing all these features in a single tool
 that operates based on binary instrumentation
 is an unsolved problem.}
 %
-In this paper, we describe how we have arrived at such a solution that is embodied
-in our ParLoT tool.
+In this paper, we describe a new tracing approach that fulfills these requirements, which we implemented in our proof-of-concept \parlot tool.
 
 
-This paper presents \parlot, an efficient binary-level tracing tool that captures traces 
-replete with debugging information to help locate a variety of possible bug types through 
-offline trace analysis (without needing application reruns) 
+\parlot is an efficient binary-level tracing tool that captures all function calls and returns, including in library code, 
+to help locate a variety of possible bug types through 
+offline analysis (without needing application reruns) 
 if/when the application runs into an error. 
 %
-With ParLoT, the user can easily build a host of post-processors to examine
+With \parlot, the user can easily build a host of post-processors to examine
 executions from many vantage points.
 %
 For instance, they can write post-processors
 to detect unexpected (or ``outlier'') executions.
 %
 If needed, they can 
-drill down and detect abnormal behaviors {\em even going deep into the runtime and
+drill down and detect abnormal behaviors {\em even in the runtime and
 support library stack} such as MPI-level activities.
 %
 In HPC, it is well-known (especially on newer machines) that bugs are often due to
 broken libraries (MPI, OpenMP) or broken runtime or OS-level activities.
 %
-Having a single tool that can ``X-ray'' to any depth is a goal met by ParLoT -- again
-a unique feature in today's tool eco-system.
+Having a single low-overhead tool that can ``X-ray'' an application to this depth is a goal met by \parlot -- again a unique feature in today's tool eco-system.
 
-To further motivate the need for having full function call
-traces for debugging, consider an expression {\tt f()+g()} in C.
+To further motivate the need for full function call
+traces, consider the expression {\tt f()+g()}.
 %
 In C, there is no sequence point associated with the {\tt +}
 operator~\cite{sequence-points-in-C}.
 %
 If these function calls have inadvertent side-effects causing 
-failure, it would be important to know the order in which {\tt f()}
-and {\tt g()} were invoked---something possible to discern using
-ParLoT-generated traces.
+failure, it is important to know in which order {\tt f()}
+and {\tt g()} were invoked---something that is easy to discern using
+\parlot 's traces.
 
 
-One may be concerned that a tracing tool introduces execution slowdown.
+One may be concerned that such a tool introduces excessive execution slowdown.
 %
-ParLoT goes to great lengths to minimize these overheads.
+\parlot goes to great lengths to minimize these overheads to a level that we believe most users will find acceptable. The mindset is to \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. 
 %
-However, our 
- mindset  is \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. 
- 
 This paper makes the following main contributions.
 %
 \begin{itemize}
-\item It introduces a new tracing approach that makes it possible to capture the full call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of even large-scale applications at low overhead in both space and time.
+\item It introduces a new tracing approach that makes it possible to capture the full call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of large-scale applications at low overhead in both space and time.
 \item It describes advanced data compression methods to drastically reduce the required tracing bandwidth, thus enabling the collection of a rich set of information, which would be infeasible without on-the-fly compression.
-\item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting any x86-based application at the binary level (regardless of the source language used) to collect its full function-call trace.
+\item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting x86 applications at the binary level (regardless of the source language used) to collect full function-call traces.
 \end{itemize}
 The remainder of this paper is organized as follows. Section \ref{sec:bgreltool} introduces the basic ideas and infrastructure behind \parlot and other tracing tools. Section \ref{sec:design} describes the design of \parlot in detail. Sections \ref{sec:evalmeth} and \ref{sec:results} present our evaluation of different aspects of \parlot and compare it with a similar tool. Section \ref{sec:concl}
-concludes the paper with a summary and future work that
-includes the construction of verification tools
-which exploit ParLoT traces.
+concludes the paper with a summary and future work.
+% that includes the construction of verification tools that exploit \parlot traces.
 
 
 \subsection{Key strong points of \parlot from results}
@@ -146,4 +134,5 @@ which exploit ParLoT traces.
 \noindent{\bf Ganesh note: Cite follow-on
 tools such as AutomaDeD~\cite{automaded} and Prodometer~\cite{prodometer} somewhere.}
 \vspace{1ex}
+
 
