@@ -1,24 +1,24 @@
-@online{sequence-points-in-C,
- author = {Microsoft Developer Network},
-  title = {C Sequence Points},
-  url = {https://msdn.microsoft.com/en-us/library/azk8zbxd.aspx},
-  urldate = {2018-10-24}
-}
-
-@INPROCEEDINGS{hpcdoe,
-  author = {Ganesh Gopalakrishnan and
-	Paul D. Hovland and
-	Costin Iancu and 
-	Sriram Krishnamoorthy and
-	Ignacio Laguna and
-	Richard A. Lethinand
-	Koushik Sen and
-	Stephen F. Siegel and
-	Armando Solar-Lezama},
-  title = {Report of the HPC Correctness Summit},
-  year = {2017},
-  url = {https://science.energy.gov/~/media/ascr/pdf/programdocuments/docs/2017/HPC\_Correctness\_Report.pdf},
-  location = {Washington, DC},
+@article{hpcdoe,
+  author    = {Ganesh Gopalakrishnan and
+               Paul D. Hovland and
+               Costin Iancu and
+               Sriram Krishnamoorthy and
+               Ignacio Laguna and
+               Richard A. Lethin and
+               Koushik Sen and
+               Stephen F. Siegel and
+               Armando Solar{-}Lezama},
+  title     = {Report of the {HPC} Correctness Summit, Jan 25-26, 2017, Washington,
+               {DC}},
+  journal   = {CoRR},
+  volume    = {abs/1705.07478},
+  year      = {2017},
+  url       = {http://arxiv.org/abs/1705.07478},
+  archivePrefix = {arXiv},
+  eprint    = {1705.07478},
+  timestamp = {Wed, 07 Jun 2017 14:42:35 +0200},
+  biburl    = {http://dblp.org/rec/bib/journals/corr/GopalakrishnanH17},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
 }
 
 
@@ -88,6 +88,54 @@
   bibsource = {dblp computer science bibliography, http://dblp.org}
 }
 
+
+@INPROCEEDINGS{cluster15mpc, 
+author={A. Yang and H. Mukka and F. Hesaaraki and M. Burtscher}, 
+booktitle={2015 IEEE International Conference on Cluster Computing}, 
+title={MPC: A Massively Parallel Compression Algorithm for Scientific Data}, 
+year={2015}, 
+volume={}, 
+number={}, 
+pages={381-389}, 
+keywords={data compression;floating point arithmetic;parallel processing;MPC algorithm;floating-point value;lossless compression algorithm;massively parallel compression algorithm;scientific data;Algorithm design and analysis;Compression algorithms;Compressors;Data models;Graphics processing units;Message systems;Prediction algorithms;GPUs;Lossless data compression;algorithm design;floating-point compres-sion;massively parallel architectures}, 
+doi={10.1109/CLUSTER.2015.59}, 
+ISSN={1552-5244}, 
+month={Sept},}
+
+
+
+@inbook{space16,
+	Author = {Coplin, Jared R. and Yang, Annie and Poppe, Andrew R. and Burtscher, Martin},
+	Booktitle = {AIAA SPACE 2016},
+	Date-Added = {2018-01-23 22:14:52 +0000},
+	Date-Modified = {2018-01-23 22:14:52 +0000},
+	Doi = {doi:10.2514/6.2016-5401},
+	M1 = {0},
+	M3 = {doi:10.2514/6.2016-5401},
+	Month = {2018/01/23},
+	Publisher = {American Institute of Aeronautics and Astronautics},
+	Title = {Increasing Telemetry Throughput Using Customized and Adaptive Data Compression},
+	Title1 = {AIAA SPACE Forum},
+	Ty = {CHAP},
+	Url = {https://doi.org/10.2514/6.2016-5401},
+	Year = {2016},
+	Year1 = {2016/09/09},
+}
+
+
+@INPROCEEDINGS{sc16burtscher, 
+author={M. Burtscher and H. Mukka and A. Yang and F. Hesaaraki}, 
+booktitle={SC16: International Conference for High Performance Computing, Networking, Storage and Analysis}, 
+title={Real-Time Synthesis of Compression Algorithms for Scientific Data}, 
+year={2016}, 
+volume={}, 
+number={}, 
+pages={264-275}, 
+keywords={data compression;real-time systems;FPcrush;OpenMP;compression algorithms;floating-point data;real-time synthesis;scientific data;storage requirement;Approximation algorithms;Compression algorithms;Data compression;Data models;Genetic algorithms;Throughput;Transforms;data compression;real-time algorithm synthesis}, 
+doi={10.1109/SC.2016.22}, 
+ISSN={}, 
+month={Nov},
+}
 
 
 @inproceedings{vampirt,
@@ -360,7 +408,23 @@ doi="10.1007/3-540-45706-2_10",
   urldate = {2017-10-22}
 }
 
-
+@inproceedings{prodometer,
+ author = {Mitra, Subrata and Laguna, Ignacio and Ahn, Dong H. and Bagchi, Saurabh and Schulz, Martin and Gamblin, Todd},
+ title = {Accurate Application Progress Analysis for Large-scale Parallel Debugging},
+ booktitle = {Proceedings of the 35th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+ series = {PLDI '14},
+ year = {2014},
+ isbn = {978-1-4503-2784-8},
+ location = {Edinburgh, United Kingdom},
+ pages = {193--203},
+ numpages = {11},
+ url = {http://doi.acm.org/10.1145/2594291.2594336},
+ doi = {10.1145/2594291.2594336},
+ acmid = {2594336},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {MPI, dynamic analysis, high-performance computing, parallel debugging},
+} 
 
 @online{ddt,
   author = {Allinea, Arm},
@@ -409,4 +473,56 @@ keywords={application program interfaces;parallel processing;program diagnostics
 doi={10.1109/IPDPS.2016.68}, 
 ISSN={1530-2075}, 
 month={May}
+}
+
+
+
+@INPROCEEDINGS{mrnet, 
+author={P. C. Roth and D. C. Arnold and B. P. Miller}, 
+booktitle={Supercomputing, 2003 ACM/IEEE Conference}, 
+title={MRNet: A Software-Based Multicast/Reduction Network for Scalable Tools}, 
+year={2003}, 
+volume={}, 
+number={}, 
+pages={21-21}, 
+keywords={Scalability;aggregation;multicast;reduction;tools;Biological system modeling;Computational efficiency;Computational modeling;Costs;Data analysis;Delay;Process control;Scalability;Throughput;User interfaces;Scalability;aggregation;multicast;reduction;tools}, 
+doi={10.1145/1048935.1050172}, 
+ISSN={}, 
+month={Nov},}
+
+
+@article{mantevo,
+  title={Improving performance via mini-applications},
+  author={Heroux, Michael A and Doerfler, Douglas W and Crozier, Paul S and Willenbring, James M and Edwards, H Carter and Williams, Alan and Rajan, Mahesh and Keiter, Eric R and Thornquist, Heidi K and Numrich, Robert W},
+  journal={Sandia National Laboratories, Tech. Rep. SAND2009-5574},
+  volume={3},
+  year={2009}
+}
+
+
+@article{lz,
+author = {Ziv, J. and Lempel, A.},
+title = {A Universal Algorithm for Sequential Data Compression},
+journal = {IEEE Trans. Inf. Theor.},
+issue_date = {May 1977},
+volume = {23},
+number = {3},
+month = sep,
+year = {2006},
+issn = {0018-9448},
+pages = {337--343},
+numpages = {7},
+url = {http://dx.doi.org/10.1109/TIT.1977.1055714},
+doi = {10.1109/TIT.1977.1055714},
+acmid = {2269180},
+publisher = {IEEE Press},
+address = {Piscataway, NJ, USA},
+}
+
+
+@inproceedings{mb-dcc18,
+author = {S. Claggett and S. Azimi and M. Burtscher},
+title = {{SPDP: An Automatically Synthesized Lossless Compression Algorithm for Floating-Point Data}},
+booktitle = {2018 Data Compression Conference},
+year = {2018},
 }

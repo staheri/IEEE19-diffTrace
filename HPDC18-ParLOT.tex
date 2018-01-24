@@ -1,8 +1,9 @@
-\documentclass[conference]{IEEEtran}
-\IEEEoverridecommandlockouts
-% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\documentclass[sigconf]{acmart}
+
+\usepackage{booktabs} % For formal tables
+
 \usepackage{xspace}
-\usepackage{cite}
+%\usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
@@ -11,55 +12,76 @@
 \usepackage[normalem]{ulem}
 \usepackage{soul}
 \usepackage{multirow}
-\usepackage[table,xcdraw]{xcolor}
+%\usepackage[table,xcdraw]{xcolor}
 %--
 \input{macros.tex}
 %--
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+
+% Copyright
+%\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+
 \begin{document}
+\title{\parlot: Low-Overhead Tracing of Large-Scale Parallel Programs}
 
-\title{\parlot: Low-Overhead Tracing of Large-Scale Parallel Programs\\
-\thanks{This work was supported in part by NSF grant 1438963.}
+
+
+\author{Saeed Taheri}
+\affiliation{%
+  \institution{University of Utah}
+  \city{Salt Lake City}
+  \state{Utah}
+  \country{USA}
 }
+\email{staheri@cs.utah.edu}
 
-\author{
-  \IEEEauthorblockN{Saeed Taheri}
-        \IEEEauthorblockA{School of Computing\\
-                University of Utah\\
-                Salt Lake City, Utah, U.S.A.\\
-                Email: staheri@cs.utah.edu}
-        \and
-	\IEEEauthorblockN{Sindhu Devale}
-	\IEEEauthorblockA{Department of Computer Science\\
-		Texas State University\\
-		San Marcos, Texas, U.S.A.\\
-		Email: sindhu.devale@gmail.com}
-	\and
-	\IEEEauthorblockN{Ganesh Gopalakrishnan}
-	\IEEEauthorblockA{School of Computing\\
-		University of Utah\\
-		Salt Lake City, Utah, U.S.A.\\
-		Email: ganesh@cs.utah.edu}
-	\and
-	\IEEEauthorblockN{Martin Burtscher}
-	\IEEEauthorblockA{Department of Computer Science\\
-		Texas State University\\
-		San Marcos, Texas, U.S.A.\\
-		Email: burtscher@cs.txstate.edu}
+\author{Sindhu Devale}
+\affiliation{%
+  \institution{Texas State University}
+  \city{San Marcos}
+  \state{Texas}
+  \country{USA}
 }
+\email{sindhu.devale@gmail.com}
 
-\maketitle
+
+\author{Ganesh Gopalakrishnan}
+\affiliation{%
+  \institution{University of Utah}
+  \city{Salt Lake City}
+  \state{Utah}
+  \country{USA}
+}
+\email{ganesh@cs.utah.edu}
+
+\author{Martin Burtscher}
+\affiliation{%
+  \institution{Texas State University}
+  \city{San Marcos}
+  \state{Texas}
+  \country{USA}
+}
+\email{burtscher@cs.txstate.edu}
+
+\renewcommand{\shortauthors}{S. Taheri et al.}
 
 \begin{abstract}
 \label{abs}
 \input{abstract.tex}
 \end{abstract}
 
+\keywords{tracing, HPC, compression}
 
-\begin{IEEEkeywords}
-tracing, HPC, compression;
-\end{IEEEkeywords}
+\maketitle
 
 \extrafloats{100}
 
@@ -82,7 +104,7 @@ tracing, HPC, compression;
 
 \section{Results}
 \label{sec:results}
-\input{cometResults.tex}
+%\input{cometResults.tex}
 %\input{pscCometResults.tex}
 %\input{pscCometLs5Results.tex}
 %\input{pscResults.tex}
@@ -90,9 +112,9 @@ tracing, HPC, compression;
 
     
 
-\section{Concluding Remarks}
-\label{sec:concl}
-\input{concluding-remarks.tex}
+\section{Summary, Conclusion and Future Work}
+\subsection{Summary and Conclusion}
+\subsection{Future Work}
 
 
 \section{Appendix}
@@ -100,12 +122,10 @@ tracing, HPC, compression;
   
 \section*{Acknowledgment}
 
-\bibliographystyle{IEEEtran}
+
+
+
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{bibs}
 
 \end{document}
-
-
-
-
-

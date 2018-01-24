@@ -1,4 +1,4 @@
-﻿Figure \ref{overview} provides a general overview of \parlot 's workflow. Note that the instrumentation takes place dynamically, i.e., right before a new basic block is about to be executed.
+Figure \ref{overview} provides a general overview of \parlot 's workflow. Note that the instrumentation takes place dynamically, i.e., right before a new basic block is about to be executed.
 
 
 \subsection{Tracing Operation}
@@ -10,7 +10,7 @@ For every function \emph{entry}, \parlot executes extra code that has access to 
 
 \subsection{Call-Stack Correction}
 
-To be able to decode the trace, i.e., to correctly associate each exit with the function entry it belongs to, our trace reader maintains an identical call-stack data structure. Unfortunately, and as pointed out in the \pin documentation~\cite{???}, it is not always possible to identify all function exits. For example, in optimized code, a function's instructions may be inlined and interleaved with the caller's instructions, making it sometimes infeasible for \pin to identify the exit. As a consequence, we have to ensure that \parlot works correctly even when \pin misses an exit. This is where the SP values come into play.
+To be able to decode the trace, i.e., to correctly associate each exit with the function entry it belongs to, our trace reader maintains an identical call-stack data structure. Unfortunately, and as pointed out in the \pin documentation~\cite{pinurl}, it is not always possible to identify all function exits. For example, in optimized code, a function's instructions may be inlined and interleaved with the caller's instructions, making it sometimes infeasible for \pin to identify the exit. As a consequence, we have to ensure that \parlot works correctly even when \pin misses an exit. This is where the SP values come into play.
 
 During tracing, \parlot not only records the function IDs in its call-stack data structure but also the associated SP values. This enables it to detect missing exits and to correct the call stack accordingly. Whenever a function is entered, it checks if there is at least one entry in the call stack and, if so, whether its SP value is higher than that of the current SP. If it is lower, we must have missed at least one exit since the runtime stack grows downwards (the SP value decreases with every function entry and increases with every exit). If a missing exit is detected in this manner, \parlot pops the top element from its call stack and emits a zero to indicate a function exit. It repeats this procedure until the stack is empty or its top entry has a sufficiently high SP value. The same call-stack correction technique is applied for every function exit whose SP value is inconsistent. Note that the SP values are only used for this purpose and are not included in the emitted trace data.
 
@@ -26,9 +26,10 @@ To remedy this situation, the compressor must operate incrementally, i.e., each 
 
 \subsection{Compression Algorithm}
 
-We used the CRUSHER framework~\cite{Cluster15, Space16, SC16, DCC18} to automatically synthesize an effective and fast lossless compression algorithm for our traces. CRUSHER is based on a library of data transformations extracted from various compression algorithms. It combines these transformations in all possible ways to generate algorithm candidates, which it then evaluates on a set of training data. We gathered uncompressed traces from some of the Mantevo miniapps~\cite{mantevo} for this purpose. This evaluation revealed that a particular word-level LZ transformation followed by a byte-level ZE transformation works well. In other words, \parlot 's trace entries, which are two-byte words, are first transformed using LZ. The output is interpreted as a sequence of bytes, which is transformed using ZE for further compression. The output of ZE is written to disk.
+We used the CRUSHER framework
+\cite{cluster15mpc},\cite{space16},\cite{sc16burtscher},\cite{mb-dcc18} to automatically synthesize an effective and fast lossless compression algorithm for our traces. CRUSHER is based on a library of data transformations extracted from various compression algorithms. It combines these transformations in all possible ways to generate algorithm candidates, which it then evaluates on a set of training data. We gathered uncompressed traces from some of the Mantevo miniapps\cite{mantevo} for this purpose. This evaluation revealed that a particular word-level LZ transformation followed by a byte-level ZE transformation works well. In other words, \parlot 's trace entries, which are two-byte words, are first transformed using LZ. The output is interpreted as a sequence of bytes, which is transformed using ZE for further compression. The output of ZE is written to disk.
 
-LZ implements a variant of the LZ77 algorithm~\cite{LZ}. It uses a 4096-entry hash table to identify the most recent prior occurrence of the current value in the trace. Then it checks whether the three values immediately before that location match the three trace entries just before the current location. If they do not, the current trace entry is emitted and LZ advances to the next entry. If the three values match, LZ counts how many values following the current value match the values following that location. The length of the matching substring is emitted and LZ advances by that many values.
+LZ implements a variant of the LZ77 algorithm\cite{lz}. It uses a 4096-entry hash table to identify the most recent prior occurrence of the current value in the trace. Then it checks whether the three values immediately before that location match the three trace entries just before the current location. If they do not, the current trace entry is emitted and LZ advances to the next entry. If the three values match, LZ counts how many values following the current value match the values following that location. The length of the matching substring is emitted and LZ advances by that many values.
 
 ZE stands for ``zero elimination'' and emits a bitmap in which each bit represents one input byte. The bits indicate whether the corresponding bytes are zero or not. Following each eight-bit bitmap, ZE emits the non-zero bytes.
 
@@ -41,30 +42,4 @@ As mentioned above, we had to implement the two transformations incrementally to
 \caption{Overview of \parlot}
 \label{overview}
 \end{figure}
-
-
-\subsection{Evaluation of our Compression Scheme}
-
-We conducted a preliminary evaluation of our compression
-scheme by implementing a tracer in PIN that
-records a unique 16-bit identifier for every function call and
-return. 
-%
-Tracing just this small amount of information when running the
-Mantevo miniapps~\cite{mantevo} on Stampede results in about 2 MB/s of
-data per core on average. Extrapolating this value to all 102,400
-cores of Stampede (not counting accelerators) yields 205 GB/s of trace
-data, which exceeds the Lustre filesystem's write performance of 150
-GB/s! 
-%
-Adding a simple compression algorithm that CRUSHER created 
-reduces the emitted trace data by a factor of 100 on average,
-a ratio that is very stable w.r.t scaling, making it possible to trace
-full-scale programs while leaving over 98\% of the I/O bandwidth to
-the application. 
-%
-This level of compression efficiency is also apparent in the 
-results that we will present beginning \S\ref{sec:results}.
-
-%--end
 

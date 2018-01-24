@@ -80,38 +80,18 @@ Having a single tool that can ``X-ray'' to any depth is a goal met by ParLoT -- 
 a unique feature in today's tool eco-system.
 
 
-To further motivate the need for having full function call
-traces for debugging, consider an expression {\tt f()+g()} in C.
-%
-In C, there is no sequence point associated with the {\tt +}
-operator~\cite{sequence-points-in-C}.
-%
-If these function calls have inadvertent side-effects causing 
-failure, it would be important to know the order in which {\tt f()}
-and {\tt g()} were invoked---something possible to discern using
-ParLoT-generated traces.
-
-
 One may be concerned that a tracing tool introduces execution slowdown.
 %
 ParLoT goes to great lengths to minimize these overheads.
 %
 However, our 
- mindset  is \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. 
-
-This paper makes the following main contributions:
-%
+ mindset  is \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. This paper makes the following main contributions.
 \begin{itemize}
 \item It introduces a new tracing approach that makes it possible to capture the full call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of even large-scale applications at low overhead in both space and time.
 \item It describes advanced data compression methods to drastically reduce the required tracing bandwidth, thus enabling the collection of a rich set of information, which would be infeasible without on-the-fly compression.
 \item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting any x86-based application at the binary level (regardless of the source language used) to collect its full function-call trace.
 \end{itemize}
-%
-The remainder of this paper is organized as follows. Section \ref{sec:bgreltool} introduces the basic ideas and infrastructure behind \parlot and other tracing tools. Section \ref{sec:design} describes the design of \parlot in detail. Sections \ref{sec:evalmeth} and \ref{sec:results} present our evaluation of different aspects of \parlot and compare it with a similar tool. Section \ref{sec:concl}
-concludes the paper with a summary and future work that
-includes the construction of verification tools
-which exploit ParLoT traces.
-
+The remainder of this paper is organized as follows. Section \ref{sec:bgreltool} introduces the basic ideas and infrastructure behind \parlot and other tracing tools. Section \ref{sec:design} describes the design of \parlot in detail. Sections \ref{sec:evalmeth} and \ref{sec:results} present our evaluation of different aspects of \parlot and compare it with a similar tool. Section \ref{sec:???} concludes the paper with a summary and future work.
 
 
 \subsection{Key strong points of \parlot from results}
