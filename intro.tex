@@ -80,6 +80,18 @@ Having a single tool that can ``X-ray'' to any depth is a goal met by ParLoT -- 
 a unique feature in today's tool eco-system.
 
 
+To further motivate the need for having full function call
+traces for debugging, consider an expression {\tt f()+g()} in C.
+%
+In C, there is no sequence point associated with the {\tt +}
+operator~\cite{sequence-points-in-C}.
+%
+If these function calls have inadvertent side-effects causing 
+failure, it would be important to know the order in which {\tt f()}
+and {\tt g()} were invoked---something possible to discern using
+ParLoT-generated traces.
+
+
 One may be concerned that a tracing tool introduces execution slowdown.
 %
 ParLoT goes to great lengths to minimize these overheads.
