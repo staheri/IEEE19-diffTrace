@@ -8,3 +8,19 @@ concludes the paper with a summary and future work that
 includes the construction of verification tools
 which exploit ParLoT traces.
 \end{verbatim}
+
+
+\begin{itemize}
+\item idea of tracing for debugging
+\item collecting informative data while adding less overhead 
+\item no recompilation, no source code modification, portable
+\item Compressing traces on-fly incrementally saves system bandwidth for application
+\item most of added overhead is caused by Pin-init
+\item Future work
+	\begin{itemize}
+	\item Generated traces from \parlot can be used for offline analysis, process/thread equivalent classes,
+	\item Generated traces from \parlot can definitely show control-flow divergence among threads/processes on parallel platform
+	\item Trying our compression scheme on a DBI with lower overhead than PIN
+	\end{itemize}
+
+\end{itemize}

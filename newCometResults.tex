@@ -40,9 +40,14 @@ Considering amount of collected informative data by \parlot (especially \parlota
 By increasing the size of input, average of geometric means of overheads decrease for \parlotm and \parlota but increase for \callgrind. 
 
 \begin{itemize}
-\item Why Callgrind scales better? [to be added]
-\item Martin's question in the email [to be added]
-\item more info about type of applications that we used as benchmark and why tools have different numbers and behaviors for different applications.
+\item Why \callgrind scales better? [to be added]
+\item Why \callgrind performs better than \parlot on \textit{is} and \textit{mg} (for input B)?
+	\begin{itemize}
+	\item \textbf{IS}  is integer sort. It broadcast numbers and reduce \textit{passed-verification} values to make sure it is sort. From description : Random Access Memory
+	\item \textbf{MG}  is Multi-Grid on a sequence of meshes, long- and short-distance communication. MG is memory intensive.
+	\item However, for input C, for MG and IS, \parlotm still performs better than \callgrind
+	\item \textbf{Conclusion} ???
+	\end{itemize}
 \end{itemize}
 
 
@@ -82,6 +87,12 @@ In addition to big gap between average overhead of \parlotm and \callgrind, \par
 	\item \textbf{\parlotm vs. \callgrind} Above story is true also for \parlotm. According to table \ref{comet_cr_pMpA_BC_itn_p3.5}, for \parlotm where the average compression ratio for input C is 1117.01, and the correspondent required bandwidth which is 7.84 kB/s, shows that \parlotm can collect \textbf{more than 8.5 MB} worth of data per core per second where it only needs \textbf{7.84.38 kB/s} bandwidth, while \callgrind can only collects \textbf{less than 100 kB} of informative data and still adds more overhead comparing to either \parlota or \parlotm. \textbf{Conclusion: The amount of informative data can be collected with \parlotm  are 85x larger than \callgrind and the overhead \parlotm adds is about 0.4x smaller than \callgrind}
 \end{itemize}
 
+\begin{itemize}
+\item Why \parlotm required bandwidth for applications bt, lu, sp and cg is higher than other applications and also higher than \callgrind ? Lu and Sp and bt are all solvers (bt: Block Tri-diagonal solver, Sp: Scalar Penta diagonal solver, LU: Lower-Upper Gauss-Seidel solver). CG is implementation of conjugate gradient method. The conjugate gradient method is often implemented as an iterative algorithm, applicable to sparse systems that are too large to be handled by a direct implementation. CG from NAS has irregular memory accesses (bold characteristic of CG). \textbf{Summary:} \parlotm performs poor on solver applications and those who has irregular memory accesses.
+
+\item Why \parlota required bandwidth for all applications is higher than \callgrind? No wonder, since it collects way more data.
+
+\end{itemize}
 
 
 
@@ -130,10 +141,43 @@ In addition to big gap between average overhead of \parlotm and \callgrind, \par
 \label{subsec:pinit}
  - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5}
   - Fig \ref{comet_chartDet_B_wc_byTool_p3_5}, \ref{comet_chartDet_C_wc_byTool_p3_5}
-   Tables \ref{comet_wo_det_Main_all_B_p3.5}, \ref{comet_wo_det_All_all_B_p3.5} show average overhead added to each application by different variations of \parlot. Last row of tables shows geometric mean of each of its above values showing how much each phase of \parlot slows down the native execution. In general, we all expect that the added overhead of  Pin-init < \parlot < \parlotnc. Highlighted cells in tables are the ones which do not follow the above order. Number of highlighted cells for \parlot(main) is larger than \parlot(all). Variability of runtimes for \parlot(main) is more than other ones (native run, \parlot(all) and \callgrind) [new error bars to be added].
+   Tables \ref{comet_wo_det_Main_all_B_p3.5}, \ref{comet_wo_det_All_all_B_p3.5} show average overhead added to each application by different variations of \parlot. Last row of tables shows geometric mean of each of its above values showing how much each phase of \parlot slows down the native execution. In general, we all expect that the added overhead of  Pin-init < \parlot < \parlotnc. Highlighted cells in tables are the ones which do not follow the above order. Number of highlighted cells for \parlot(main) is larger than \parlot(all). Variability of runtimes for \parlot(main) is more than other ones (native run, \parlot(all) and \callgrind) 
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=8in]{figs.comet.newMed/comet_BX2_Main_1_B_p3_5.png}
+\caption{ Input: \textbf{B} - Median overhead added by each tool for \parlotm variations (from table \ref{comet_wo_det_Main_all_B_p3.5} - 1 node) (most highlighted cells)
+}
+\label{comet_BX2_Main_1_B_p3_5}
+\end{figure*}
+
+
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=8in]{figs.comet.newMed/comet_BX2_Main_16_B_p3_5.png}
+\caption{ Input: \textbf{B} - Median overhead added by each tool for \parlotm variations (from table \ref{comet_wo_det_Main_all_B_p3.5} - 16 node) (most highlighted cells) [shrinking size of these charts make it less readable (fig \ref{comet_BX2_Main_1_B_p3_5_temp})]
+}
+\label{comet_BX2_Main_16_B_p3_5}
+\end{figure*}
+
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=4in]{figs.comet.newMed/comet_BX2_Main_1_B_p3_5.png}
+\caption{ Input: \textbf{B} - Median overhead added by each tool for \parlotm variations (from table \ref{comet_wo_det_Main_all_B_p3.5} - 1 node) (most highlighted cells)
+}
+\label{comet_BX2_Main_1_B_p3_5_temp}
+\end{figure}
+
+
+
 	
 	\begin{itemize}
 	\item \textbf{most of the added overhead by \parlot is caused by Pin-init}. According to tables \ref{comet_wo_det_Main_all_B_p3.5}, \ref{comet_wo_det_All_all_B_p3.5}, on average, Pin-init adds 3.28 overhead and \parlota adds 3.42 overhead. \textbf{almost 96\% of \parlota overhead is happening on Pin-init - Numbers from \parlotm and other inputs are following the same pattern}
+	\item Figures \ref{comet_BX2_Main_16_B_p3_5} and \ref{comet_BX2_Main_1_B_p3_5} shows the reason of highlighted cells (inconsistency with respect to Pin-init and \parlot). HOW??
 	\end{itemize}
 \input{tabs.comet.newMed/comet_wo_det_Main_all_B_p3.5.tex}
 
