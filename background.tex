@@ -13,11 +13,46 @@ We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x8
 \subsection{Efficient Tracing for Debugging}
 When dealing with large-scale parallel programs, any attempt to capture reasonably frequent events will result in a vast amount of data. Moreover, transferring and storing the data will incur significant overhead. For example, collecting just one byte of information per executed instruction yields on the order of a gigabyte of data per second on a single high-end core. Storing the resulting multi-gigabyte traces from many cores can be a challenge, even on today's large hard disks.
 
-Hence, we need a way to decrease the space and runtime overhead. Compression can encode the generated data using a smaller number of bits, thus making transmitting and storing more efficient. Although the encoded data will later have to be decoded for analysis, compressing them during tracing enables the collection of much more information.
+Hence, we need a way to decrease the space and runtime overhead. Compression can encode the generated data using a smaller number of bits, help
+reduce the amount of data movement across the memory hierarchy, and
+and also reduce storage and network demands.
+%
+Although the encoded data will later have to be decoded for analysis, compressing them during tracing enables the collection of much more information.
 
-The idea of compressing traces has been used before for compressing performance traces~\cite{eventflowgraph} as well as in ScalaTrace~\cite{scalatrace}, which exploits the repetitive nature of time-step simulation in scientific applications to compress its traces~\cite{freitag}. However, only a small fraction of the compression is taking place on the fly and the focus is on reducing inter-node communication. 
+We do not claim that the use of compression itself is new:
+various performance evaluation tools~\cite{tau,scorep,eventflowgraph} 
+employ compression during the collection
+of performance analysis data.
+%
+Tools such as ScalaTrace~\cite{scalatrace}
+are also known to exploit
+the repetitive nature of time-step simulations~\cite{freitag}. 
 
-In \parlot, all traced information is immediately compressed while the application is running, that is, it never even records uncompressed data in memory. As a result, typically just a few kilobytes of data need to be written per thread and per second, thus requiring only a small fraction of the available disk or network bandwidth. The traces are decompressed later at no additional cost to the execution of the application. From the decompressed full function-call trace, the complete call-graph, call-frequency, and caller-callee information can be extracted. This can be done at the granularity of a thread, a group of threads, or the whole application.
 
-Tools like TAU~\cite{tau} and Score-p~\cite{scorep} have been using tracing and compression for performance analysis of parallel applications. STAT~\cite{stat} is one of the very few debugging tools that is based on execution tracing. After dynamically gathering function-call traces, it groups the processes with similar call stacks together and tries to find abnormal behavior like divergence in the call graph via delta debugging.
+The novelty offered by ParLoT lies in the combination of compression
+speeds, compression efficacy, and low timing jitter
+made possible by the design of ParLot and its {\em incremental}
+compression algorithm, all of which is
+described in \S\ref{sec:design}.
+%
+All traced information is immediately compressed while the application is running; that is, ParLoT
+never even records uncompressed data in memory. 
+%
+As a result, typically just a few kilobytes of data need to be written per thread and per second, thus requiring only a small fraction of the available disk or network bandwidth. 
+%
+The traces are decompressed later at no additional cost to the execution of the application. 
+%
+From the decompressed full function-call trace, the complete call-graph, 
+call-frequency, and caller-callee information can be extracted. 
+%
+This can be done at the granularity of a thread, a group of threads, or the whole application.
+%
+We now elaborate on the design of ParLoT that makes
+these innovations possible.
+%--
+
+
+
+
+
 
