@@ -42,3 +42,29 @@ As mentioned above, we had to implement the two transformations incrementally to
 \label{overview}
 \end{figure}
 
+
+\subsection{Evaluation of our Compression Scheme}
+
+We conducted a preliminary evaluation of our compression
+scheme by implementing a tracer in PIN that
+records a unique 16-bit identifier for every function call and
+return. 
+%
+Tracing just this small amount of information when running the
+Mantevo miniapps~\cite{mantevo} on Stampede results in about 2 MB/s of
+data per core on average. Extrapolating this value to all 102,400
+cores of Stampede (not counting accelerators) yields 205 GB/s of trace
+data, which exceeds the Lustre filesystem's write performance of 150
+GB/s! 
+%
+Adding a simple compression algorithm that CRUSHER created 
+reduces the emitted trace data by a factor of 100 on average,
+a ratio that is very stable w.r.t scaling, making it possible to trace
+full-scale programs while leaving over 98\% of the I/O bandwidth to
+the application. 
+%
+This level of compression efficiency is also apparent in the 
+results that we will present beginning \S\ref{sec:results}.
+
+%--end
+
