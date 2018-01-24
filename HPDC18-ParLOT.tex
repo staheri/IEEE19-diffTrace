@@ -1,5 +1,7 @@
-\documentclass[sigconf]{acmart}
+\documentclass[sigconf,table,article]{acmart}
 
+%\usepackage[table]{xcolor}
+\usepackage{xcolor}
 \usepackage{booktabs} % For formal tables
 
 \usepackage{xspace}
@@ -13,6 +15,7 @@
 \usepackage{soul}
 \usepackage{multirow}
 %\usepackage[table,xcdraw]{xcolor}
+%\usepackage[table]{xcolor}
 %--
 \input{macros.tex}
 %--
@@ -105,6 +108,7 @@
 \section{Results}
 \label{sec:results}
 %\input{cometResults.tex}
+\input{newCometResults.tex}
 %\input{pscCometResults.tex}
 %\input{pscCometLs5Results.tex}
 %\input{pscResults.tex}
@@ -112,9 +116,9 @@
 
     
 
-\section{Summary, Conclusion and Future Work}
-\subsection{Summary and Conclusion}
-\subsection{Future Work}
+\section{Concluding Remarks}
+\label{sec:concl}
+\input{concluding-remarks.tex}
 
 
 \section{Appendix}
