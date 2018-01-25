@@ -1,26 +1,5 @@
 
-make sure you mention one sentence about  this that the intro
-says:
-
-\begin{verbatim}
-Section \ref{sec:concl}
-concludes the paper with a summary and future work that
-includes the construction of verification tools
-which exploit ParLoT traces.
-\end{verbatim}
-
-
-\begin{itemize}
-\item idea of tracing for debugging
-\item collecting informative data while adding less overhead 
-\item no recompilation, no source code modification, portable
-\item Compressing traces on-fly incrementally saves system bandwidth for application
-\item most of added overhead is caused by Pin-init
-\item Future work
-	\begin{itemize}
-	\item Generated traces from \parlot can be used for offline analysis, process/thread equivalent classes,
-	\item Generated traces from \parlot can definitely show control-flow divergence among threads/processes on parallel platform
-	\item Trying our compression scheme on a DBI with lower overhead than PIN
-	\end{itemize}
-
-\end{itemize}
+In this paper, we introduced \parlot, a portable low overhead tracing tool for parallel platforms. \parlot captures traces during execution and incrementally compresses the captured traces on the fly, without need of source-code modification or recompilation. 
+Type of traces that \parlot generates is full function call trace and function call graph in order to check the control flow of the application and use it towards debugging in case of failure/crashes. Large scale HPC applications can take advantage of \parlot since it uses highly efficient compression scheme and make the required bandwidth for collecting data so low so that it does not interfere with the native application. \parlot could collect hundreds of megabytes of data per second with just occupying a few kilobytes per second of the system bandwidth. Comparing to other similar tools and also considering the amount of useful traces that \parlot collects, the overhead it adds to the application is relatively low.
+Our experiments show that more than 95 \% of the added overhead by \parlot is caused by \pin which we used to instrument the binary file. Since we are only tracking the function-call entry and exit points, a light-weight instrumentaion tool but not as general as \pin would reduce the overhead by much.
+Generated traces by \parlot, then can be used as the main input of HPC verification tools. From \parlot traces, interesting insight about the behavior of application in general, and control flow of every single thread/process can be extracted. Debugger tools can exploit the information lied within \parlot traces by, for example, root-causing the failure, thread divergence, send/receive mismatch, etc and help HPC community a great deal. 
