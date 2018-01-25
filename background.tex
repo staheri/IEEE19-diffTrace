@@ -5,7 +5,16 @@ Executables can be instrumented \textit{statically}, where the additional code i
 
 Many different tools for investigating application behavior have been designed on top of such Dynamic Binary Instrumentation (DBI) frameworks. For instance, Dyninst~\cite{dyninst} provides a dynamic instrumentation API that gives developers the ability to measure various performance aspects. It is used in tools like Open-SpeedShop~\cite{openss} and TAU~\cite{tau} as well as correctness debuggers like STAT~\cite{stat}. Moreover, VampirTrace~\cite{vampirt} uses it to provide a library for collecting program execution logs. 
 
-Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of every register and memory location. It provides developers with the ability to instrument system calls and instructions. Error detectors such as Memcheck~\cite{memcheck} and call-graph generators like \callgrind~\cite{callgrind} are built upon Valgrind.
+Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of every register and memory location. It provides developers with the ability to instrument system calls and instructions. Error detectors such as Memcheck~\cite{memcheck} and call-graph generators like \callgrind~\cite{callgrind} are built upon Valgrind.\footnote{Given the absence of tools similar to \parlot, we employ \callgrind
+ as a ``close-enough'' tool in our comparisons elaborated in \S\ref{sec:tracing-tools}.
+ In this capacity, \callgrind is similar to \parlotm, a variant of \parlot that only collects
+ traces from the {\tt main} function. We perform such comparison to have an idea of how we fare
+ with respect to one other tool. \S\ref{sec:results} separately
+ presents a ``self assessment'' of \parlot.}
+
+ 
+%
+
 
 We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools. \parlot mutates \pin to track the function call stack and to trace the entry (call) and exit (return) of every executed function.
 
