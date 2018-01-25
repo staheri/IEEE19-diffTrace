@@ -2,11 +2,11 @@
 \caption{Tracing overhead added by each version of \parlot - Input: B}
 \begin{center}
 \label{comet_wo_det_Main_all_B_p3.5}
-\scalebox{0.95}{
+\scalebox{0.80}{
 \begin{tabular}{|c|c|rrr|rrr|rrr|rrr|} 
 \hline 
 \multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{Input: B}}} & \multicolumn{1}{r|}{Nodes :}    & \multicolumn{3}{c|}{1}  & \multicolumn{3}{c|}{4} & \multicolumn{3}{c|}{16}  & \multicolumn{3}{c|}{64} \\ \cline{2-14} 
-\multicolumn{1}{|l|}{} & \multicolumn{1}{r|}{Detail Tools:} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} & \multicolumn{1}{c}{npin} & \multicolumn{1}{c}{ParLOT} & \multicolumn{1}{c|}{wpin} \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{r|}{Detail Tools:} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} \\
 \hline
 \multirow{9}{*}{Main} &  bt  &  1.50  &  1.55  &   5.62  &  1.74  &  1.76  &  5.06  &  2.19  & \cellcolor{blue!25} 2.15  &  5.02  &  1.83  &  2.10  &  3.52 \\
  &  cg  &  1.75  &  1.82  &   2.38  &  1.84  &  1.85  &  2.64  &  2.70  & \cellcolor{blue!25} 2.58  &  4.43  &  2.32  & \cellcolor{blue!25} 2.17  &  4.64 \\
@@ -16,6 +16,7 @@
  &  lu  &  1.32  & \cellcolor{blue!25} 1.31  &   1.44  &  1.75  &  1.77  &  2.25  &  2.73  &  2.73  &  3.62  &  3.05  &  4.39  &  6.13 \\
  &  mg  &  2.56  & \cellcolor{blue!25} 2.53  &   2.79  &  1.56  & \cellcolor{blue!25} 1.52  &  1.59  &  2.63  & \cellcolor{blue!25} 2.43  &  2.65  &  1.95  &  1.97  &  1.85 \\
  &  sp  &  1.34  & \cellcolor{blue!25} 1.33  &   2.43  &  1.73  &  1.73  &  3.58  &  2.14  &  2.15  &  2.37  &  1.95  &  2.07  &  2.54 \\
+\cline{2-14}
  &  GM  &  1.89  &  1.90  &   4.10  &  1.77  & \cellcolor{blue!25} 1.75  &  2.92  &  2.37  & \cellcolor{blue!25} 2.19  &  3.00  &  2.45  &  2.52  &  3.33 \\
 \hline 
 \end{tabular} }
