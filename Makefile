@@ -28,7 +28,7 @@ $(TARGET): Makefile $(DEPFILES)
 
 %.pdf: %.tex
 	$(LATEX) $<
-	-bibtex $*
+	bibtex $*
 	$(LATEX) $<
 	$(LATEX) $<
 
