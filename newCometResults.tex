@@ -21,7 +21,8 @@ The reason for \parlot 's scaling behavior can be explained by correlating it wi
 In summary, \parlot 's overhead is in the single digits for all evaluated applications and configurations, including for 1024-core runs. It appears to scale reasonably to larger node counts and well to larger problem sizes.
 
 
-\begin{figure}[!t]
+
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartAvg_sd_B_p3_5.png}
 \caption{ Input: B - Tracing Overhead
@@ -30,7 +31,7 @@ In summary, \parlot 's overhead is in the single digits for all evaluated applic
 \end{figure}
 
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartAvg_sd_C_p3_5.png}
 \caption{ Input: C - Tracing Overhead}
@@ -85,7 +86,8 @@ Under the same circumstances,
 average overhead that \parlota adds is 0.6x (0.4x for \parlotm)
 of that caused by \callgrind).
 
-\begin{figure}[!t]
+
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
 \caption{ Input: \textbf{B} - Required Bandwidth per core (kB/s)
@@ -95,7 +97,7 @@ of that caused by \callgrind).
 
 
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
 \caption{ Input: \textbf{C}  - Required Bandwidth per core (kB/s)
@@ -126,11 +128,12 @@ the main image functions,
 we surmise that the probability of obtaining
 redundant events in traces (which compression takes advantage of)
 is lower for \parlota, thus causing its compression efficacy to drop.
+
   
 \input{tabs.comet.newMed/comet_cr_pMpA_BC_itn_p3.5.tex}
 
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
 \caption{ Input: \textbf{C}  - Compression Ratio
@@ -139,7 +142,7 @@ is lower for \parlota, thus causing its compression efficacy to drop.
 \end{figure}
 
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
 \caption{ Input: \textbf{B}  - Compression Ratio
@@ -151,7 +154,6 @@ is lower for \parlota, thus causing its compression efficacy to drop.
   
 \subsection{ \pininit Overhead} 
 \label{subsec:pinit}
-
 Tables \ref{comet_wo_det_Main_all_B_p3.5} and
 \ref{comet_wo_det_All_all_B_p3.5} present the average overhead added to each
 application by different variations of \parlot. 
@@ -212,7 +214,7 @@ lightweight, the overall overheads would reduce even further. \\
 
 \input{tabs.comet.newMed/comet_wo_det_All_all_B_p3.5.tex}
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartDet_B_wc_byTool_p3_5.png}
 \caption{ Input: \textbf{B} - Tracing overhead added to the native run by each tool}
@@ -220,13 +222,17 @@ lightweight, the overall overheads would reduce even further. \\
 \end{figure}
 
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartDet_C_wc_byTool_p3_5.png}
 \caption{ Input: \textbf{C} - Tracing overhead added to the native run by each tool
 }
 \label{comet_chartDet_C_wc_byTool_p3_5}
 \end{figure}
+
+
+
+
 
 
 \subsection{Compression impact} 
@@ -248,7 +254,8 @@ The  corresponding figure for \parlotnc is \textbf{6.62}.
 The numbers of \parlotm and input C is following the same pattern. For example, \parlot-nc slows down the application execution almost \textbf{1.66x} more than \parlotm.
 
 
-\begin{figure}[!t]
+
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartDet_B_woc_byTool_p3_5.png}
 \caption{ Input: B, Tracing overhead added by \pininit and \parlotnc
@@ -256,7 +263,7 @@ The numbers of \parlotm and input C is following the same pattern. For example, 
 \label{comet_chartDet_B_woc_byTool_p3_5}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_chartDet_C_woc_byTool_p3_5.png}
 \caption{ Input: C, Tracing overhead added by \pininit and \parlotnc}
@@ -266,11 +273,10 @@ The numbers of \parlotm and input C is following the same pattern. For example, 
 
 
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=3.2in]{figs.comet.newMed/comet_BX2_Main_16_B_p3_5.png}
 \caption{ Variability of \parlotm overhead on 16 nodes (Input B)
 }
 \label{comet_BX2_Main_16_B_p3_5}
 \end{figure}
-
