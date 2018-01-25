@@ -5,15 +5,27 @@
 
 \subsection{Tracing overhead}
 \label{subsec:lowtoh}
- - Table \ref{comet_sd_pMpAcg_BC_itn_p3.5}
- - Fig \ref{comet_chartAvg_sd_B_p3_5}, \ref{comet_chartAvg_sd_C_p3_5} 
+
  
 \input{tabs.comet/comet_sd_pMpAcg_BC_itn_p3.5.tex}
    
 Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} shows the overhead caused by \parlotm, \parlota and  \callgrind on each application of NPB benchmark.
- Last column of table is showing the geometric mean of \textit{tracing overhead} by each tool for every application. \\
+Last column of table shows the geometric mean of \textit{tracing overhead} by each tool for every application. \\
+ 
  
 
+On average, both \parlotm and \parlota has better performance than \callgrind. Bolded numbers in table \ref{comet_sd_pMpAcg_BC_itn_p3.5} for input C shows that the average overhead added by \parlotm is \textbf{1.98}, by \parlota is \textbf{2.83} and by \callgrind is \textbf{4.88} (all of the overhead has been calculated relative to native run as baseline). 
+\\
+Considering amount of collected traces by \parlot (especially \parlota) and \callgrind, clearly \parlot reaches the goal of "collecting more while adding less overhead".
+By increasing the sizes of inputs, the average of geometric means of overheads decrease for \parlotm and \parlota but increase for \callgrind. 
+
+\begin{itemize}
+\item Why Callgrind scales better? [to be added]
+\item Martin's question in the email [to be added]
+\item more info about type of applications that we used as benchmark and why tools have different numbers and behaviors for different applications.
+\end{itemize}
+ 
+ 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=3.9in]{figs.comet/comet_chartAvg_sd_B_p3_5.png}
@@ -34,17 +46,6 @@ Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} shows the overhead caused by \parlotm, \
 
  
  
-On average, both \parlotm and \parlota has better performance than \callgrind. Bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} for input C shows that the average overhead added by \parlotm is \textbf{1.98}, by \parlota is \textbf{2.83} and by \callgrind is \textbf{4.88}. 
-\\
-Considering amount of collected informative data by \parlot (especially \parlota) and \callgrind (more about this later in this section), clearly \parlot reaches the goal of "collecting more informative data while adding less overhead".
-By increasing the size of input, average of geometric means of overheads decrease for \parlotm and \parlota but increase for \callgrind. 
-
-\begin{itemize}
-\item Why Callgrind scales better? [to be added]
-\item Martin's question in the email [to be added]
-\item more info about type of applications that we used as benchmark and why tools have different numbers and behaviors for different applications.
-\end{itemize}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
