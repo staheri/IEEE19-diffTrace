@@ -1,40 +1,37 @@
-\subsection{Experimental Setup}
-We executed all of our experiments on Comet \cite{comet} supercomputer at San Diego Supercomputer Center . Comet has 1944 total number of computing nodes and each node has a Dual-Socket Intel Xeon E5-2680v3 processors with total number of 24 cores (14 on each socket) and 128 GB of memory with NSF and Lustre filesystem.\\
-We evaluated our tool on NAS Parallel Benchmarks (NPB) \cite{nas}. NPB has a variety of MPI-based applications, like \textit{Conjugate Gradient} (cg) with irregular memory accesss and communication and \textit{Lower-Upper} (lu) a Gauss-Seidel solver. All NPB applications have been compiled with MVAPICH2.2.1 and -g and -O1 optimization flag.\\
-We evaluated \parlot with \pin version 3.5 and \callgrind version 3.13.
+\subsection{Benchmarks and System}
 
-\subsection{Evaluation Parameters and Metrics}
-In order to evaluate \parlot and make a fair comparison with similar tools, we have to have tune our experimental configurations identically and define some metrics to measure and evaluate performance and required resources.
-\subsubsection{Parameters}
-\begin{itemize}
-\item \textbf{\# of Nodes}: We have been running all of the experiments on 1, 4, 16 and 64 number of nodes on Comet, with using 16 cores on each node (up to 1024 cores) to evaluate the behavior of \parlot on wide range of scales.
-\item \textbf{Application Input}: NPB applications can be executed on different size of inputs. We have used class size \textit{B}(small-medium) and \textit{C}(medium-large)
-\end{itemize}
+We performed all of our evaluations on the MPI-based NAS Parallel Benchmarks (NPB)~\cite{nas}. NPB includes four inputs sizes. To keep the runtimes reasonable, we show results for the class \textit{B} (small-medium) and class \textit{C} (medium-large) inputs.
 
-\subsubsection{Metrics}
-In order to evaluate and make a fair comparison between similar tools, first we need to decide what specific aspects of any tool are we interested in. As discussed in earlier sections, in general, an HPC debugger that "adds less overhead while collecting more information" is a "better" debugger. Thus, we define below three metrics as the basis of our comparisons and evaluations
+We compiled the NPB codes with the mpicc and mpif77 wrappers of MVAPICH 2.2.1, which are based on icc/ifort 14.0.2 using the prescribed -g and -O1 optimization flags. Quick tests showed that higher optimization levels do not significantly improve the performance.
+
+We ran all experiments on Comet at the San Diego Supercomputer Center~\cite{comet}, whose filesystem is NSF and Lustre. Comet has 1944 compute nodes, each of which has dual-socket Intel Xeon E5-2680v3 processors with a total of 28 cores (14 per socket) and 128 GB of main memory. Note that we only used 16 cores per node as many of the NPB programs require a core count that is a power of two. To study the scaling behavior, we ran experiments on 1, 4, 16 and 64 compute nodes, i.e., on up to 1024 cores.
+
+
+\subsection{Metrics}
+
+We use the following metrics to quantify and compare the performance of the tracing tools. Unless otherwise noted, all results are based on the median of three identical experiments.
 \begin{itemize}
-\item \textbf{Tracing Overhead} is simply saying how much longer the target application takes to execute when you run a tracing tool on top of it. Average tracing overhead of different tools shows how time-efficient they are. Numeric value of tracing overhead is the median runtime out of 3 identical execution of each tool on top of each target application relative to the median runtime of corresponding application with no tracing tool on top of it (native run). 
-\item  \textbf{Required Bandwidth per core (kB/s)}. Tracing tools generates traces and consumes some of the system and core bandwidth. It is measured by $ReqBW_x = TraceSize_x (KB) / (\# of cores)_x / Runtime_x (S)$
-\item \textbf{Compression Ratio (CR)} is the ratio of size of decompressed buffer from compressed traces over size of intermediate compressed traces.
+\item The \textbf{tracing overhead} is the runtime of the target application when it is being traced divided by the native runtime of the same application (without any tracing). This lower-is-better ratio measures by how much the tracing (and the compression when enabled) slows down the target application.
+\item The \textbf{tracing bandwidth} is the total size of the trace information divided by the application runtime. To make the results easier to compare, we generally list the tracing bandwidth per core, i.e., the tracing bandwidth divided by the number of cores used. This lower-is-better metric is expressed in kilobytes per second (kB/s) per core. It specifies the average needed bandwidth to record the trace data.
+\item The \textbf{compression ratio} is the size of the uncompressed trace divided by the size of the generated (compressed) trace. This higher-is-better ratio measures the factor by which the compression reduces the trace size. In other words, without compression, the tracing bandwidth would be higher by this factor.
 \end{itemize}
 
 
+\subsection{Tracing Tools}
 
-\subsubsection{\parlot side tools / variations of \parlot}
-
+We compare our \parlot tool, which is based on \pin 3.5, with \callgrind 3.13. \parlot was compiled with gcc 4.9.2 using \pin 's make system and \callgrind with Valgrind's make system. We created the following versions of \parlot to evaluate different aspects of its design.
 
 \begin{itemize}
-\item \textbf{\parlotm} collects function call traces only from the main image of application. 
-\item \textbf{\parlota} collects function call traces from the all of the images including library function calls.
-\item \textbf{Pin-init} is a version of \parlot where the tracing process completely shut off/disabled. Purpose of \textit{Pin-init} is to see how much of the actual tracing overhead added to native run is caused by initializing \pin and binary instrumentation (is this correct??).
-\item \textbf{\parlotnc} is basically \parlot with No Compression. It stores captured data during execution as is into disk. Purpose of this side tool is to show the impact of compression on overall performance of \parlot.
+\item \textbf{\parlotm} is the normal \parlot tool configured to only collect function-call traces from the main image of the application.
+\item \textbf{\parlota} is the normal \parlot tool configured to collect function-call traces from all images of the application, including library function calls.
+\item \textbf{\pininit} is a crippled version of \parlot from which the tracing code has been removed. The purpose of \pininit is to see how much of the overhead is due to \pin itself.
+\item \textbf{\parlotnc} is the normal \parlot tool but with compression disabled. It writes out the captured data in uncompressed form. The purpose of \parlotnc is to show the performance impact of the compression.
 \end{itemize}
 
-\subsubsection{\callgrind}
-\begin{itemize}
-\item \textbf{What is \callgrind and What does it produce?} \callgrind is built on top of Valgrind platform that records the call history among functions in a program's run as a call-graph by measuring the number of instructions executed and their relationship to source lines. 
-Intermediate generated traces by \callgrind are some numbered files contain pure ascii text. \callgrind enumerate the name of files and function calls and also, stores those numerical values as relative to previous numbers. These are the only data compression options available on \callgrind which is enabled by default. Each \callgrind trace file contains a sequence of function names (or their code) and a few other numbers for each function showing the that function relationships with other functions (caller-callee). Using \textit{callgrind\_ annotate} tool which displays different reports from Callgrind generated traces, the richest report that \textit{callgrind\_ annotate} can produce is the tree of function calls with caller-callee relationship and cost of each function. Cost of each function is the number of Instruction Read which is collected during tracing by reading hardware counters. Cache simulation and branch prediction information also can be enabled to be collected and then \textit{callgrind\_ annotate} can produce different reports for cache and branch prediction. By default, cache simulation and branch prediction (which are originally from another tool Cachegrind) are disabled by \callgrind.
-\item \textbf{Why did we pick \callgrind to compare with}. \parlot uses a DBI to instrument and collect function-call traces to be used for debugging purposes. Surprisingly, no tool out there generates traces for debugging. \callgrind is the closest tool that we found that uses Valgrind DBI to instrument and collect function call graphs with more limited (and different) information in their traces which is more useful for beginners to see what portion of the execution time has been spent on each function. Quality (information) of collected data using \callgrind can somehow be compared with \parlot (main). However, scope of function calls that \callgrind collects is at line-of-source-code level.
 
-\end{itemize}
+It proved surprisingly difficult to find a tool that is similar to \parlot because there appear to be no other tools that generate traces for debugging. The tools that do generate traces are generally for performance evaluation. In the end, we settled on \callgrind as the most similar tool and use it for our comparisons. \callgrind is based on the Valgrind DBI tool. It collects function-call graphs combined with performance data to show the user what portion of the execution time has been spent in each function.
+
+Each \callgrind trace file contains a sequence of function names (or their code) plus numerical data for each function on its caller-callee relationship with other functions. Moreover, it contains cost information for each function in terms of how many machine instructions it read. This information is collected using hardware performance counters. The format of the file is plain ASCII text. Interestingly, all numerical values are expressed relative to previous values, i.e., they are delta (or difference) encoded. This simple form of data compression is enabled by default in \callgrind.
+
+We believe the information traced by \callgrind is reasonably similar to the information traced by \parlotm. Whereas \callgrind 's traces include performance data that \parlot does not capture, \parlot records the full function-call trace, which \callgrind does not capture. The full function-call trace is a strict superset of the call-graph information that \callgrind records because the call graph can be extracted from the function-call trace but not vice versa. In particular, \callgrind cannot recreate the order of all function calls a thread made whereas \parlot can.
+
