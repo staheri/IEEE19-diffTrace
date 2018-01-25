@@ -51,9 +51,39 @@ In summary, \parlot 's overhead is in the single digits for all evaluated applic
 
 \input{tabs.comet.newMed/comet_bw_pMpAcg_BC_itn_p3.5.tex}
 
-Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} shows how much bandwidth each tool occupied during the application execution. In addition to the large gap between average overhead of \parlotm and \callgrind, former also performs better than latter in required bandwidth, especially for smaller inputs. Since \parlota collects the trace of library function calls, there is no wonder why its required bandwidth is higher than other tools.
+Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} shows how much bandwidth each tool 
+requirez
+during the application execution. 
+%
+We notice that \parlotm requires much less bandwidth compared to
+\callgrind, especially for smaller inputs. 
+%
+\parlota's bandwidth is much higher, as it collects traces from all
+functions, and not just the main function.
 
-We observe from table \ref{comet_cr_pMpA_BC_itn_p3.5}, input C, the average compression ratio for \parlota is 644.38, and its corresponding required bandwidth from table \ref{comet_bw_pMpAcg_BC_itn_p3.5} is 56.38, which means \parlot can collect \textbf{more than 36 MB} worth of data per core per second where it only needs 56.38 kB/s bandwidth and leave the rest of available system bandwidth for application, while \callgrind can only collects \textbf{less than 100 kB} of traces and still adds more overhead comparing to either \parlota or \parlotm (fig. \ref{comet_chartAvg_bw_B_p3_5},\ref{comet_chartAvg_bw_C_p3_5}). The average amount of traces that can be collected by \parlota is \textbf{360x} (85x for \parlotm) larger than \callgrind and the average overhead \parlota adds is less than 0.6x (0.4x for \parlotm) smaller than \callgrind.
+
+We observe from table \ref{comet_cr_pMpA_BC_itn_p3.5}, input C, that the
+average compression ratio for \parlota is 644.38, and its
+corresponding required bandwidth from table
+\ref{comet_bw_pMpAcg_BC_itn_p3.5} is 56.38.
+%
+This which means \parlot can
+collect \textbf{more than 36 MB} worth of data per core per second
+while it only needs 56.38 kB/s of the system bandwidth, {\em leaving the rest of
+the available system bandwidth for application.}
+%
+In comparison, \callgrind can only
+collect \textbf{less than 100 kB} of traces and still adds more
+overhead compared to either \parlota or \parlotm
+(fig. \ref{comet_chartAvg_bw_B_p3_5},\ref{comet_chartAvg_bw_C_p3_5}). 
+%
+The average amount of traces that can be collected by \parlota is
+\textbf{360x} (85x for \parlotm) larger than that for \callgrind.
+%
+Under the same circumstances,
+\parlota also incurs much less overheads (the
+average overhead that \parlota adds is 0.6x (0.4x for \parlotm)
+of that caused by \callgrind).
 
 \begin{figure}[!t]
 \centering
