@@ -151,12 +151,62 @@ is lower for \parlota, thus causing its compression efficacy to drop.
   
 \subsection{ \pininit Overhead} 
 \label{subsec:pinit}
-Tables \ref{comet_wo_det_Main_all_B_p3.5} and \ref{comet_wo_det_All_all_B_p3.5} show average overhead added to each application by different variations of \parlot. Last row of tables show geometric mean of each of its above values showing how much each phase of \parlot slows down the native execution. In general, we all expect that the added overhead of  \pininit < \parlot < \parlotnc. Highlighted cells in tables are the ones which do not follow the above order. The variability of 3 runs of each experiment is observable from boxes in figure \ref{comet_BX2_Main_16_B_p3_5} where it shows the minimum, maximum and median of overhead calculated overhead of each experiment for each tool, for input size B, 16 nodes.
-This variability (which is similar for other inputs and nodes) justifies the inconsistent (highlighted) values in the table \ref{comet_wo_det_Main_all_B_p3.5} and \ref{comet_wo_det_All_all_B_p3.5}.
+
+Tables \ref{comet_wo_det_Main_all_B_p3.5} and
+\ref{comet_wo_det_All_all_B_p3.5} present the average overhead added to each
+application by different variations of \parlot. 
+%
+The last row of these two tables
+present information on the geometric mean.
+%
+More specifically, an entry ``$x$'' in this last row
+is the geometric mean of all
+the entries above it in the same column.
+%
+This information captures how much each
+phase of \parlot slows down the native execution. 
 
 
-Tables \ref{comet_wo_det_Main_all_B_p3.5} and \ref{comet_wo_det_All_all_B_p3.5} shows that on average, \pininit adds 3.28 overhead and \parlota adds 3.42 overhead. \textbf{almost 96\% of \parlota overhead is added by \pininit} . Numbers from \parlotm and other inputs are following the same pattern (fig. \ref{comet_chartDet_B_wc_byTool_p3_5},\ref{comet_chartDet_C_wc_byTool_p3_5}).
-The overhead that \parlot design (regardless of overhead of \pininit) adds to applications is extremely small and if we switch to a different instrumentation tool that is not as general as \pin but more lightweight, should help a great deal. \\
+In general, one 
+expects the following inequality to hold:
+ the added overhead of \pininit < that of \parlot
+< that of \parlotnc. 
+%
+The highlighted cells in these tables do not
+obey this inequality.
+%
+In fact, the variability across three runs of each experiment
+is indeed observable from the bar graphs in figure \ref{comet_BX2_Main_16_B_p3_5}
+where we present the minimum, maximum and median overheads.
+%
+These are the calculated
+overheads of each experiment for each tool, for input size B, and for 16
+nodes. 
+%
+This variability (which is similar to the variability observed for inputs and nodes)
+justifies the inconsistency that we highlight in  tables
+\ref{comet_wo_det_Main_all_B_p3.5} and
+\ref{comet_wo_det_All_all_B_p3.5}.
+
+
+Tables \ref{comet_wo_det_Main_all_B_p3.5} and
+\ref{comet_wo_det_All_all_B_p3.5} show that on average, \pininit adds
+an overhead of 3.28  and \parlota adds an overhead of 3.42. 
+%
+\textbf{Almost 96\%
+of \parlota overhead is added by \pininit}. 
+%
+Numbers from \parlotm and
+other inputs are follow the same pattern
+(see fig. \ref{comet_chartDet_B_wc_byTool_p3_5} and \ref{comet_chartDet_C_wc_byTool_p3_5}). 
+%
+The overhead that \parlot design (regardless of overhead of \pininit) {\em adds}
+to applications is extremely small.
+%
+We further observe that if we were to switch over to a different
+instrumentation tool that is not as general as \pin but perhaps more
+lightweight, the overall overheads would reduce even further. \\
+
 
 \input{tabs.comet.newMed/comet_wo_det_Main_all_B_p3.5.tex}
 
@@ -177,8 +227,6 @@ The overhead that \parlot design (regardless of overhead of \pininit) adds to ap
 }
 \label{comet_chartDet_C_wc_byTool_p3_5}
 \end{figure}
-
-
 
 
 
