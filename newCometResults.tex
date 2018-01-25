@@ -109,8 +109,23 @@ of that caused by \callgrind).
 \subsection{Compression Ratio}
 \label{subsec:cr}
 
-Table \ref{comet_cr_pMpA_BC_itn_p3.5} shows the compression ratios for all configurations and inputs. On average, \parlot can store up to more than 1700 MB of collected data in just 1 MB trace files. Compression mechanism of \parlot achieved more than 21k compression ratio (table \ref{comet_cr_pMpA_BC_itn_p3.5}, the entry for \parlotm, Input B, 1 node) and it has been achieved with adding low overhead and incrementally on the fly.
-Generally, compression ratios for \parlotm are higher than \parlota. Since \parlota is collecting library function calls in addition to main image functions, chances of redundant data to compress decreases and causes drop in compression ratios.
+Table \ref{comet_cr_pMpA_BC_itn_p3.5} shows the compression ratios for all configurations and inputs. 
+On average, \parlot can store up to more than 1700 MB of collected data in just 1 MB of trace files. 
+In fact, observe that the compression mechanism of
+\parlot achieved more than a 21k compression ratio (table \ref{comet_cr_pMpA_BC_itn_p3.5}, 
+the entry for \parlotm, Input B, 1 node).
+%
+Furthermore, this result was achieved with low overhead and incremental (hence low-jitter) 
+on the fly compression.
+%
+Generally, the obtained
+compression ratios for \parlotm are higher than for \parlota. 
+%
+Since \parlota  collects library function calls in addition to calls from
+the main image functions, 
+we surmise that the probability of obtaining
+redundant events in traces (which compression takes advantage of)
+is lower for \parlota, thus causing its compression efficacy to drop.
   
 \input{tabs.comet.newMed/comet_cr_pMpA_BC_itn_p3.5.tex}
 
