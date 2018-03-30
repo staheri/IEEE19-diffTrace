@@ -1056,7 +1056,7 @@ Computing Machinery]
   \ifx\acmConference@shortname\@empty
     \gdef\acmConference@shortname{#2}%
   \fi}
-\acmConference[HPDC'18]{ACM International Symposium}{June 2018}{Tempe, AZ, USA}
+\acmConference[ICPP'18]{International Conference on Parallel Processing}{August 2018}{Eugene, OR, USA}
 %\acmConference[HPDC'18]{}{}{}
 \def\acmBooktitle#1{\gdef\@acmBooktitle{#1}}
 \acmBooktitle{Proceedings of \acmConference@name
