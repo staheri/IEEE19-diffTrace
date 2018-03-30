@@ -1,3 +1,4 @@
+\subsection{Original from latest HPDC draft}
 In this paper, we introduced \parlot, a portable low overhead dynamic
 binary instrumentation-based
 tracing tool that can help with incise debugging of parallel applications.
@@ -63,3 +64,46 @@ status of the collected traces by equivalencing similar behaviors
 and looking for outlier exections.
 
 %--end
+
+
+\subsection{NEW FOR ICPP}
+
+\subsubsection{Debugging Story}
+
+General Outline:
+
+\begin{itemize}
+\item Using PMPI, I injected some simple bugs to three MPI applications:
+	\begin{itemize}
+	\item Integral
+		\begin{itemize}
+		\item MPI-Allgather() : Wrong Receive Count
+		\item MPI-Allgather() : Wrong Send Count
+		\item MPI-Allgather() : Wrong Root ID
+		\end{itemize}
+	\item Eratosthenes
+		\begin{itemize}
+		\item MPI-Reduce) : Wrong  Count
+		\item MPI-Reduce() : Wrong Root ID
+		\end{itemize}
+	\item ILCS (Broadcast - to be added)
+	\end{itemize}
+\item Generated traces(from main image and all images) during execution with 8 processes.
+\item Generated triples <Object, Attributes,Relation> from traces for Concept Lattice Construction. Here are the attribute sets I extracted from each trace (after decompression):
+	\begin{itemize}
+	\item \textbf{B0} - Set of all function calls (regardless of their frequency or order of invoking)
+	\item \textbf{B1} - A set containing of pairs of $<function\_name,frequency\_bins>$\\
+	$freq\_bin(function) = Log_\text{10}freq$
+	\item \textbf{B2} - A set containing of pairs of $<function\_name,frequency\_bins>$\\
+		$freq\_bin(function) = (-1) * Log_\text{10}(freq/totalLength)$
+	
+	\end{itemize}
+\item I have designed a mechanism to split the sequence of traces at points of interests. Here are the list of different chunks of traces:
+	\begin{itemize}
+	\item \textbf{Full}: This chunk is the full length trace. In some applications during execution, extra threads had been forked thus ParLOT generates traces for them as well. \textbf{Full} concatenates the traces from all threads in order starting from thread 0.
+	\item \textbf{Collective}: Split trace at collective/barrier
+	\item \textbf{Internal Bugged}: The sequence of all internal function invocations of the MPI function that I injected bug to.
+	\item \textbf{Threads}: Split trace at beginning of each thread.
+	\end{itemize}
+\end{itemize}
+By comparing these chunks for different attribute sets and buggy-vs-bugFree traces and CLs, we can see significant differences (bug manifests).
