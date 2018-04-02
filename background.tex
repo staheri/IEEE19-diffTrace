@@ -16,12 +16,19 @@ Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of ev
 %
 
 
-We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools. \parlot mutates \pin to track the function call stack and to trace the entry (call) and exit (return) of every executed function.
+We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools. \parlot mutates \pin to track the function call stack and to trace the entry (call) and exit (return) of every executed function. \hl{However, the mechanism of our tracing and compressing approaches can be built on top of other instrumentation tools and not restricted to pin. }
 
 
 \subsection{Efficient Tracing for Debugging}
 When dealing with large-scale parallel programs, any attempt to capture reasonably frequent events will result in a vast amount of data. Moreover, transferring and storing the data will incur significant overhead. For example, collecting just one byte of information per executed instruction yields on the order of a gigabyte of data per second on a single high-end core. Storing the resulting multi-gigabyte traces from many cores can be a challenge, even on today's large hard disks.
 
+\hl{
+MRNet} \cite{mrnet} \hl{provides 
+an overlay network for efficient data multicasts and reductions
+tree topology for distribution of data analysis and management 
+customizable components for use in diverse tool applications.  
+
+}
 Hence, we need a way to decrease the space and runtime overhead. Compression can encode the generated data using a smaller number of bits, help
 reduce the amount of data movement across the memory hierarchy, and
 reduce storage and network demands.
