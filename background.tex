@@ -16,7 +16,7 @@ Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of ev
 %
 
 
-We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools. \parlot mutates \pin to track the function call stack and to trace the entry (call) and exit (return) of every executed function. \hl{However, the mechanism of our tracing and compressing approaches can be built on top of other instrumentation tools and not restricted to pin. }
+We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools.\hl{ There is also version of PIN available for ARM architecture}\cite{pinarm}. \parlot mutates \pin to track the function call stack and to trace the entry (call) and exit (return) of every executed function. \hl{However, the mechanism of our tracing and compressing approaches can be built on top of other instrumentation tools and not restricted to pin. For example, PMaC }\cite{pmac} \hl{ is a DBI tool available for PowerPC/AIX architecture and ParLOT can be built on top of that.}
 
 
 \subsection{Efficient Tracing for Debugging}
@@ -38,10 +38,7 @@ are also known to exploit
 the repetitive nature of time-step simulations~\cite{freitag}. %Martin: unclear to me
 
 \hl{
-Many performance and debugging tools for HPC applications} \cite{stat,taumrnet}\hl{ had been built on top of MRNet}\cite{mrnet}\hl{ as an efficient overlay network for customizable data analysis and management. MRNet provides 
-an overlay network for efficient data multicasts and reductions
-tree topology for distribution of data analysis and management 
-customizable components for use in diverse tool applications.  MRNet overcomes the challenge of managing massive amount of trace data by distributing the workload of data collection, transfer and analysis among processes on a tree-based network.}
+Many performance and debugging tools for HPC applications} \cite{stat,taumrnet}\hl{ had been built on top of MRNet}\cite{mrnet}\hl{ as an efficient overlay network for customizable data collection. MRNet overcomes the challenge of managing massive amount of trace data by distributing the workload of data collection, transfer and analysis among processes on a tree-based network. In contrast, ParLOT is taking advantage of data compression to increase efficiency and vastly reduce required bandwidth for data transfer. }
 
 The novelty offered by \parlot lies in the combination of compression
 speed, efficacy, and low timing jitter

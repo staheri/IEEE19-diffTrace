@@ -280,3 +280,16 @@ The numbers of \parlotm and input C is following the same pattern. For example, 
 }
 \label{comet_BX2_Main_16_B_p3_5}
 \end{figure}
+
+
+
+
+\subsection{Extenuating Factors}
+
+\begin{itemize}
+
+\item \hl{ Our experiments were highly limited by the number of available SUs (service units) we had on multiple supercomputers. Running large-scale jobs for testing ParLOT with various parameters led us to running out of SUs several times throughout the experiments and we had to apply again for more allocations.}
+\item \hl{ Finding HPC Scalable benchmarks was a challenge too. Other than NAS Parallel Benchmark (NPB), we had tried AMG2016, pKIFMM, HPGMG and several other well-known MPI applications but for different reasons such as library incompatibility or crashes/halts on some specific configurations, we were not able to run our general experiments on those benchmarks. That is why we stick NPB benchmark.}
+\item \hl{Most of the HPC tracing tools are developed for performance analysis. To the best of our knowledge, Callgrind has the most similarity to our tool which collects function-call graph using a DBI framework. We have examined the tracing feature of tools such as Score-p and TAU but the comparison would be non-sense since the mechanism of collecting data and type of data that they collect are completely different.   
+}
+\end{itemize} 
