@@ -1,5 +1,4 @@
-
-Detecting and root causing HPC bugs is expensive. While traditional software engineering generally achieves high quality control, these methods are often inapplicable to HPC where concurrency combined with large problem scales and sophisticated domain-specific math can make programming very challenging. For example, it took months for scientists to debug an MPI laser-plasma interaction code~\cite{hpcdoe}.
+\hl{Program dynamic analysis in HPC is expensive}. While traditional software engineering generally achieves high quality control, these methods are often inapplicable to HPC where concurrency combined with large problem scales and sophisticated domain-specific math can make programming very challenging. For example, it took months for scientists to debug an MPI laser-plasma interaction code~\cite{hpcdoe}.
 
 HPC bugs may be a combination of both flawed program logic and unspecified or illegal interactions between various concurrency models (e.g., PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume vast amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application is therefore expensive and undesirable. 
 %The best hope for debugging lies in being able to efficiently capture detailed execution 
@@ -34,15 +33,15 @@ We also believe in the value
 of creating tools that are {\em portable across a 
 wide variety of platforms}.
 %
-Previous tools (e.g., STAT) rely on mechanisms such as
-MRNet~\cite{mrnet} to accelerate the collection and aggregation of traces.
+
 %
-Our thrust is to not depend on such mechanisms for trace aggregation but to instead offer 
+\hl{Our thrust is to use \textit{compression} for trace aggregation and offer 
 a generic and low-overhead tracing tool that 
-(1)~collects many types of dynamic facts about executions (e.g., all function
+(1)~collects dynamic information during execution for debugging, performance evaluation and phase detection (e.g., all function
 calls and returns), 
 (2)~is easy to install, 
 (3)~and is portable to multiple parallel platforms.
+}
 %
 {\em Providing all these features in a single tool
 that operates based on binary instrumentation
@@ -82,13 +81,6 @@ failure, it is important to know in which order {\tt f()}
 and {\tt g()} were invoked---something that is easy to discern using
 \parlot 's traces.
 %
-
-\hl{As proof of concept, we have preliminary results from using ParLOT tracing mechanism to distinguish between runs, as studied in} \citep{cstg}. \hl{Using PMPI profiler, we have injected different bugs to MPI-related functions to ILCS} \cite{ilcs} \hl{source-code, a scalable parallelization framework for iterative local searches. We executed ParLOT on top of executions of buggy and bug-free versions of ILCS and collected traces.
-Since ParLOT's traces maintain the order of function calls, we were able to split traces at multiple points of interest and by feeding different chunks of traces to a data structure Concept Lattice} \cite{clbook} \cite{clconst}. 
-\hl{We used Concept Lattice properties for trace analysis, e.g., similarity measurements between different processes or trace chunks and inter-process workflow divergence detection. We could narrow down our search space to locate the cause of abnormal behavior of buggy version of ILCS. The tracing methods implemented in ParLOT not only can be used for debugging purposes, but also produce valuable information for performance evaluation and detecting bottlenecks. However, the focus of this paper is on evaluation of tracing and compression mechanism.
-Other capabilities and useful information gathered by ParLOT will be explained and discussed in our later publications.}
-
-%
 One may be concerned that such a tool introduces excessive execution slowdown.
 %
 \parlot goes to great lengths to minimize these overheads to a level that we believe most users will find acceptable. The mindset is to \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. 
@@ -100,6 +92,13 @@ This paper makes the following main contributions.
 \item It describes advanced data compression methods to drastically reduce the required tracing bandwidth, thus enabling the collection of a rich set of information, which would be infeasible without on-the-fly compression.
 \item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting x86 applications at the binary level (regardless of the source language used) to collect full function-call traces.
 \end{itemize}
+%
+\hl{As proof of concept, we have preliminary results from using ParLOT tracing mechanism to distinguish between runs, as studied in} \citep{cstg}. \hl{We have injected different bugs to MPI-related functions to ILCS} \cite{ilcs} \hl{source-code, a scalable parallelization framework for iterative local searches. We executed ParLOT on top of executions of buggy and bug-free versions of ILCS and collected traces.
+Since ParLOT's traces maintain the order of function calls, we were able to split traces at multiple points of interest and by feeding different chunks of traces to Concept Lattice data structure} \cite{clbook} \cite{clconst}. 
+\hl{Using Concept Lattice properties, we could narrow down our search space to locate the cause of abnormal behavior of buggy version of ILCS. However, the focus of this paper is on evaluation of tracing and compression mechanism.
+Other capabilities and useful information gathered by ParLOT will be explained and discussed in our later publications.}
+
+%
 The remainder of this paper is organized as follows. Section \ref{sec:bgreltool} introduces the basic ideas and infrastructure behind \parlot and other tracing tools. Section \ref{sec:design} describes the design of \parlot in detail. Sections \ref{sec:evalmeth} and \ref{sec:results} present our evaluation of different aspects of \parlot and compare it with a similar tool. Section \ref{sec:concl}
 concludes the paper with a summary and future work.
 % that includes the construction of verification tools that exploit \parlot traces.

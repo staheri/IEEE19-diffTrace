@@ -4,7 +4,7 @@ We performed all of our evaluations on the MPI-based NAS Parallel Benchmarks (NP
 
 We compiled the NPB codes with the mpicc and mpif77 wrappers of MVAPICH 2.2.1, which are based on icc/ifort 14.0.2 using the prescribed -g and -O1 optimization flags. Quick tests showed that higher optimization levels do not significantly improve the performance.
 
-We ran all experiments on Comet at the San Diego Supercomputer Center~\cite{comet}, whose filesystem is NSF and Lustre. Comet has 1944 compute nodes, each of which has dual-socket Intel Xeon E5-2680v3 processors with a total of 28 cores (14 per socket) and 128 GB of main memory. Note that we only used 16 cores per node as many of the NPB programs require a core count that is a power of two. To study the scaling behavior, we ran experiments on 1, 4, 16 and 64 compute nodes, i.e., on up to 1024 cores. \hl{We have enough confidence to scale up our experiments up to 4096 cores, however, Comet did not allow us larger runs and that is why we are only showing results on up to 1024 cores.}
+We ran all experiments on Comet at the San Diego Supercomputer Center~\cite{comet}, whose filesystem is NSF and Lustre. Comet has 1944 compute nodes, each of which has dual-socket Intel Xeon E5-2680v3 processors with a total of 28 cores (14 per socket) and 128 GB of main memory. Note that we only used 16 cores per node as many of the NPB programs require a core count that is a power of two. To study the scaling behavior, we ran experiments on 1, 4, 16 and 64 compute nodes, i.e., on up to 1024 cores.
 
 
 \subsection{Metrics}

@@ -1,14 +1,8 @@
-\hl{The need for efficient tracing to support better understanding of
-HPC applications is growing since   }
-
-Effective HPC debugging of many classes of bugs on heterogeneous
-platforms requires efficient tracing methods that can track control
-flow in terms of function calls and returns, and also optionally
-capture a record of executions through user and system codes.
-%
-Binary instrumentation is the only approach that can accomplish this
-goal; unfortunately, available tools either do not produce the kinds
-of traces that can help with debugging or incur huge overheads when
+\hl{The need for efficient tracing to support better \textit{understanding}  of
+applications on heterogeneous platforms is growing. Such an understanding, to help us study different aspects of the behavior of the program during execution, should be achieved at low cost. An efficient tracing method that can track control
+flow in terms of function calls and returns, specially
+a record of executions through user and system codes, is only feasible by \textit{binary instrumentation}}; unfortunately, available tools either do not produce the kinds
+of traces that can help with \hl{improving the code} or incur huge overheads when
 the traces are brought out of the cores.
 %
 In this paper, we present \parlot,  a tool that extends Intel's \pin
@@ -18,8 +12,8 @@ trace compression methods that reduces the trace volume exported
 from a chip dramatically, thus making tracing affordable.
 (2)~it extends \pin's tracing methods to not only record function
 calls and returns, but using heuristic approaches corrects the
-stack pointer to accommodate non-standard returns.
-(3)~it produces a wealth of statistics including caller/callee
+stack pointer
+(3)~it produces a \hl{program execution analysis support via tracing} including caller/callee
 relations, call frequencies, and a linear trace of entire executions
 at the granularity the user opts for.
 %

@@ -1,7 +1,13 @@
 \subsection{Binary Instrumentation}
-Recording a log of events during the execution of an application is essential for better understanding the program behavior and, in case of a failure, to locate the problem. Recording this type of information requires instrumentation of the program either at the source-code or the binary-code level. Instrumenting the source code by adding extra statements to collect the desired information is easy for developers. However, doing so modifies the code and requires recompilation, often involving multiple different tools and complex hierarchies of makefiles, which can make this approach cumbersome and frustrating for users. Instrumenting an executable at the binary level using a tool is much easier, faster, and less error prone for most users. Moreover, binary instrumentation is language independent, portable to any system that has the appropriate instrumentation tool installed, and provides machine-level insight into the behavior of the application.
+Recording a log of events during the execution of an application is \textit{essential for better understanding the program behavior and, in case of a failure, to locate the problem.} Recording this type of information requires instrumentation of the program either at the source-code or the binary-code level. Instrumenting the source code by adding extra statements to collect the desired information is easy for developers. However, doing so modifies the code and requires recompilation, often involving multiple different tools and complex hierarchies of makefiles, which can make this approach cumbersome and frustrating for users. Instrumenting an executable at the binary level using a tool is much easier, faster, and less error prone for most users. Moreover, binary instrumentation is language independent, portable to any system that has the appropriate instrumentation tool installed, and provides machine-level insight into the behavior of the application.
 
-Executables can be instrumented \textit{statically}, where the additional code is inserted into the binary before execution, which results in a persistent modified executable, or \textit{dynamically}, where the modification of the executable is not permanent. In dynamic binary instrumentation, code can be discovered at runtime, making it possible to handle dynamically-generated and self-modifying code. Furthermore, it may be feasible to attach the instrumentation to a running process, which is particularly useful for long-running applications.
+Executables can be instrumented \textit{statically}, where the additional code is inserted into the binary before execution, which results in a persistent modified executable, or \textit{dynamically}, where the modification of the executable is not permanent. In dynamic binary instrumentation, \hl{code's behavior can be monitored at runtime}, making it possible to handle dynamically-generated and self-modifying code. Furthermore, it may be feasible to attach the instrumentation to a running process, which is particularly useful for long-running applications.
+
+
+Previous tools (e.g., STAT) rely on mechanisms such as MRNet [25]
+to accelerate the collection and aggregation of traces.
+
+
 
 Many different tools for investigating application behavior have been designed on top of such Dynamic Binary Instrumentation (DBI) frameworks. For instance, Dyninst~\cite{dyninst} provides a dynamic instrumentation API that gives developers the ability to measure various performance aspects. It is used in tools like Open-SpeedShop~\cite{openss} and TAU~\cite{tau} as well as correctness debuggers like STAT~\cite{stat}. Moreover, VampirTrace~\cite{vampirt} uses it to provide a library for collecting program execution logs. 
 
@@ -20,9 +26,9 @@ We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x8
 
 
 \subsection{Efficient Tracing for Debugging}
-When dealing with large-scale parallel programs, any attempt to capture reasonably frequent events will result in a vast amount of data. Moreover, transferring and storing the data will incur significant overhead. For example, collecting just one byte of information per executed instruction yields on the order of a gigabyte of data per second on a single high-end core. Storing the resulting multi-gigabyte traces from many cores can be a challenge, even on today's large hard disks.
+\hl{When dealing with large-scale parallel programs, any attempt to capture reasonably frequent events will result in a vast amount of data. Moreover, transferring and storing the data will incur significant overhead. \textit{For example, collecting just one byte of information per executed instruction yields on the order of a gigabyte of data per second on a single high-end core. Storing the resulting multi-gigabyte traces from many cores can be a challenge, even on today's large hard disks.} }
 
-Hence, we need a way to decrease the space and runtime overhead. Compression can encode the generated data using a smaller number of bits, help
+Hence, we need a way to decrease the space and runtime overhead. \textit{Compression} can encode the generated data using a smaller number of bits, help
 reduce the amount of data movement across the memory hierarchy, and
 reduce storage and network demands.
 %
@@ -38,9 +44,9 @@ are also known to exploit
 the repetitive nature of time-step simulations~\cite{freitag}. %Martin: unclear to me
 
 \hl{
-Many performance and debugging tools for HPC applications} \cite{stat,taumrnet}\hl{ had been built on top of MRNet}\cite{mrnet}\hl{ as an efficient overlay network for customizable data collection. MRNet overcomes the challenge of managing massive amount of trace data by distributing the workload of data collection, transfer and analysis among processes on a tree-based network. In contrast, ParLOT is taking advantage of data compression to increase efficiency and vastly reduce required bandwidth for data transfer. }
+Many performance and debugging tools for HPC applications} \cite{stat,taumrnet}\hl{ rely on mechanisms such as MRNet}\cite{mrnet}\hl{ to accelerate the collection and aggregation of traces based an overlay network to overcome the heavy data operations. However, our experiments show that due to high compression ratio of ParLOT traces, such mechanism for data movement and aggregation seems unnecessary}
 
-The novelty offered by \parlot lies in the combination of compression
+\paragraph{The novelty offered by \parlot lies in the combination of compression
 speed, efficacy, and low timing jitter
 made possible by its {\em incremental}
 compression algorithm, which is
@@ -56,6 +62,7 @@ From the decompressed full function-call trace, the complete call-graph,
 call-frequency, and caller-callee information can be extracted. 
 %
 This can be done at the granularity of a thread, a group of threads, or the whole application.
+}
 %
 We now elaborate on the design of \parlot that makes
 these innovations possible.
