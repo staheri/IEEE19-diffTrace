@@ -120,9 +120,18 @@ This paper makes the following main contributions.
 \item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting x86 applications at the binary level (regardless of the source language used) to collect full function-call traces.
 \end{itemize}
 %
-\hl{As proof of concept, we have preliminary results from using ParLOT tracing mechanism to distinguish between runs, as studied in} \citep{cstg}. \hl{We have injected different bugs to MPI-related functions to ILCS} \cite{ilcs} \hl{source-code, a scalable parallelization framework for iterative local searches. We executed ParLOT on top of executions of buggy and bug-free versions of ILCS and collected traces.
+\hl{As proof of concept, we have preliminary results from using ParLOT tracing mechanism to distinguish between runs, as studied in} \citep{cstg}.
+%
+\hl{We have injected different bugs to MPI-related functions to ILCS} \cite{ilcs} \hl{source-code, a scalable parallelization framework for iterative local searches.
+%
+We executed ParLOT on top of executions of buggy and bug-free versions of ILCS and collected traces.
+%
 Since ParLOT's traces maintain the order of function calls, we were able to split traces at multiple points of interest and by feeding different chunks of traces to Concept Lattice data structure} \cite{clbook} \cite{clconst}. 
-\hl{Using Concept Lattice properties, we could narrow down our search space to locate the cause of abnormal behavior of buggy version of ILCS. However, the focus of this paper is on evaluation of tracing and compression mechanism.
+%
+\hl{Using Concept Lattice properties, we could narrow down our search space to locate the cause of abnormal behavior of buggy version of ILCS.
+%
+However, the focus of this paper is on evaluation of tracing and compression mechanism.
+%
 Other capabilities and useful information gathered by ParLOT will be explained and discussed in our later publications.}
 
 %
