@@ -20,20 +20,33 @@ A natural and field-proven approach for large-scale debugging is to capture deta
 %
 A {\em key requirement} is to do this collection {\em as efficiently as possible}
 and in {\em as general a manner} as possible.
-%
+
 
 Existing tools in this space
 do not meet our criteria for efficiency and generality.
 %
-For example, in STAT~\cite{stat}, such ``tracing and diffing'' is usually only done
-when a failure (e.g., a deadlock or hang) is encountered.
+The highly acclaimed STAT~\cite{stat} tool has helped isolate
+bugs based on building equivalence classes of MPI processes, and spotting
+outliers.
 %
-Whereas STAT can be deployed in ``continuous collection'' mode, the overheads of
-doing so are unknown (and can be surmised to be significant).
+We would like to go beyond the capabilities offered by STAT and support
+the collection of {\em whole-program} traces that can then be employed
+by a whole gamut of back-end tools.
+%
+Also, STAT is usually brought into the picture
+when a failure (e.g., a deadlock or hang) is encountered; we would like
+to move toward an ``always on'' collection regime, as we can't anticipate
+when a failure will occur -- or more importantly {\em whether the failure
+will be reproducible.}
+%
+There are no reported debugging studies on using STAT in the
+continuous collection (``always on'') mode.
 %
 In CSTG~\cite{cstg}, the collection is orchestrated by the
 user around chosen collection points and employs heavy-weight
 unix {\tt backtrace} calls.
+%
+These again are different from the thrust of \parlot.
 
 
 The thrust of the work in this paper is to avoid many of the drawbacks of existing
