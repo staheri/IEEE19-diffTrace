@@ -1,4 +1,18 @@
-\hl{Program dynamic analysis in HPC is expensive}. While traditional software engineering generally achieves high quality control, these methods are often inapplicable to HPC where concurrency combined with large problem scales and sophisticated domain-specific math can make programming very challenging. For example, it took months for scientists to debug an MPI laser-plasma interaction code~\cite{hpcdoe}.
+Understanding and debugging large-scale programs in HPC 
+is time-consuming for the user and computationally inefficient.
+%
+This is especially true when one has to 
+track control flow in terms of function calls and returns that may
+span library and system codes. 
+%
+Traditional software engineering quality assurance methods are 
+often inapplicable to HPC where concurrency combined with 
+large problem scales and sophisticated domain-specific math can make programming 
+very challenging. 
+%
+For example, it took months for scientists to debug an MPI laser-plasma interaction 
+code~\cite{hpcdoe}.
+
 
 HPC bugs may be a combination of both flawed program logic and unspecified or illegal interactions between various concurrency models (e.g., PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume vast amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application is therefore expensive and undesirable. 
 %The best hope for debugging lies in being able to efficiently capture detailed execution 
