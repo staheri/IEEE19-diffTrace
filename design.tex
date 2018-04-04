@@ -1,14 +1,17 @@
 Figure \ref{overview} provides a general overview of \parlot 's workflow.
-
-The following experiment highlights why compression is essential to make our approach work. We used \parlot to record a unique 16-bit identifier for every function call and return as described above. Tracing just this small amount of information without compression when running the Mantevo miniapps~\cite{mantevo} on Stampede 1 resulted in about 2 MB/s of data per core on average. Extrapolating this value to all 102,400 cores of Stampede 1 (not counting the accelerators) yields 205 GB/s of trace data, which exceeds the Lustre filesystem's parallel write performance of 150 GB/s.
 %
-Enabling \parlot 's compression algorithm reduced the emitted trace data by a factor of 100 on average, a ratio that is quite stable w.r.t scaling, making it possible to trace full-scale programs while leaving over 98\% of the I/O bandwidth to the application.
+\hl{Basic code blocks within program executables dynamically instrumented before being executed and collected data getting compressed on-the-fly during runtime. 
 %
-
-Therefore, also works for higher bw codes than the ones we tested. 
-
- \hl{ Basic code blocks within program executables  dynamically instrumented before being executed and collected data getting compressed on-the-fly during runtime. Following subsections discuss different aspects of ParLOT's design.}
-
+Our experimental results in} \S\ref{sec:results} \hl{ highlights why \textit{compression} is essential to make our approach work.
+%
+We used ParLOT to record a unique 16-bit identifier for every function call and return.
+%
+Tracing just this small amount of information without compression when running the Mantevo miniapps~}\cite{mantevo}\hl{ on Stampede 1 resulted in about 2 MB/s of data per core on average.
+%
+Extrapolating this value to all 102,400 cores of Stampede 1 (not counting the accelerators) yields 205 GB/s of trace data, which exceeds the Lustre filesystem's parallel write performance of 150 GB/s.
+%
+Enabling ParLOT's compression algorithm reduced the emitted trace data by a factor of 100 on average, a ratio that is quite stable w.r.t scaling, making it possible to trace full-scale programs while leaving over 98\% of the I/O bandwidth to the application. Therefore, it is clear that ParLOT also works for codes with higher required bandwidth than the ones we tested.
+}
 \begin{figure}[!t]
 \centering
 \includegraphics[width=2in]{overview.png}
@@ -46,10 +49,7 @@ ZE stands for ``zero elimination'' and emits a bitmap in which each bit represen
 As mentioned above, we had to implement the two transformations incrementally to minimize the latency. This required breaking them up into multiple pieces. Depending on the state the compressor is in when the next trace entry needs to be processed, the appropriate piece of code is executed and the state updated. If the LZ code produces an output, which it only does some of the time, then the appropriate piece of the ZE code is executed next in a similar manner.
 
 
-\subsection{Call-Stack Correction}
-
-ONLY NEEDED FOR PIN
-
+\subsection{\pin and Call-Stack Correction}
 
 To be able to decode the trace, i.e., to correctly associate each exit with the function entry it belongs to, our trace reader maintains an identical call-stack data structure. Unfortunately, and as pointed out in the \pin documentation~\cite{pinurl}, it is not always possible to identify all function exits. For example, in optimized code, a function's instructions may be inlined and interleaved with the caller's instructions, making it sometimes infeasible for \pin to identify the exit. As a consequence, we have to ensure that \parlot works correctly even when \pin misses an exit. This is where the SP values come into play.
 
