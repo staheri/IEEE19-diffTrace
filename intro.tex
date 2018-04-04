@@ -115,7 +115,7 @@ One may be concerned that such a tool introduces excessive execution slowdown.
 This paper makes the following main contributions.
 %
 \begin{itemize}
-\item It introduces a new tracing approach that makes it possible to capture the full call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of large-scale applications at low overhead in both space and time.
+\item It introduces a new tracing approach that makes it possible to capture the full call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of HPC applications at low overhead in both space and time.
 \item It describes advanced data compression methods to drastically reduce the required tracing bandwidth, thus enabling the collection of a rich set of information, which would be infeasible without on-the-fly compression.
 \item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting x86 applications at the binary level (regardless of the source language used) to collect full function-call traces.
 \end{itemize}

@@ -1,7 +1,7 @@
 \subsection{Binary Instrumentation}
-Recording a log of events during the execution of an application is \textit{essential for better understanding the program behavior and, in case of a failure, to locate the problem.} Recording this type of information requires instrumentation of the program either at the source-code or the binary-code level. Instrumenting the source code by adding extra statements to collect the desired information is easy for developers. However, doing so modifies the code and requires recompilation, often involving multiple different tools and complex hierarchies of makefiles, which can make this approach cumbersome and frustrating for users. Instrumenting an executable at the binary level using a tool is much easier, faster, and less error prone for most users. Moreover, binary instrumentation is language independent, portable to any system that has the appropriate instrumentation tool installed, and provides machine-level insight into the behavior of the application.
+Recording a log of events during the execution of an application is \textit{essential for better understanding the program behavior and, in case of a failure, to locate the problem.} Recording this type of information requires instrumentation of the program either at the source-code or the binary-code level. Instrumenting the source code by adding extra libraries and statements to collect the desired information is easy for developers. However, doing so modifies the code and requires recompilation, often involving multiple different tools and complex hierarchies of makefiles and libraries, which can make this approach cumbersome and frustrating for users. Instrumenting an executable at the binary level using a tool is easier, faster, and less error prone for most users. Moreover, binary instrumentation is language independent, portable to any system that has the appropriate instrumentation tool installed, and provides machine-level insight into the behavior of the application.
 
-Executables can be instrumented \textit{statically}, where the additional code is inserted into the binary before execution, which results in a persistent modified executable, or \textit{dynamically}, where the modification of the executable is not permanent. In dynamic binary instrumentation, \hl{code's behavior can be monitored at runtime}, making it possible to handle dynamically-generated and self-modifying code. Furthermore, it may be feasible to attach the instrumentation to a running process, which is particularly useful for long-running applications.
+Executables can be instrumented \textit{statically}, where the additional code is inserted into the binary before execution, which results in a persistent modified executable, or \textit{dynamically}, where the modification of the executable is not permanent. In dynamic binary instrumentation, \hl{code's behavior can be monitored at runtime}, making it possible to handle dynamically-generated and self-modifying code. Furthermore, it may be feasible to attach the instrumentation to a running process, which is particularly useful for long-running applications and infinite loops.
 
 
 Previous tools (e.g., STAT) rely on mechanisms such as MRNet [25]
@@ -14,7 +14,7 @@ Many different tools for investigating application behavior have been designed o
 Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of every register and memory location. It provides developers with the ability to instrument system calls and instructions. Error detectors such as Memcheck~\cite{memcheck} and call-graph generators like \callgrind~\cite{callgrind} are built upon Valgrind.\footnote{Given the absence of tools similar to \parlot, we employ \callgrind
  as a ``close-enough'' tool in our comparisons elaborated in \S\ref{sec:tracing-tools}.
  In this capacity, \callgrind is similar to \parlotm, a variant of \parlot that only collects
- traces from the {\tt main} function. We perform such comparison to have an idea of how we fare
+ traces from the {\tt main} image. We perform such comparison to have an idea of how we fare
  with respect to one other tool. \S\ref{sec:results} separately
  presents a ``self assessment'' of \parlot.}
 
@@ -22,7 +22,7 @@ Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of ev
 %
 
 
-We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools.\hl{ There is also version of PIN available for ARM architecture}\cite{pinarm}. \parlot mutates \pin to track the function call stack and to trace the entry (call) and exit (return) of every executed function. \hl{However, the mechanism of our tracing and compressing approaches can be built on top of other instrumentation tools and not restricted to pin. For example, PMaC }\cite{pmac} \hl{ is a DBI tool available for PowerPC/AIX architecture and ParLOT can be built on top of that.}
+We designed \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools. There is also version of \pin available for the ARM architecture\cite{pinarm}. \parlot mutates \pin to track the function call stack and to trace the entry (call) and exit (return) of every executed function. However, the mechanism of our tracing and compressing approaches can be built on top of other instrumentation tools and is not restricted to \pin. For example, PMaC \cite{pmac} is a DBI tool available for PowerPC/AIX architecture and ParLOT can be built on top of that.
 
 
 \subsection{Efficient Tracing for Debugging}
@@ -44,7 +44,7 @@ are also known to exploit
 the repetitive nature of time-step simulations~\cite{freitag}. %Martin: unclear to me
 
 \hl{
-Many performance and debugging tools for HPC applications} \cite{stat,taumrnet}\hl{ rely on mechanisms such as MRNet}\cite{mrnet}\hl{ to accelerate the collection and aggregation of traces based an overlay network to overcome the heavy data operations. However, our experiments show that due to high compression ratio of ParLOT traces, such mechanism for data movement and aggregation seems unnecessary}
+Many performance and debugging tools for HPC applications} \cite{stat,taumrnet}\hl{ rely on mechanisms such as MRNet}\cite{mrnet}\hl{ to accelerate the collection and aggregation of traces based an overlay network to overcome the heavy data operations. However, our experiments show that due to high compression ratio of ParLOT traces, such mechanism for data movement and aggregation seems unnecessary.}
 
 \paragraph{The novelty offered by \parlot lies in the combination of compression
 speed, efficacy, and low timing jitter
@@ -54,9 +54,9 @@ described in \S\ref{sec:design}.
 %
 It immediately compresses all traced information while the application is running, that is, \parlot never even records the uncompressed trace in memory. 
 %
-Typically, just a few kilobytes of data need to be written out per thread and per second, thus requiring only a small fraction of the available disk or network bandwidth. 
+As a result, just a few kilobytes of data need to be written out per thread and per second, thus requiring only a small fraction of the  disk or network bandwidth. 
 %
-The traces are decompressed later at no additional cost to the execution of the application. 
+\hl{The traces are decompressed later when they are read for offline analysis.} 
 %
 From the decompressed full function-call trace, the complete call-graph, 
 call-frequency, and caller-callee information can be extracted. 
