@@ -1,47 +1,32 @@
-The need for efficient tracing to 
-support better \textit{understanding} of
-large-scale applications on heterogeneous platforms is growing. 
+The need for efficient tracing to gain better insight from
+HPC application executions is growing. 
 %
-An efficient tracing method that minimizes user-annotation burden
-can track control flow in terms of function calls and returns, especially
-those that cut through library and system codes, 
-is only feasible by \textit{binary instrumentation}.
-%
+An efficient and easy-to-use tracing method that overcome the trade-off
+between maximum information with minimum added overhead
+sounds essential for today's HPC application developers, who might
+not have enough expertise in parallel programming.
+% 
 Unfortunately, available tools either do not produce the kinds
 of traces that can help with program understanding and debugging,
 or incur huge overheads when
 the traces are brought out of the cores.
 %
-In this paper, we present \parlot,  a tool that extends Intel's \pin
-tool to not only perform binary-level tracing, but adds several key
-features: (1)~it deploys a set of highly efficient and programmable
-trace compression methods that reduces the trace volume exported 
-from a chip dramatically, thus making tracing affordable.
-(2)~it extends \pin's tracing methods to not only record function
-calls and returns, but using heuristic approaches corrects the
-stack pointer
-(3)~it supports program execution analysis via tracing by
+%
+In this paper, we present \parlot, a tool that provides several key
+features: (1)~It dynamically instruments the binary without need of source-code modification or recompilation
+%
+(2)~It deploys a set of highly efficient trace compression methods that reduces the trace volume gathered at runtime dramatically, thus making tracing cheaper.
+%
+(3)~It supports program execution analysis via tracing by
 including caller/callee
 relations, call frequencies, and a linear trace of entire executions
 at the granularity the user opts for.
 %
 This paper establishes that comparable capabilities are 
 unavailable by evaluating the best alternative tracing options
-on runs up to 1,024 cores on the NAS parallel benchmarks on 
+on runs up to 1,024 cores on the NAS parallel benchmarks on the
 Comet supercomputer.
 %
-Our experiments show that \parlot can produce full function 
-call trace with minimum of 0.4 kB required bandwidth while 
-slowing down applications only by as low as 1.1x. 
-%-->GG:no figs in abstract !(fig \ref{sd.pin.cg}).
-%
-%- 
-%- Some parallel-based bugs only manifest themselves when a program is executed at scale. 
-%- Such bugs are expensive to reproduce and collecting information about the flow of execution tends to be challenging due to overhead it adds to the application in term of runtime and memory. 
-%- Existing profiler and debugger tools for large applications either add too 
-%- much overhead to the actual application or their collected data does not bring significant insight about the execution flow. 
-%- We believe gathering enough information at low cost using a light-weight on-the-fly incremental compression mechanism would overcome large-scale verification challenges. 
-%- We implemented our idea in a proof-of-concept tool called ParLOT that incrementally compresses the gathered information before it is written to memory or disk. 
-%- 
-%- ParLOT can track every function call entry and exit event of any HPC applications running on supercomputers with low overhead added to execution time while compressing the collected information by a factor of 100, resulting in only a few kilobytes per second of trace data being emitted by each processor.
-%- 
+Our experiments show that \parlot can produce whole-program function 
+call traces with average of 56 kB/s required bandwidth while 
+slowing down applications by 2.7x on average. 

@@ -1,4 +1,4 @@
-Understanding and debugging large-scale programs in HPC 
+Understanding and debugging HPC programs 
 is time-consuming for the user and computationally inefficient.
 %
 This is especially true when one has to 
@@ -16,7 +16,7 @@ code~\cite{hpcdoe}.
 
 HPC bugs may be a combination of both flawed program logic and unspecified or illegal interactions between various concurrency models (e.g., PThreads, MPI, OpenMP, etc.) that coexist in most large applications. Moreover, HPC software tends to consume vast amounts of CPU time and hardware resources. Reproducing bugs by rerunning the application is therefore expensive and undesirable. 
 %The best hope for debugging lies in being able to efficiently capture detailed execution 
-A natural and field-proven approach for large-scale debugging is to capture detailed execution traces and compare the traces against corresponding traces from previous (stable) runs~\cite{stat,cstg}.
+A natural and field-proven approach for debugging is to capture detailed execution traces and compare the traces against corresponding traces from previous (stable) runs~\cite{stat,cstg}.
 %
 A {\em key requirement} is to do this collection {\em as efficiently as possible}
 and in {\em as general a manner} as possible.
@@ -31,22 +31,22 @@ outliers.
 %
 We would like to go beyond the capabilities offered by STAT and support
 the collection of {\em whole-program} traces that can then be employed
-by a whole gamut of back-end tools.
+by a  gamut of back-end tools.
 %
 Also, STAT is usually brought into the picture
-when a failure (e.g., a deadlock or hang) is encountered; we would like
-to move toward an ``always on'' collection regime, as we can't anticipate
+when a failure (e.g., a deadlock or hang) is encountered. We would like
+to move toward an ``always on'' collection regime, as we cannot anticipate
 when a failure will occur -- or more importantly {\em whether the failure
 will be reproducible.}
 %
-There are no reported debugging studies on using STAT in the
+There are no reported debugging studies on using STAT in
 continuous collection (``always on'') mode.
 %
 In CSTG~\cite{cstg}, the collection is orchestrated by the
 user around chosen collection points and employs heavy-weight
 unix {\tt backtrace} calls.
 %
-These again are different from the thrust of \parlot.
+These again are different from the thrust of \parlot where collection points would be chosen dynamically on binary code blocks.
 
 
 The thrust of the work in this paper is to avoid many of the drawbacks of existing
@@ -62,13 +62,12 @@ wide variety of platforms}.
 %
 
 %
-\hl{Our thrust is to use \textit{compression} for trace aggregation and offer 
+Our thrust is to use \textit{compression} for trace aggregation and offer 
 a generic and low-overhead tracing tool that 
 (1)~collects dynamic information during execution for debugging, performance evaluation and phase detection (e.g., all function
 calls and returns), 
 (2)~is easy to install, 
-(3)~and is portable to multiple parallel platforms.
-}
+(3)~and is portable to multiple platforms.
 %
 {\em Providing all these features in a single tool
 that operates based on binary instrumentation
@@ -95,9 +94,9 @@ support library stack} such as MPI-level activities.
 In HPC, it is well-known (especially on newer machines) that bugs are often due to
 broken libraries (MPI, OpenMP) or broken runtime or OS-level activities.
 %
-Having a single low-overhead tool that can ``X-ray'' an application to this depth is a goal met by \parlot -- again a unique feature in today's tool eco-system.
+Having a single low-overhead tool that can ``X-ray'' an application to this depth is a goal met by \parlot -- a unique feature in today's tool eco-system.
 
-To further motivate the need for full function call
+To further motivate the need for whole-program function call
 traces, consider the expression {\tt f()+g()}.
 %
 In C, there is no sequence point associated with the {\tt +}
@@ -111,72 +110,31 @@ and {\tt g()} were invoked---something that is easy to discern using
 One may be concerned that such a tool introduces excessive execution slowdown.
 %
 \parlot goes to great lengths to minimize these overheads to a level that we believe most users will find acceptable. The mindset is to \textit{``pay a little upfront to dramatically reduce the number of overall debug iterations''}. 
+
+%
+As proof of concept, we have preliminary results from using ParLOT tracing mechanism to distinguish between runs.
+%
+We injected different bugs into the MPI-related functions of ILCS \cite{ilcs} , a parallelization framework for iterative local searches.
+%
+We run ParLOT on top of executions of buggy and bug-free versions of ILCS and collected traces.
+%
+Since ParLOT's traces maintain the order of the function calls, we were able to split the traces at multiple points of interest and by feeding different chunks of traces to a Concept Lattice data structure \cite{clbook} \cite{clconst}. 
+%
+Having the totally ordered sequence of function calls of the whole program for each and every active process/thread, we could narrow down our search space to locate the cause of the abnormal behavior in the buggy version of ILCS. 
+
 %
 This paper makes the following main contributions.
 %
 \begin{itemize}
-\item It introduces a new tracing approach that makes it possible to capture the full call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of HPC applications at low overhead in both space and time.
-\item It describes advanced data compression methods to drastically reduce the required tracing bandwidth, thus enabling the collection of a rich set of information, which would be infeasible without on-the-fly compression.
-\item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting x86 applications at the binary level (regardless of the source language used) to collect full function-call traces.
+\item It introduces a new tracing approach that makes it possible to capture the whole-program call-return, call-stack, call-graph, and call-frequency information, including all library calls, for every thread and process of HPC applications at low overhead in both space and time.
+\item It describes a new incremental data compression algorithm to drastically reduce the required tracing bandwidth, thus enabling the collection of whole-program traces, which would be infeasible without on-the-fly compression.
+\item It presents \parlot, a proof-of-concept tool that implements our compression-based low-overhead tracing approach. \parlot is capable of instrumenting x86 applications at the binary level (regardless of the source language used) to collect whole-program function-call traces.
 \end{itemize}
-%
-\hl{As proof of concept, we have preliminary results from using ParLOT tracing mechanism to distinguish between runs, as studied in} \citep{cstg}.
-%
-\hl{We have injected different bugs to MPI-related functions to ILCS} \cite{ilcs} \hl{source-code, a scalable parallelization framework for iterative local searches.
-%
-We executed ParLOT on top of executions of buggy and bug-free versions of ILCS and collected traces.
-%
-Since ParLOT's traces maintain the order of function calls, we were able to split traces at multiple points of interest and by feeding different chunks of traces to Concept Lattice data structure} \cite{clbook} \cite{clconst}. 
-%
-\hl{Using Concept Lattice properties, we could narrow down our search space to locate the cause of abnormal behavior of buggy version of ILCS.
-%
-However, the focus of this paper is on evaluation of tracing and compression mechanism.
-%
-Other capabilities and useful information gathered by ParLOT will be explained and discussed in our later publications.}
-
 %
 The remainder of this paper is organized as follows. Section \ref{sec:bgreltool} introduces the basic ideas and infrastructure behind \parlot and other tracing tools. Section \ref{sec:design} describes the design of \parlot in detail. Sections \ref{sec:evalmeth} and \ref{sec:results} present our evaluation of different aspects of \parlot and compare it with a similar tool. Section \ref{sec:concl}
 concludes the paper with a summary and future work.
 % that includes the construction of verification tools that exploit \parlot traces.
 
-
-\ignore{--
-\subsection{Key strong points of \parlot from results}
-
-\begin{itemize}
-\item \textsf{Low tracing overhead - Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} - Fig \ref{comet_chartAvg_sd_B_p3_5}, \ref{comet_chartAvg_sd_C_p3_5} - Section \ref{subsec:lowtoh}}
-	\begin{itemize}
-	\item \textsf{ On average, both \parlotm and \parlota has better performance than \callgrind and amount of informative data that \callgrind generates is smaller and less informative than other two. (bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} - Input B : \parlotm 2.20 : , \parlota : 3.47, \callgrind : 3.82). For input size C the results are even better (next bullet) \textbf{Conclusion: \parlot performance beats \callgrind (on average). However, \callgrind scales better}}
-	\item \textsf{By increasing the size of input, average of geometric means of overheads decreases for \parlotm and \parlota but increases for \callgrind. (bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} - Input C : \parlotm 1.98 : , \parlota : 2.83, \callgrind : 4.88). \textbf{Conclusion: \parlot performs better on larger input sizes}}
-	\end{itemize}
-\item \textsf{ Low required bandwidth, low tracing overhead and high compression ratio for makes \parlot work perfect to solve the the trade-off between "more overhead to add, more information to get"-Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} - Fig \ref{comet_chartAvg_bw_B_p3_5}, \ref{comet_chartAvg_bw_C_p3_5} - Section \ref{subsec:lowbw}}
-	\begin{itemize}
-	\item \textsf{ In addition to big gap between average overhead of \parlotm and \callgrind, \parlotm also beats \callgrind in required bandwidth, especially for smaller inputs.}
-	\item\textsf{ \textbf{\parlota vs. \callgrind}: According to table \ref{comet_cr_pMpA_BC_itn_p3.5} (from next subsection), for \parlota where the average compression ratio for input C is 644.38, and the correspondent required bandwidth which is 56.38 kB/s, it shows that \parlota can collect \textbf{more than 36 MB} worth of data per core per second where it only needs \textbf{56.38 kB/s} bandwidth, while \callgrind can only collects \textbf{less than 100 kB} of informative data and still adds more overhead comparing to either \parlota or \parlotm. \textbf{Conclusion: The amount of informative data can be collected with \parlota  are 360x larger than \callgrind and the overhead \parlota adds is less than 0.6x smaller than \callgrind}}
-	\item \textsf{\textbf{\parlotm vs. \callgrind} Above story is true also for \parlotm. According to table \ref{comet_cr_pMpA_BC_itn_p3.5}, for \parlotm where the average compression ratio for input C is 1117.01, and the correspondent required bandwidth which is 7.84 kB/s, shows that \parlotm can collect \textbf{more than 8.5 MB} worth of data per core per second where it only needs \textbf{7.84.38 kB/s} bandwidth, while \callgrind can only collects \textbf{less than 100 kB} of informative data and still adds more overhead comparing to either \parlota or \parlotm. \textbf{Conclusion: The amount of informative data can be collected with \parlotm  are 85x larger than \callgrind and the overhead \parlotm adds is about 0.4x smaller than \callgrind}}
-	\end{itemize}
-	
-	
-\item \textsf{High Compression Ratio Table \ref{comet_cr_pMpA_BC_itn_p3.5} - Fig \ref{comet_chartAvg_cr_B_p3_5}, \ref{comet_chartAvg_cr_C_p3_5} - Section \ref{subsec:cr}
-\textbf{Conclusion: I included some interesting facts about the charts and table of Compression Ratio in previous section}}
-\item \textsf{ Pin-init overhead - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5} - Fig \ref{comet_chartDet_B_wc_byTool_p3_5}, \ref{comet_chartDet_C_wc_byTool_p3_5} - Section: \ref{subsec:pinit}}
-	\begin{itemize}
-	\item \textsf{\textbf{most of the added overhead by \parlot is caused by Pin-init}. According to tables \ref{comet_wo_det_Main_all_B_p3.5}, \ref{comet_wo_det_All_all_B_p3.5}, on average, Pin-init adds 3.28 overhead and \parlota adds 3.42 overhead. \textbf{almost 96\% of \parlota overhead is happening on Pin-init - Numbers from \parlotm and other inputs are following the same pattern}}
-	\end{itemize}
-\item \textsf{ \parlot without compression  (high impact of compression method on performance) - Table \ref{comet_wo_det_All_all_B_p3.5}, \ref{comet_wo_det_Main_all_B_p3.5}  - Fig \ref{comet_chartDet_B_woc_byTool_p3_5}, \ref{comet_chartDet_C_woc_byTool_p3_5} - Section \ref{subsec:compact}}
-
-\begin{itemize}
-\item \textsf{on average, \parlotnc slows down the application execution almost \textbf{2x} more than \parlota. (average overhead of geometric means of all overheads within table  \ref{comet_wo_det_All_all_B_p3.5} for \parlota is \textbf{3.42} and for its coresponding \parlotnc is \textbf{6.62}) . The numbers of \parlotm and input C is following the same pattern. For example, \parlot-nc slows down the application execution almost \textbf{1.66x} more than \parlotm)}
-\end{itemize}
-\end{itemize}
-
-\vspace{1ex}
-
-\vspace{1ex}
-\noindent{\bf Ganesh note: Cite follow-on
-tools such as AutomaDeD~\cite{automaded} and Prodometer~\cite{prodometer} somewhere.}
-\vspace{1ex}
----}
 
 
 
