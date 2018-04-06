@@ -10,18 +10,6 @@
 
 Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} shows the tracing overhead of \parlotm, \parlota, and \callgrind on each application of the NPB benchmark suite for different node counts. The last column of the table lists the geometric mean over all eight programs. The AVG rows show the average over the four node counts.
 
-On average, both \parlotm and \parlota outperform \callgrind. The bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} for input C show that the average overhead is 1.94 for \parlotm, 2.73 for \parlota, and 4.63 for \callgrind. Figures \ref{comet_chartAvg_sd_B_p3_5} and \ref{comet_chartAvg_sd_C_p3_5} show these results in visual form.
-
-Perhaps the key takeaway point is that the overhead of \parlot is roughly a factor of two to three, which we believe users are willing to accept, e.g. if it helps them debug their applications. This is very promising especially when considering how detailed the collected trace information is. Similarly, it is reassuring to see that \parlot 's overhead is typically lower than that of \callgrind, which collects less information.
-
-The overhead of \parlot increases as we scale the applications to more compute nodes. However, the increase is quite small. Going from 16 to 1024 cores, a 64-fold increase in parallelism, only increases the average overhead by between 1.3- and 2.1-fold. In contrast, \callgrind 's overhead decreases with increasing node count, making it more scalable. Having said that, \callgrind 's overhead is larger for the C inputs whereas \parlot 's overhead is larger for the smaller B inputs. In other words, \parlot scales better to larger inputs than \callgrind.
-
-\parlot 's scaling behavior can be explained by correlating it with the expected function-call frequency. When distributing a fixed problem size over more cores, each core receives less work. As a consequence, less time is spent in the functions that process the work, resulting in more function calls per time unit, which causes more work for \parlot. In contrast, when distributing a larger problem size over the same number of cores, each core receives more work. Hence, more time is spent in the functions that process the work, resulting in fewer function calls per time unit, which causes less work for \parlot and therefore less tracing overhead. Hence, we believe \parlot 's overhead to be even lower on long-running inputs, which is where our tracing technique is needed the most.
-
-In summary, \parlot 's overhead is in the single digits for all evaluated applications and configurations, including for 1024-core runs. It appears to scale reasonably to larger node counts and well to larger problem sizes.
-
-
-
 \begin{figure}[t]
 \centering
 \includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_B_p3_5.png}
@@ -31,6 +19,8 @@ In summary, \parlot 's overhead is in the single digits for all evaluated applic
 \end{figure}
 
 
+On average, both \parlotm and \parlota outperform \callgrind. The bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} for input C show that the average overhead is 1.94 for \parlotm, 2.73 for \parlota, and 4.63 for \callgrind. Figures \ref{comet_chartAvg_sd_B_p3_5} and \ref{comet_chartAvg_sd_C_p3_5} show these results in visual form.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_C_p3_5.png}
@@ -39,12 +29,54 @@ In summary, \parlot 's overhead is in the single digits for all evaluated applic
 \end{figure}
 
 
+Perhaps the key takeaway point is that the overhead of \parlot is roughly a factor of two to three, which we believe users are willing to accept, e.g. if it helps them debug their applications. This is very promising especially when considering how detailed the collected trace information is. Similarly, it is reassuring to see that \parlot 's overhead is typically lower than that of \callgrind, which collects less information.
+
+The overhead of \parlot increases as we scale the applications to more compute nodes. However, the increase is quite small. Going from 16 to 1024 cores, a 64-fold increase in parallelism, only increases the average overhead by between 1.3- and 2.1-fold. In contrast, \callgrind 's overhead decreases with increasing node count, making it more scalable. Having said that, \callgrind 's overhead is larger for the C inputs whereas \parlot 's overhead is larger for the smaller B inputs. In other words, \parlot scales better to larger inputs than \callgrind.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
+\caption{ Input: \textbf{B} - Required Bandwidth per core (kB/s)
+}
+\label{comet_chartAvg_bw_B_p3_5}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
+\caption{ Input: \textbf{C}  - Required Bandwidth per core (kB/s)
+}
+\label{comet_chartAvg_bw_C_p3_5}
+\end{figure}
+
+
+\parlot 's scaling behavior can be explained by correlating it with the expected function-call frequency. When distributing a fixed problem size over more cores, each core receives less work. As a consequence, less time is spent in the functions that process the work, resulting in more function calls per time unit, which causes more work for \parlot. In contrast, when distributing a larger problem size over the same number of cores, each core receives more work. Hence, more time is spent in the functions that process the work, resulting in fewer function calls per time unit, which causes less work for \parlot and therefore less tracing overhead. Hence, we believe \parlot 's overhead to be even lower on long-running inputs, which is where our tracing technique is needed the most.
+
+
+In summary, \parlot 's overhead is in the single digits for all evaluated applications and configurations, including for 1024-core runs. It appears to scale reasonably to larger node counts and well to larger problem sizes.\hl{ Also, results in} \S\ref{subsec:lowbw} show that average amount of trace data collected by \parlota is almost 360 times larger than \callgrind while the overhead \parlota adds is 60\% of added overhead by \callgrind.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Banwidth
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
+\caption{ Input: \textbf{C}  - Compression Ratio
+}
+\label{comet_chartAvg_cr_C_p3_5}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
+\caption{ Input: \textbf{B}  - Compression Ratio
+}
+\label{comet_chartAvg_cr_B_p3_5}
+\end{figure}
 
   
 \subsection{Required Bandwidth}
@@ -79,29 +111,13 @@ overhead compared to either \parlota or \parlotm .
 The average amount of trace data that can be collected by \parlota is
 \textbf{360x} (85x for \parlotm) larger than that for \callgrind.
 %
-Under the same circumstances,
-\parlota also incurs much less overhead (the
-average overhead that \parlota adds is 0.6x (0.4x for \parlotm)
-relative to \callgrind).
-
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
-\caption{ Input: \textbf{B} - Required Bandwidth per core (kB/s)
-}
-\label{comet_chartAvg_bw_B_p3_5}
-\end{figure}
 
 
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
-\caption{ Input: \textbf{C}  - Required Bandwidth per core (kB/s)
-}
-\label{comet_chartAvg_bw_C_p3_5}
-\end{figure}
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,43 +126,31 @@ relative to \callgrind).
 \label{subsec:cr}
 
 Table \ref{comet_cr_pMpA_BC_itn_p3.5} shows the compression ratios for all configurations and inputs. 
-On average, \parlot can store up to more than 1700 MB of collected data in just 1 MB of trace files. 
-In fact, observe that the compression mechanism of
-\parlot achieved more than a 21k compression ratio (table \ref{comet_cr_pMpA_BC_itn_p3.5}, 
-the entry for \parlotm, Input B, 1 node).
+On average, \parlot can store up to more than 1.7 GB of collected data in a 1 MB trace. 
+In fact, the compression mechanism of
+\parlot can achieve up to 21k compression ratio.
 %
-Furthermore, this result was achieved with low overhead and incremental (hence low-jitter) 
-on the fly compression.
+Furthermore, this result was achieved with low overhead and incremental  
+on-the-fly compression.
 %
 Generally, the obtained
 compression ratios for \parlotm are higher than for \parlota. 
 %
+\ignore{--
 Since \parlota  collects library function calls in addition to calls from
 the main image functions, 
 we surmise that the probability of obtaining
 redundant events in traces (which compression takes advantage of)
 is lower for \parlota, thus causing its compression efficacy to drop.
-
+}
   
 \input{tabs.comet.newMed/comet_cr_pMpA_BC_itn_p3.5.tex}
 
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
-\caption{ Input: \textbf{C}  - Compression Ratio
-}
-\label{comet_chartAvg_cr_C_p3_5}
-\end{figure}
 
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
-\caption{ Input: \textbf{B}  - Compression Ratio
-}
-\label{comet_chartAvg_cr_B_p3_5}
-\end{figure}
+
+
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
   
@@ -154,14 +158,11 @@ is lower for \parlota, thus causing its compression efficacy to drop.
 \label{subsec:pinit}
 Tables \ref{comet_wo_det_Main_all_B_p3.5} and
 \ref{comet_wo_det_All_all_B_p3.5} present the average overhead added to each
-application by different variations of \parlot. 
+application by different versions of \parlot. 
 %
 The last row of these two tables
-present information on the geometric mean.
-%
-More specifically, an entry ``$x$'' in this last row
-is the geometric mean of all
-the entries above it in the same column.
+presents the geometric mean.
+
 %
 This information captures how much each
 phase of \parlot slows down the native execution. 
@@ -176,36 +177,34 @@ The highlighted cells in these tables do not
 obey this inequality.
 %
 In fact, the variability across three runs of each experiment
-is indeed observable from the bar graphs in figure \ref{comet_BX2_Main_16_B_p3_5}
+is shown in Fig. \ref{comet_BX2_Main_16_B_p3_5}
 where we present the minimum, maximum and median overheads.
 %
-These are the calculated
-overheads of each experiment for each tool, for input size B, and for 16
-nodes. 
+These
+overheads are for input size B and 16 nodes. 
 %
-This variability (which is similar to the variability observed for inputs and nodes)
-justifies the inconsistency that we highlight in  tables
+This variability explains the seeming inconsistencies in  Tables
 \ref{comet_wo_det_Main_all_B_p3.5} and
 \ref{comet_wo_det_All_all_B_p3.5}.
 
 
 Tables \ref{comet_wo_det_Main_all_B_p3.5} and
-\ref{comet_wo_det_All_all_B_p3.5} show that on average, \pininit adds
+\ref{comet_wo_det_All_all_B_p3.5} show that, on average, \pininit adds
 an overhead of 3.28  and \parlota adds an overhead of 3.42. 
 %
 \textbf{Almost 96\%
-of \parlota overhead is added by \pininit}. 
+of \parlota overhead is due to \pin}. 
 %
-Numbers from \parlotm and
+The results of \parlotm and
 other inputs are follow the same pattern
 (see fig. \ref{comet_chartDet_B_wc_byTool_p3_5} and \ref{comet_chartDet_C_wc_byTool_p3_5}). 
 %
-The overhead that \parlot design (regardless of overhead of \pininit) {\em adds}
-to applications is extremely small.
+The overhead that \parlot (excluding the overhead of \pininit) {\em adds}
+to applications is very small.
 %
-We further observe that if we were to switch over to a different
+We further observe that if we were to switch to a different
 instrumentation tool that is not as general as \pin but perhaps more
-lightweight, the overall overheads would reduce even further. \\
+lightweight, the overall overhead would potentially reduce drastically. \\
 
 
 \input{tabs.comet.newMed/comet_wo_det_Main_all_B_p3.5.tex}
@@ -233,23 +232,24 @@ lightweight, the overall overheads would reduce even further. \\
 
 
 
-\subsection{Compression impact} 
+\subsection{Compression Impact} 
 \label{subsec:compact}
 
-The last evaluation metric we discuss is that of the impact of compression.
-%
 Fig. \ref{comet_chartDet_B_woc_byTool_p3_5} and Fig. \ref{comet_chartDet_C_woc_byTool_p3_5} show the 
-impact of compression; they also motivate the importance of incorporating compression in a tracing
+impact of compression; they also highlight the importance of incorporating compression directly in the tracing
 tool. 
 %
 On average, \parlotnc slows down the application execution almost \textbf{2x} more than \parlota. 
 %
 The average overhead 
-across table \ref{comet_wo_det_All_all_B_p3.5} for \parlota is \textbf{3.42}.
+across Table \ref{comet_wo_det_All_all_B_p3.5} for \parlota is \textbf{3.42}.
 %
 The  corresponding figure for \parlotnc is \textbf{6.62}. 
 %
-The numbers of \parlotm and input C is following the same pattern. For example, \parlot-nc slows down the application execution almost \textbf{1.66x} more than \parlotm.
+The numbers of \parlotm and input C  follow the same pattern. For example, \parlotnc slows down the application execution almost \textbf{1.66x} more than \parlotm.
+%
+
+Clearly, compression not only lowers the storage requirement but also the overhead. This is important and shows that the extra computation to perform the compression are more than amortized by the reduction in the amount of data that need to be showed out.
 
 
 
@@ -281,7 +281,7 @@ The numbers of \parlotm and input C is following the same pattern. For example, 
 
 
 
-
+\ignore{--
 
 \subsection{Extenuating Factors}
 
@@ -292,3 +292,4 @@ The numbers of \parlotm and input C is following the same pattern. For example, 
 \item \hl{Most of the HPC tracing tools are developed for performance analysis. To the best of our knowledge, Callgrind has the most similarity to our tool which collects function-call graph using a DBI framework. We have examined the tracing feature of tools such as Score-p and TAU but the comparison would be non-sense since the mechanism of collecting data and type of data that they collect are completely different.   
 }
 \end{itemize} 
+}
