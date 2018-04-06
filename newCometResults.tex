@@ -12,11 +12,11 @@ Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} shows the tracing overhead of \parlotm, 
 
 On average, both \parlotm and \parlota outperform \callgrind. The bolded numbers in Table \ref{comet_sd_pMpAcg_BC_itn_p3.5} for input C show that the average overhead is 1.94 for \parlotm, 2.73 for \parlota, and 4.63 for \callgrind. Figures \ref{comet_chartAvg_sd_B_p3_5} and \ref{comet_chartAvg_sd_C_p3_5} show these results in visual form.
 
-Perhaps the key takeaway point is that the overhead of \parlot is roughly a factor of two to three, which we believe users are willing to accept if it helps them debug their applications. This is very promising especially when considering how detailed the collected trace information is. Similarly, it is reassuring to see that \parlot 's overhead is typically lower than that of \callgrind, which collects less information.
+Perhaps the key takeaway point is that the overhead of \parlot is roughly a factor of two to three, which we believe users are willing to accept, e.g. if it helps them debug their applications. This is very promising especially when considering how detailed the collected trace information is. Similarly, it is reassuring to see that \parlot 's overhead is typically lower than that of \callgrind, which collects less information.
 
 The overhead of \parlot increases as we scale the applications to more compute nodes. However, the increase is quite small. Going from 16 to 1024 cores, a 64-fold increase in parallelism, only increases the average overhead by between 1.3- and 2.1-fold. In contrast, \callgrind 's overhead decreases with increasing node count, making it more scalable. Having said that, \callgrind 's overhead is larger for the C inputs whereas \parlot 's overhead is larger for the smaller B inputs. In other words, \parlot scales better to larger inputs than \callgrind.
 
-The reason for \parlot 's scaling behavior can be explained by correlating it with the expected function-call frequency. When distributing a fixed problem size over more cores, each core receives less work. As a consequence, less time is spent in the functions that process the work, resulting in more function calls per time unit, which causes more work for \parlot. In contrast, when distributing a larger problem size over the same number of cores, each core receives more work. Hence, more time is spent in the functions that process the work, resulting in fewer function calls per time unit, which causes less work for \parlot and therefore less tracing overhead. Hence, we believe \parlot 's overhead to be even lower on long-running inputs, which is where our tracing technique for debugging is needed the most.
+\parlot 's scaling behavior can be explained by correlating it with the expected function-call frequency. When distributing a fixed problem size over more cores, each core receives less work. As a consequence, less time is spent in the functions that process the work, resulting in more function calls per time unit, which causes more work for \parlot. In contrast, when distributing a larger problem size over the same number of cores, each core receives more work. Hence, more time is spent in the functions that process the work, resulting in fewer function calls per time unit, which causes less work for \parlot and therefore less tracing overhead. Hence, we believe \parlot 's overhead to be even lower on long-running inputs, which is where our tracing technique is needed the most.
 
 In summary, \parlot 's overhead is in the single digits for all evaluated applications and configurations, including for 1024-core runs. It appears to scale reasonably to larger node counts and well to larger problem sizes.
 
@@ -52,39 +52,37 @@ In summary, \parlot 's overhead is in the single digits for all evaluated applic
 
 \input{tabs.comet.newMed/comet_bw_pMpAcg_BC_itn_p3.5.tex}
 
-Table \ref{comet_bw_pMpAcg_BC_itn_p3.5} shows how much bandwidth each tool 
+Table \ref{comet_bw_pMpAcg_BC_itn_p3.5}, Fig.  \ref{comet_chartAvg_bw_B_p3_5} and Fig.\ref{comet_chartAvg_bw_C_p3_5} show how much bandwidth each tool 
 requires
 during the application execution. 
 %
-We notice that \parlotm requires much less bandwidth compared to
+We notice that \parlotm requires much less bandwidth than
 \callgrind, especially for smaller inputs. 
 %
-\parlota's bandwidth is much higher, as it collects traces from all
-functions, and not just the main function.
+\parlota's bandwidth is much higher as it collects call info from all
+images, and not just the main image.
 
 
-We observe from table \ref{comet_cr_pMpA_BC_itn_p3.5}, input C, that the
+We observe from Table \ref{comet_cr_pMpA_BC_itn_p3.5}, input C, that the
 average compression ratio for \parlota is 644.38, and its
-corresponding required bandwidth from table
+corresponding required bandwidth from Table
 \ref{comet_bw_pMpAcg_BC_itn_p3.5} is 56.38.
 %
-This which means \parlot can
+This means \parlot can
 collect \textbf{more than 36 MB} worth of data per core per second
-while it only needs 56.38 kB/s of the system bandwidth, {\em leaving the rest of
-the available system bandwidth for application.}
+while only needing 56 kB/s of the system bandwidth, {\em leaving the rest of the available bandwidth for application.}
 %
-In comparison, \callgrind can only
-collect \textbf{less than 100 kB} of traces and still adds more
-overhead compared to either \parlota or \parlotm
-(fig. \ref{comet_chartAvg_bw_B_p3_5},\ref{comet_chartAvg_bw_C_p3_5}). 
+In comparison, \callgrind only
+collects \textbf{less than 100 kB} of data but still adds more
+overhead compared to either \parlota or \parlotm . 
 %
-The average amount of traces that can be collected by \parlota is
+The average amount of trace data that can be collected by \parlota is
 \textbf{360x} (85x for \parlotm) larger than that for \callgrind.
 %
 Under the same circumstances,
-\parlota also incurs much less overheads (the
+\parlota also incurs much less overhead (the
 average overhead that \parlota adds is 0.6x (0.4x for \parlotm)
-of that caused by \callgrind).
+relative to \callgrind).
 
 
 \begin{figure}[t]

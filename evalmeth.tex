@@ -14,7 +14,7 @@ Quick tests showed that higher optimization levels do not significantly improve 
 
 We ran all experiments on Comet at the San Diego Supercomputer Center~\cite{comet}, whose filesystem is NSF and Lustre.
 %
-Comet has 1944 compute nodes, each of which has dual-socket Intel Xeon E5-2680v3 processors with a total of 28 cores (14 per socket) and 128 GB of main memory.
+Comet has 1944 compute nodes, each of which has dual-socket Intel Xeon E5-2680 v3 processors with a total of 28 cores (14 per socket) and 128 GB of main memory.
 %
 Note that we only used 16 cores per node as many of the NPB programs require a core count that is a power of two.
 %
@@ -28,7 +28,7 @@ We use the following metrics to quantify and compare the performance of the trac
 Unless otherwise noted, all results are based on the median of three identical experiments.
 %
 \begin{itemize}
-\item The \textbf{tracing overhead} is the runtime of the target application when it is being traced divided by the native runtime of the same application (without any tracing).
+\item The \textbf{tracing overhead} is the runtime of the target application when it is being traced divided by the runtime of the same application without tracing.
 %
 This lower-is-better ratio measures by how much the tracing (and the compression when enabled) slows down the target application.
 %
@@ -70,9 +70,9 @@ It writes out the captured data in uncompressed form.
 The purpose of \parlotnc is to show the performance impact of the compression.
 \end{itemize}
 
-It proved surprisingly difficult to find a tool that is similar to \parlot because there appear to be no other tools that generate \hl{whole function call graph.
+It proved surprisingly difficult to find a tool that is similar to \parlot because there appear to be no other tools that generate l{whole program call trace.
 %
-In the end, we settled on} \callgrind \hl{as the most similar tool we could find and used it for our comparisons.} 
+In the end, we settled on \callgrind as the most similar tool we could find and used it for our comparisons.
 %
 \callgrind is based on the Valgrind DBI tool.
 %
@@ -93,7 +93,7 @@ This simple form of compression is enabled by default in \callgrind.
 %
 We believe the information traced by \callgrind is reasonably similar to the information traced by \parlotm.
 %
-Whereas \callgrind 's traces include performance data that \parlot does not capture, \parlot records the full call trace, which \callgrind does not capture.
+Whereas \callgrind 's traces include performance data that \parlot does not capture, \parlot records the whole-program call trace, which \callgrind does not capture.
 %
 The full function-call trace is a strict superset of the call-graph information that \callgrind records because the call graph can be extracted from the function-call trace but not vice versa.
 %
