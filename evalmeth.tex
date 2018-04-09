@@ -59,6 +59,7 @@ We compare our \parlot tool, implemented on top of \pin 3.5, with \callgrind 3.1
 %
 We created the following versions of \parlot to evaluate different aspects of its design.
 
+
 \begin{itemize}
 \item \textbf{\parlotm} is the normal \parlot tool configured to only collect function-call traces from the main image of the application.
 \item \textbf{\parlota} is the normal \parlot tool configured to collect function-call traces from all images of the application, including library function calls.
@@ -72,6 +73,37 @@ It writes out the captured data in uncompressed form.
 The purpose of \parlotnc is to show the performance impact of the compression.
 \end{itemize}
 
+
+It proved surprisingly difficult to find a tool that is similar to \parlot because there appear to be no other tools that generate l{whole program call trace.
+%
+In the end, we settled on \callgrind as the most similar tool we could find and used it for our comparisons.
+%
+\callgrind is based on the Valgrind DBI tool.
+%
+It collects function-call graphs combined with performance data to show the user what portion of the execution time has been spent in each function.
+
+\input{tabs.comet.newMed/comet_sd_pMpAcg_BC_itn_p3.5.tex}
+
+
+Each \callgrind trace file contains a sequence of function names (or their code) plus numerical data for each function on its caller-callee relationship with other functions.
+%
+Moreover, it contains cost information for each function in terms of how many machine instructions it read.
+%
+This information is collected using hardware performance counters.
+%
+The format of the file is plain ASCII text.
+%
+Interestingly, all numerical values are expressed relative to previous values, i.e., they are delta (or difference) encoded.
+%
+This simple form of compression is enabled by default in \callgrind.
+
+We believe the information traced by \callgrind is reasonably similar to the information traced by \parlotm.
+%
+Whereas \callgrind 's traces include performance data that \parlot does not capture, \parlot records the whole-program call trace, which \callgrind does not capture.
+%
+The full function-call trace is a strict superset of the call-graph information that \callgrind records because the call graph can be extracted from the function-call trace but not vice versa.
+%
+In particular, \callgrind cannot recreate the order of the function calls a thread made whereas \parlot can.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FROM RESULTS - average overhead
@@ -89,7 +121,6 @@ The purpose of \parlotnc is to show the performance impact of the compression.
 \caption{ Average tracing overhead on the NPB applications - Input C}
 \label{comet_chartAvg_sd_C_p3_5}
 \end{figure}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FROM RESULTS - average bandwidth
@@ -114,8 +145,6 @@ The purpose of \parlotnc is to show the performance impact of the compression.
 
 
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FROM RESULTS - average compression ratio
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,43 +161,6 @@ The purpose of \parlotnc is to show the performance impact of the compression.
 \caption{ Average compression ratio of \parlot for the NPB applications - Input C}
 \label{comet_chartAvg_cr_C_p3_5}
 \end{figure}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ENDDDD
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\input{tabs.comet.newMed/comet_sd_pMpAcg_BC_itn_p3.5.tex}
-
-
-It proved surprisingly difficult to find a tool that is similar to \parlot because there appear to be no other tools that generate l{whole program call trace.
-%
-In the end, we settled on \callgrind as the most similar tool we could find and used it for our comparisons.
-%
-\callgrind is based on the Valgrind DBI tool.
-%
-It collects function-call graphs combined with performance data to show the user what portion of the execution time has been spent in each function.
-
-Each \callgrind trace file contains a sequence of function names (or their code) plus numerical data for each function on its caller-callee relationship with other functions.
-%
-Moreover, it contains cost information for each function in terms of how many machine instructions it read.
-%
-This information is collected using hardware performance counters.
-%
-The format of the file is plain ASCII text.
-%
-Interestingly, all numerical values are expressed relative to previous values, i.e., they are delta (or difference) encoded.
-%
-This simple form of compression is enabled by default in \callgrind.
-
-%
-We believe the information traced by \callgrind is reasonably similar to the information traced by \parlotm.
-%
-Whereas \callgrind 's traces include performance data that \parlot does not capture, \parlot records the whole-program call trace, which \callgrind does not capture.
-%
-The full function-call trace is a strict superset of the call-graph information that \callgrind records because the call graph can be extracted from the function-call trace but not vice versa.
-%
-In particular, \callgrind cannot recreate the order of the function calls a thread made whereas \parlot can.
-
-
