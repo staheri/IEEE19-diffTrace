@@ -1,4 +1,4 @@
-The need for efficient tracing to gain insight into
+\hl{The need for efficient tracing to gain insight into
 HPC application executions is growing. 
 %
 Unfortunately, available tools either do not produce traces with enough details,
@@ -8,7 +8,7 @@ An efficient  tracing method that overcomes the trade off
 between maximum information and minimum overhead
 is needed for today's HPC application developers.
 % 
-In this paper, we present \parlot, a tool that provides several key
+In this paper, we present }\parlot, \hl{a tool that provides several key
 features (1)~It dynamically instruments the binary without source-code modification or recompilation.
 %
 (2)~It employs a set of highly efficient trace compression methods that reduces the trace volume gathered at runtime dramatically, thus making tracing cheaper.
@@ -24,6 +24,7 @@ This paper establishes that comparable capabilities are
 unavailable by evaluating the best alternative tracing options for runs on the NAS parallel benchmarks on the
 Comet supercomputer using up to 1,024 cores.
 %
-Our experiments show that \parlot can produce whole-program function-call
+Our experiments show that }\parlot \hl{can produce whole-program function-call
 traces with an average bandwidth of just 56 kB/s per core while 
 slowing down the applications by 2.7x on average. 
+}
