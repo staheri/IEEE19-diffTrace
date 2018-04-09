@@ -48,44 +48,6 @@ In other words, without compression, the tracing bandwidth would be higher by th
 \end{itemize}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FROM RESULTS - average overhead
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_B_p3_5.png}
-\caption{Average Tracing Overhead on NPB applications - Input: B}
-\label{comet_chartAvg_sd_B_p3_5}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_C_p3_5.png}
-\caption{ Average Tracing Overhead on NPB applications - Input: C}
-\label{comet_chartAvg_sd_C_p3_5}
-\end{figure}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FROM RESULTS - average bandwidth
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
-\caption{  Average Required Bandwidth per core(kB/s) for NPB applications - Input: B}
-\label{comet_chartAvg_bw_B_p3_5}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
-\caption{ Average Required Bandwidth per core(kB/s) for NPB applications - Input: C}
-\label{comet_chartAvg_bw_C_p3_5}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ENDDDD
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{Tracing Tools}
@@ -96,29 +58,6 @@ We compare our \parlot tool, implemented on top of \pin 3.5, with \callgrind 3.1
 \parlot was compiled with gcc 4.9.2 using \pin 's make system and \callgrind with Valgrind's make system.
 %
 We created the following versions of \parlot to evaluate different aspects of its design.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FROM RESULTS - average compression ratio
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
-\caption{ Average Compression Ratio of ParLOT for NPB applications - Input: B}
-\label{comet_chartAvg_cr_B_p3_5}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
-\caption{ Average Compression Ratio of ParLOT for NPB applications - Input: C}
-\label{comet_chartAvg_cr_C_p3_5}
-\end{figure}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ENDDDD
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{itemize}
 \item \textbf{\parlotm} is the normal \parlot tool configured to only collect function-call traces from the main image of the application.
@@ -132,6 +71,73 @@ It writes out the captured data in uncompressed form.
 %
 The purpose of \parlotnc is to show the performance impact of the compression.
 \end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FROM RESULTS - average overhead
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_B_p3_5.png}
+\caption{Average tracing overhead on the NPB applications - Input B}
+\label{comet_chartAvg_sd_B_p3_5}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_C_p3_5.png}
+\caption{ Average tracing overhead on the NPB applications - Input C}
+\label{comet_chartAvg_sd_C_p3_5}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FROM RESULTS - average bandwidth
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
+\caption{  Average required bandwidth per core (kB/s) for the NPB applications - Input B}
+\label{comet_chartAvg_bw_B_p3_5}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
+\caption{ Average required bandwidth per core (kB/s) for the NPB applications - Input C}
+\label{comet_chartAvg_bw_C_p3_5}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENDDDD
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FROM RESULTS - average compression ratio
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
+\caption{ Average compression ratio of \parlot for the NPB applications - Input B}
+\label{comet_chartAvg_cr_B_p3_5}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
+\caption{ Average compression ratio of \parlot for the NPB applications - Input C}
+\label{comet_chartAvg_cr_C_p3_5}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENDDDD
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \input{tabs.comet.newMed/comet_sd_pMpAcg_BC_itn_p3.5.tex}
 

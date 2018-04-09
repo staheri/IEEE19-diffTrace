@@ -8,7 +8,6 @@ An efficient  tracing method that overcomes the trade off
 between maximum information and minimum overhead
 is needed for today's HPC application developers.
 % 
-
 In this paper, we present \parlot, a tool that provides several key
 features (1)~It dynamically instruments the binary without source-code modification or recompilation.
 %
@@ -17,13 +16,14 @@ features (1)~It dynamically instruments the binary without source-code modificat
 (3)~It supports program analysis and debugging by
 including caller/callee
 relations, call frequencies, and a linear trace of entire executions
-at the granularity the user opts for.
+at various granularities.
+%
+(4)~It presents technique that makes low-overhead on-the-fly compression of whole-program call traces possible
 %
 This paper establishes that comparable capabilities are 
-unavailable by evaluating the best alternative tracing options
-on runs up to 1,024 cores on the NAS parallel benchmarks on the
-Comet supercomputer.
+unavailable by evaluating the best alternative tracing options for runs on the NAS parallel benchmarks on the
+Comet supercomputer using up to 1,024 cores.
 %
-Our experiments show that \parlot can produce whole-program function 
-call traces with average of 56 kB/s required bandwidth while 
-slowing down applications by 2.7x on average. 
+Our experiments show that \parlot can produce whole-program function-call
+traces with an average bandwidth of just 56 kB/s per core while 
+slowing down the applications by 2.7x on average. 

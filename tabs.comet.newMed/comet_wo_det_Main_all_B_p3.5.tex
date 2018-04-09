@@ -1,5 +1,5 @@
 \begin{table*}[]
-\caption{Tracing overhead added by each version of \parlot - Input: B}
+\caption{Tracing overhead of different \parlot versions - Input B - Main image}
 \begin{center}
 \label{comet_wo_det_Main_all_B_p3.5}
 \scalebox{0.80}{
@@ -8,18 +8,53 @@
 \multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{Input: B}}} & \multicolumn{1}{r|}{Nodes :}    & \multicolumn{3}{c|}{1}  & \multicolumn{3}{c|}{4} & \multicolumn{3}{c|}{16}  & \multicolumn{3}{c|}{64} \\ \cline{2-14} 
 \multicolumn{1}{|l|}{} & \multicolumn{1}{r|}{Detail Tools:} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} \\
 \hline
-\multirow{9}{*}{Main} &  bt  &  1.50  &  1.55  &   5.62  &  1.74  &  1.76  &  5.06  &  2.19  & \cellcolor{blue!25} 2.15  &  5.02  &  1.83  &  2.10  &  3.52 \\
- &  cg  &  1.75  &  1.82  &   2.38  &  1.84  &  1.85  &  2.64  &  2.70  & \cellcolor{blue!25} 2.58  &  4.43  &  2.32  & \cellcolor{blue!25} 2.17  &  4.64 \\
- &  ep  &  2.96  & \cellcolor{blue!25} 2.62  &  20.48  &  1.99  & \cellcolor{blue!25} 1.89  &  5.38  &  2.47  & \cellcolor{blue!25} 1.99  &  3.09  &  2.68  & \cellcolor{blue!25} 2.39  &  2.66 \\
- &  ft  &  1.87  &  2.11  &   6.17  &  1.75  & \cellcolor{blue!25} 1.74  &  2.79  &  2.08  & \cellcolor{blue!25} 1.89  &  2.24  &  2.18  & \cellcolor{blue!25} 1.96  &  2.14 \\
- &  is  &  2.47  &  2.47  &   4.82  &  1.79  & \cellcolor{blue!25} 1.78  &  2.07  &  2.11  & \cellcolor{blue!25} 1.78  &  1.87  &  4.51  & \cellcolor{blue!25} 4.31  &  5.71 \\
- &  lu  &  1.32  & \cellcolor{blue!25} 1.31  &   1.44  &  1.75  &  1.77  &  2.25  &  2.73  &  2.73  &  3.62  &  3.05  &  4.39  &  6.13 \\
- &  mg  &  2.56  & \cellcolor{blue!25} 2.53  &   2.79  &  1.56  & \cellcolor{blue!25} 1.52  &  1.59  &  2.63  & \cellcolor{blue!25} 2.43  &  2.65  &  1.95  &  1.97  &  1.85 \\
- &  sp  &  1.34  & \cellcolor{blue!25} 1.33  &   2.43  &  1.73  &  1.73  &  3.58  &  2.14  &  2.15  &  2.37  &  1.95  &  2.07  &  2.54 \\
+\multirow{9}{*}{Main} &     bt  &  1.5  &  1.5  &   5.6  &  1.7  &  1.7  &  5.0  &  2.1  &  2.1  &  5.0  &  1.8  &  2.1  &  3.5 \\
+ &  cg  &  1.7  &  1.8  &   2.3  &  1.8  &  1.8  &  2.6  &  2.7  &  2.5  &  4.4  &  2.3  &  2.1  &  4.6 \\
+ &  ep  &  2.9  &  2.6  &  20.4  &  1.9  &  1.8  &  5.3  &  2.4  &  1.9  &  3.0  &  2.6  &  2.3  &  2.6 \\
+ &  ft  &  1.8  &  2.1  &   6.1  &  1.7  &  1.7  &  2.7  &  2.0  &  1.8  &  2.2  &  2.1  &  1.9  &  2.1 \\
+ &  is  &  2.4  &  2.4  &   4.8  &  1.7  &  1.7  &  2.0  &  2.1  &  1.7  &  1.8  &  4.5  &  4.3  &  5.7 \\
+ &  lu  &  1.3  &  1.3  &   1.4  &  1.7  &  1.7  &  2.2  &  2.7  &  2.7  &  3.6  &  3.0  &  4.3  &  6.1 \\
+ &  mg  &  2.5  &  2.5  &   2.7  &  1.5  &  1.5  &  1.5  &  2.6  &  2.4  &  2.6  &  1.9  &  1.9  &  1.8 \\
+ &  sp  &  1.3  &  1.3  &   2.4  &  1.7  &  1.7  &  3.5  &  2.1  &  2.1  &  2.3  &  1.9  &  2.0  &  2.5 \\
 \cline{2-14}
- &  GM  &  1.89  &  1.90  &   4.10  &  1.77  & \cellcolor{blue!25} 1.75  &  2.92  &  2.37  & \cellcolor{blue!25} 2.19  &  3.00  &  2.45  &  2.52  &  3.33 \\
+ &  GM  &  1.8  &  1.9  &   4.1  &  1.7  &  1.7  &  2.9  &  2.3  &  2.1  &  3.0  &  2.4  &  2.5  &  3.3 \\
 \hline 
 \end{tabular} }
 
 \end{center}
 \end{table*}
+
+
+
+
+
+
+
+
+\ignore{--
+\begin{table*}[]
+\caption{Tracing overhead of different \parlot versions - Input B - Main image}
+\begin{center}
+\label{comet_wo_det_Main_all_B_p3.5}
+\scalebox{0.80}{
+\begin{tabular}{|c|c|rrr|rrr|rrr|rrr|} 
+\hline 
+\multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{Input: B}}} & \multicolumn{1}{r|}{Nodes :}    & \multicolumn{3}{c|}{1}  & \multicolumn{3}{c|}{4} & \multicolumn{3}{c|}{16}  & \multicolumn{3}{c|}{64} \\ \cline{2-14} 
+\multicolumn{1}{|l|}{} & \multicolumn{1}{r|}{Detail Tools:} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} & \multicolumn{1}{c}{\pininit} & \multicolumn{1}{c}{\parlot} & \multicolumn{1}{c|}{\parlotnc} \\
+\hline
+\multirow{9}{*}{Main} &  bt  &  1.50  &  1.55  &   5.62  &  1.74  &  1.76  &  5.06  &  2.19  &  2.15  &  5.02  &  1.83  &  2.10  &  3.52 \\
+ &  cg  &  1.75  &  1.82  &   2.38  &  1.84  &  1.85  &  2.64  &  2.70  &  2.58  &  4.43  &  2.32  &  2.17  &  4.64 \\
+ &  ep  &  2.96  &  2.62  &  20.48  &  1.99  &  1.89  &  5.38  &  2.47  &  1.99  &  3.09  &  2.68  &  2.39  &  2.66 \\
+ &  ft  &  1.87  &  2.11  &   6.17  &  1.75  &  1.74  &  2.79  &  2.08  &  1.89  &  2.24  &  2.18  &  1.96  &  2.14 \\
+ &  is  &  2.47  &  2.47  &   4.82  &  1.79  &  1.78  &  2.07  &  2.11  & 1.78  &  1.87  &  4.51  &  4.31  &  5.71 \\
+ &  lu  &  1.32  &  1.31  &   1.44  &  1.75  &  1.77  &  2.25  &  2.73  &  2.73  &  3.62  &  3.05  &  4.39  &  6.13 \\
+ &  mg  &  2.56  &  2.53  &   2.79  &  1.56  &  1.52  &  1.59  &  2.63  &  2.43  &  2.65  &  1.95  &  1.97  &  1.85 \\
+ &  sp  &  1.34  &  1.33  &   2.43  &  1.73  &  1.73  &  3.58  &  2.14  &  2.15  &  2.37  &  1.95  &  2.07  &  2.54 \\
+\cline{2-14}
+ &  GM  &  1.89  &  1.90  &   4.10  &  1.77  &  1.75  &  2.92  &  2.37  &  2.19  &  3.00  &  2.45  &  2.52  &  3.33 \\
+\hline 
+\end{tabular} }
+
+\end{center}
+\end{table*}
+}
