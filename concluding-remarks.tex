@@ -13,26 +13,38 @@ about function calls and returns, and
 significantly improved compression efficiencies.
 %
 
-\hl{
-In this paper, we present an evaluation of various tool versions of }\parlot\hl{
-(created by disabling/enabling compression, not collecting any traces, etc.).
+In this paper, we present an evaluation of various tool versions of \parlot
+created by disabling/enabling compression, not collecting any traces, etc.
 %
-We also compare }\parlot to \callgrind,\hl{ a somewhat comparable tool.
+In order to provide an intuitive comparison against a well known tool,
+we also compare \parlot against \callgrind.
 %
 Our evaluation criteria cover tracing overhead, the required bandwidth,
 the achieved compression ratio, initialization overhead, and the 
 overall impact of compression.
 %
 Detailed evaluations on the NAS parallel benchmarks running on
-up to 1024 cores establishes the merit of our tool and our design decisions. }\parlot\hl{ can collect more than 36 MB worth of data per core per second while only needing 56 kB/s of the system bandwidth and slowdown the application by 2.7x, on average.
-In addition to efficiently supporting a variety of analyses, these results lend credence to our plans for building an "always on" trace collection scheme to permit debugging.
-}
+up to 1024 cores establishes the merit of our tool and our design decisions. 
+\parlot can collect more than 36 MB worth of data per core per second while 
+only needing 56 kB/s of the system bandwidth and slowdown the 
+application by 2.7x, on average.
+%
+In addition to efficiently supporting a variety of analyses, 
+these results support 
+our plans for building an ``always on'' 
+trace collection scheme to permit debugging.
 
-The collected traces cut through the entire stack of heterogeneous
-(MPI, OpenMP, PThreads) calls. Thus, if a designer filters such traces
-and projects them onto specific calls of interest, they would be in 
-a position to minutely study and locate issues. Various data related algorithms from machine learning, data mining, data visualization, phase detection and feature extraction area can be applied on \parlot traces and produce valuable information about the dynamic behavior of parallel applications.
-We are  building a framework for performing this study by building a fault injection facility and ways to further elevate the status of the collected traces by equivalencing similar behaviors and looking for outlier executions.
+
+The traces collected by \parlot cut through the entire stack of heterogeneous
+(MPI, OpenMP, PThreads) calls. 
+%
+This permits a designer to project these traces onto specific
+APIs of interest during program analysis, visualization, and debugging.
+%
+We are also building a framework for debugging parallel
+programs based on \parlot, relying on
+methods to diff executions and detect outliers.
+
 
 A number of improvements to \parlot remain to be made.
 %
