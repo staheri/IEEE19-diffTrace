@@ -1,17 +1,16 @@
 
-We introduce \parlot, a portable low overhead dynamic
+In this paper, 
+we present \parlot, a portable low overhead dynamic
 binary instrumentation-based
-tracing approach that can help with studying and debugging of parallel applications.}
-%
-The traces that \parlot produces are sufficiently informative that
-a variety of debugging and performance analysis methods can be brought to bear on the
-(efficiently collected) traces.
+whole-program
+tracing approach that can support a variety of 
+dynamic program analyses, including debugging.
 %
 Key properties of \parlot include its on-the-fly trace collection and
-compression (which reduces timing jitter), a plethora of information
+compression that reduces timing jitter, a plethora of information
 about function calls and returns, and
 significantly improved compression efficiencies.
-%
+
 
 In this paper, we present an evaluation of various tool versions of \parlot
 created by disabling/enabling compression, not collecting any traces, etc.
@@ -29,10 +28,8 @@ up to 1024 cores establishes the merit of our tool and our design decisions.
 only needing 56 kB/s of the system bandwidth and slowdown the 
 application by 2.7x, on average.
 %
-In addition to efficiently supporting a variety of analyses, 
-these results support 
-our plans for building an ``always on'' 
-trace collection scheme to permit debugging.
+These results are highly promising in terms of supporting 
+whole program tracing and debugging at scale.
 
 
 The traces collected by \parlot cut through the entire stack of heterogeneous
