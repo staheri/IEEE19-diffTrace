@@ -20,8 +20,7 @@ Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of ev
  as a ``close-enough'' tool in our comparisons elaborated in \S\ref{sec:tracing-tools}.
  In this capacity, \callgrind is similar to \parlotm, a variant of \parlot that only collects
  traces from the {\tt main} image. We perform such comparison to have an idea of how we fare
- with respect to one other tool. \S\ref{sec:results} separately
- presents a ``self assessment'' of \parlot.}
+ with respect to one other tool. In \S\ref{sec:results}, we also present a self-assessment of \parlot separately.}
 
  
 %
@@ -37,7 +36,7 @@ Hence, to be able to capture whole-program call traces, we need a way to decreas
 reduce the amount of data movement across the memory hierarchy, and
 lower storage and network demands.
 %
-Although the encoded data will later have to be decoded for analysis, compressing them during tracing enables the collection of much more information.
+Although the encoded data will later have to be decoded for analysis, compressing them during tracing enables the collection of {\em whole-program} trace.
 
 The use of compression by itself is not new.
 Various performance evaluation tools~\cite{tau,scorep,eventflowgraph} 

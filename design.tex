@@ -2,7 +2,7 @@ Our experimental results in \S\ref{sec:results} highlight why \textit{compressio
 %
 We used ParLOT to record a unique 16-bit identifier for every function call and return.
 %
-Tracing just this small amount of information without compression when running the Mantevo miniapps~\cite{mantevo}on Stampede 1 resulted in about 2 MB/s of data per core on average.
+Tracing just this small amount of information without compression when running the Mantevo miniapps~\cite{mantevo} on Stampede 1 resulted in about 2 MB/s of data per core on average.
 %
 Extrapolating this value to all 102,400 cores of Stampede 1 (not counting the accelerators) yields 205 GB/s of trace data, which exceeds the Lustre filesystem's parallel write performance of 150 GB/s.
 %
@@ -10,7 +10,7 @@ Enabling ParLOT's compression algorithm reduced the emitted trace data by a fact
 
 Figure \ref{overview} provides a general overview of \parlot 's workflow.
 %
-Basic blocks within program executables are dynamically instrumented before being executed and collected data getting compressed on-the-fly during runtime. 
+Basic blocks within program executables are {\em dynamically} instrumented before being executed and collected data getting compressed on-the-fly during runtime. 
 %
 
 \begin{figure}[!t]
@@ -26,7 +26,7 @@ Basic blocks within program executables are dynamically instrumented before bein
 
 \parlot uses the PIN API as its instrumentation mechanism to gather traces. In particular, it instructs \pin to instrument every thread launch and termination in the application as well as every function entry and exit. The thread-launch instrumentation code initializes the per-thread tracing variables and opens a file into which the trace data from that thread will be written. The thread-termination code finalizes any ongoing compression, flushes out any remaining entries, and closes the trace file. \parlot assigns every static function in each image (main program and all libraries) a unique unsigned 16-bit ID, which it records in a separate file together with the image and function name. This file allows the trace reader to map IDs back to function-name/image pairs.
 
-For every function \emph{entry}, \parlot executes extra code that has access to the thread ID, function ID, and current stack-pointer (SP) value. Based on the SP value, it performs call-stack correction if necessary (see \S\ref{subsec:stack_cor}), adds the new function to a data structure it maintains that holds the call stack (which is separate from the application's runtime stack), and emits the function ID into the trace file via an incremental compression algorithm (see \S\ref{subsec:incr-compr}). All of this is done independently for each thread. Similarly, for every function \emph{exit}, \parlot also executes extra code that has access to the thread ID, function ID, and current SP value. Based on the SP value, it performs call-stack correction if necessary, removes the function from its call-stack data structure, and emits the reserved function ID of zero into the trace file to indicate an exit. As before, this is done via an incremental compression algorithm. We use zero for all exits rather than emitting the function ID and a bit to specify whether it is an entry or exit because using zeros results in more compressible output. After all, this way, half of the values in the trace will be zero.
+For every function \emph{entry}, \parlot executes extra code that has access to the thread ID, function ID, and current stack-pointer (SP) value. Based on the SP value, it performs call-stack correction if necessary (see \S\ref{subsec:stack_cor}), adds the new function to a data structure it maintains that holds the call stack (which is separate from the application's runtime stack), and emits the function ID into the trace file via an incremental compression algorithm (see \S\ref{subsec:incr-compr}). All of this is done independently for each thread. Similarly, for every function \emph{exit}, \parlot also executes extra code that has access to the thread ID, function ID, and current SP value. Based on the SP value, it performs call-stack correction if necessary, removes the function from its call-stack data structure, and emits the reserved function ID of zero into the trace file to indicate an exit. As before, this is done via an incremental compression algorithm. We use zero for all exits rather than emitting the function ID and a bit to specify whether it is an entry or exit because using zeros results in more compressible output. This way, half of the values in the trace will be zero.
 
 
 

@@ -20,7 +20,6 @@ Note that we only used 16 cores per node as many of the NPB programs require a c
 %
 To study the scaling behavior, we ran experiments on 1, 4, 16 and 64 compute nodes, i.e., on up to 1024 cores. Comet and other supercomputers that we had access to did not allow larger runs.
 
-
 \subsection{Metrics}
 
 We use the following metrics to quantify and compare the performance of the tracing tools.
@@ -47,9 +46,6 @@ This higher-is-better ratio measures the factor by which the compression reduces
 In other words, without compression, the tracing bandwidth would be higher by this factor.
 \end{itemize}
 
-
-
-
 \subsection{Tracing Tools}
 \label{sec:tracing-tools}
 
@@ -58,6 +54,8 @@ We compare our \parlot tool, implemented on top of \pin 3.5, with \callgrind 3.1
 \parlot was compiled with gcc 4.9.2 using \pin 's make system and \callgrind with Valgrind's make system.
 %
 We created the following versions of \parlot to evaluate different aspects of its design.
+
+\input{tabs.comet.newMed/comet_sd_pMpAcg_BC_itn_p3.5.tex}
 
 
 \begin{itemize}
@@ -73,7 +71,6 @@ It writes out the captured data in uncompressed form.
 The purpose of \parlotnc is to show the performance impact of the compression.
 \end{itemize}
 
-
 It proved surprisingly difficult to find a tool that is similar to \parlot because there appear to be no other tools that generate l{whole program call trace.
 %
 In the end, we settled on \callgrind as the most similar tool we could find and used it for our comparisons.
@@ -82,8 +79,9 @@ In the end, we settled on \callgrind as the most similar tool we could find and 
 %
 It collects function-call graphs combined with performance data to show the user what portion of the execution time has been spent in each function.
 
-\input{tabs.comet.newMed/comet_sd_pMpAcg_BC_itn_p3.5.tex}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FROM RESULTS - average overhead
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Each \callgrind trace file contains a sequence of function names (or their code) plus numerical data for each function on its caller-callee relationship with other functions.
 %
@@ -97,6 +95,22 @@ Interestingly, all numerical values are expressed relative to previous values, i
 %
 This simple form of compression is enabled by default in \callgrind.
 
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in,height=2.1in]{figs.comet.newMed/comet_chartAvg_sd_B_p3_5.png}
+\caption{Average tracing overhead on the NPB applications - Input B}
+\label{comet_chartAvg_sd_B_p3_5}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.8in,height=2.1in]{figs.comet.newMed/comet_chartAvg_sd_C_p3_5.png}
+\caption{ Average tracing overhead on the NPB applications - Input C}
+\label{comet_chartAvg_sd_C_p3_5}
+\end{figure}
+
+
 We believe the information traced by \callgrind is reasonably similar to the information traced by \parlotm.
 %
 Whereas \callgrind 's traces include performance data that \parlot does not capture, \parlot records the whole-program call trace, which \callgrind does not capture.
@@ -105,62 +119,4 @@ The full function-call trace is a strict superset of the call-graph information 
 %
 In particular, \callgrind cannot recreate the order of the function calls a thread made whereas \parlot can.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FROM RESULTS - average overhead
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_B_p3_5.png}
-\caption{Average tracing overhead on the NPB applications - Input B}
-\label{comet_chartAvg_sd_B_p3_5}
-\end{figure}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_sd_C_p3_5.png}
-\caption{ Average tracing overhead on the NPB applications - Input C}
-\label{comet_chartAvg_sd_C_p3_5}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FROM RESULTS - average bandwidth
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
-\caption{  Average required bandwidth per core (kB/s) for the NPB applications - Input B}
-\label{comet_chartAvg_bw_B_p3_5}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
-\caption{ Average required bandwidth per core (kB/s) for the NPB applications - Input C}
-\label{comet_chartAvg_bw_C_p3_5}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ENDDDD
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FROM RESULTS - average compression ratio
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
-\caption{ Average compression ratio of \parlot for the NPB applications - Input B}
-\label{comet_chartAvg_cr_B_p3_5}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
-\caption{ Average compression ratio of \parlot for the NPB applications - Input C}
-\label{comet_chartAvg_cr_C_p3_5}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ENDDDD
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
