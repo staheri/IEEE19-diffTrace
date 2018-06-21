@@ -1,5 +1,5 @@
-TOPLEVEL    = ICPP18-Parlot.tex
-TARGET      = ICPP18-Parlot.pdf
+TOPLEVEL    = ESTP18-Parlot.tex
+TARGET      = ESTP18-Parlot.pdf
 
 DEPFILES   += $(wildcard *.tex)
 DEPFILES   += $(wildcard *.bib)

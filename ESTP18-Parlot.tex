@@ -1,4 +1,4 @@
-\documentclass[sigconf,table]{acmart}
+\documentclass[conference,table]{IEEEtran}
 
 %\usepackage[table]{xcolor}
 \usepackage{xcolor}
@@ -28,7 +28,7 @@
 %\setcopyright{none}
 %\setcopyright{acmcopyright}
 %\setcopyright{acmlicensed}
-\setcopyright{rightsretained}
+%\setcopyright{rightsretained}
 %\setcopyright{usgov}
 %\setcopyright{usgovmixed}
 %\setcopyright{cagov}
@@ -40,55 +40,49 @@
 
 
 
-\author{Saeed Taheri}
-\affiliation{%
-  \institution{University of Utah}
-  \city{Salt Lake City}
-  \state{Utah}
-  \country{USA}
+\author{\IEEEauthorblockN{Saeed Taheri}
+\IEEEauthorblockA{\textit{School of Computing} \\
+\textit{University of Utah}\\
+Salt Lake City, Utah, USA \\
+staheri@cs.utah.edu}
+\and
+\IEEEauthorblockN{Sindhu Devale}
+\IEEEauthorblockA{\textit{Computer Science Department} \\
+\textit{Texas State University}\\
+San Marcos, Texas, USA \\
+sindhu.devale@gmail.com}
+\and
+
+\IEEEauthorblockN{Ganesh Gopalakrishnan}
+\IEEEauthorblockA{\textit{School of Computing} \\
+\textit{University of Utah}\\
+Salt Lake City, Utah, USA \\
+ganesh@cs.utah.edu}
+\and
+
+\IEEEauthorblockN{Martin Burtscher}
+\IEEEauthorblockA{\textit{Computer Science Department} \\
+\textit{Texas State University}\\
+San Marcos, Texas, USA \\
+burtscher@cs.txstate.edu}
 }
-\email{staheri@cs.utah.edu}
-
-\author{Sindhu Devale}
-\affiliation{%
-  \institution{Texas State University}
-  \city{San Marcos}
-  \state{Texas}
-  \country{USA}
-}
-\email{sindhu.devale@gmail.com}
-
-
-\author{Ganesh Gopalakrishnan}
-\affiliation{%
-  \institution{University of Utah}
-  \city{Salt Lake City}
-  \state{Utah}
-  \country{USA}
-}
-\email{ganesh@cs.utah.edu}
-
-\author{Martin Burtscher}
-\affiliation{%
-  \institution{Texas State University}
-  \city{San Marcos}
-  \state{Texas}
-  \country{USA}
-}
-\email{burtscher@cs.txstate.edu}
 
 
 
-\renewcommand{\shortauthors}{S. Taheri et al.}
+\maketitle
+
+%\renewcommand{\shortauthors}{S. Taheri et al.}
 
 \begin{abstract}
 \label{abs}
 \input{abstract.tex}
 \end{abstract}
 
-\keywords{Tracing; HPC; data compression; incremental compression}
+\begin{IEEEkeywords}
+Tracing, HPC, data compression, incremental compression
+\end{IEEEkeywords}
 
-\maketitle
+
 
 \extrafloats{100}
 
@@ -127,7 +121,7 @@
 
 
 
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{IEEEtran}
 \bibliography{bibs}
 
 
