@@ -11,14 +11,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
+\includegraphics[width=3.4in,height=1.9in]{figs.comet.newMed/comet_chartAvg_bw_B_p3_5.png}
 \caption{  Average required bandwidth per core (kB/s) on the NPB applications - Input B}
 \label{comet_chartAvg_bw_B_p3_5}
 \end{figure}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
+\includegraphics[width=3.4in,height=1.9in]{figs.comet.newMed/comet_chartAvg_bw_C_p3_5.png}
 \caption{ Average required bandwidth per core (kB/s) on the NPB applications - Input C}
 \label{comet_chartAvg_bw_C_p3_5}
 \end{figure}
@@ -63,14 +63,14 @@ We see that the required bandwidth for different input sizes of the NPB applicat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
+\includegraphics[width=3.2in,height=1.9in]{figs.comet.newMed/comet_chartAvg_cr_B_p3_5.png}
 \caption{ Average compression ratio of \parlot on the NPB applications - Input B}
 \label{comet_chartAvg_cr_B_p3_5}
 \end{figure}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
+\includegraphics[width=3.2in,height=1.9in]{figs.comet.newMed/comet_chartAvg_cr_C_p3_5.png}
 \caption{ Average compression ratio of \parlot on the NPB applications - Input C}
 \label{comet_chartAvg_cr_C_p3_5}
 \end{figure}
@@ -86,7 +86,7 @@ We see that the required bandwidth for different input sizes of the NPB applicat
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartDet_B_wc_byTool_p3_5.png}
+\includegraphics[width=3.1in,height=1.9in]{figs.comet.newMed/comet_chartDet_B_wc_byTool_p3_5.png}
 \caption{ Tracing overhead breakdown - Input B}
 \label{comet_chartDet_B_wc_byTool_p3_5}
 \end{figure}
@@ -94,7 +94,7 @@ We see that the required bandwidth for different input sizes of the NPB applicat
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartDet_C_wc_byTool_p3_5.png}
+\includegraphics[width=3.1in,height=1.9in]{figs.comet.newMed/comet_chartDet_C_wc_byTool_p3_5.png}
 \caption{ Tracing overhead breakdown - Input C}
 \label{comet_chartDet_C_wc_byTool_p3_5}
 \end{figure}
@@ -103,7 +103,7 @@ We see that the required bandwidth for different input sizes of the NPB applicat
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.7in]{figs.comet.newMed/comet_BX2_Main_16_B_p3_5.png}
+\includegraphics[width=3.2in,height=1.9in]{figs.comet.newMed/comet_BX2_Main_16_B_p3_5.png}
 \caption{ Variability of \parlotm overhead on 16 nodes - Input B}
 \label{comet_BX2_Main_16_B_p3_5}
 \end{figure}
@@ -146,24 +146,6 @@ Also by looking at Fig. \ref{comet_chartAvg_bw_B_p3_5}, Fig. \ref{comet_chartAvg
 \parlot's ompression mechanism works better on larger input sizes because larger inputs tend to result in longer streams of similar function calls (e.g., a call that is made for every processed element)
   
 
-
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartDet_B_woc_byTool_p3_5.png}
-\caption{\parlotnc tracing overhead breakdown - Input B}
-\label{comet_chartDet_B_woc_byTool_p3_5}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=3.8in]{figs.comet.newMed/comet_chartDet_C_woc_byTool_p3_5.png}
-\caption{ \parlotnc tracing overhead breakdown - Input C}
-\label{comet_chartDet_C_woc_byTool_p3_5}
-\end{figure}
-
   
 \subsection{Overheads} 
 \label{subsec:pinit}
@@ -181,6 +163,22 @@ phase of \parlot slows down the native execution.
 
 \input{tabs.comet.newMed/comet_wo_det_All_all_B_p3.5.tex}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3in,height=1.95in]{figs.comet.newMed/comet_chartDet_B_woc_byTool_p3_5.png}
+\caption{\parlotnc tracing overhead breakdown - Input B}
+\label{comet_chartDet_B_woc_byTool_p3_5}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3in,height=1.95in]{figs.comet.newMed/comet_chartDet_C_woc_byTool_p3_5.png}
+\caption{ \parlotnc tracing overhead breakdown - Input C}
+\label{comet_chartDet_C_woc_byTool_p3_5}
+\end{figure}
 
 In general, one 
 expects the following inequality to hold:
