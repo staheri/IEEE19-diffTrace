@@ -45,7 +45,7 @@ of performance analysis data.
 %
 Tools such as ScalaTrace~\cite{scalatrace}
 also exploit
-the repetitive nature of time-step simulations~\cite{freitag}. %Martin: unclear to me
+the repetitive nature of time-step simulations~\cite{freitag}. Gamblin et al. in \cite{augu
 
 
 Many performance and debugging tools for HPC applications \cite{stat,taumrnet} rely on mechanisms such as MRNet\cite{mrnet} to accelerate the collection and aggregation of traces based on an overlay network to overcome the challenge of massive data movement and analysis. However, our experiments show that due to high compression ratio of \parlot traces, such mechanisms for data movement and aggregation may be unnecessary.
@@ -53,7 +53,7 @@ Many performance and debugging tools for HPC applications \cite{stat,taumrnet} r
 The novelty offered by \parlot lies in the combination of compression
 speed, efficacy, and low timing jitter
 made possible by its {\em incremental}
-compression algorithm, which is
+loss-less compression algorithm, which is
 described in \S\ref{sec:design}.
 %
 It immediately compresses all traced information while the application is running, that is, \parlot does not record the uncompressed trace in memory. 
