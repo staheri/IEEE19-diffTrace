@@ -7,30 +7,25 @@ tracing approach that can support a variety of
 dynamic program analyses, including debugging.
 %
 Key properties of \parlot include its on-the-fly trace collection and
-compression that reduces timing jitter, a plethora of information
-about function calls and returns to permit program understanding
-and debugging, and
-significantly improved compression efficiencies.
+compression that reduces timing jitter, I/O bandwidth, and storage requirements to such a degree that whole-program call/return traces can be collected efficiently even at scale. 
 
-
-In this paper, we present an evaluation of various tool versions of \parlot
+We evaluate various versions of \parlot
 created by disabling/enabling compression, not collecting any traces, etc.
 %
 In order to provide an intuitive comparison against a well known tool,
-we also compare \parlot against \callgrind.
+we also compare \parlot to \callgrind.
 %
-Our evaluation criteria cover tracing overhead, the required bandwidth,
-the achieved compression ratio, initialization overhead, and the 
+Our metrics include the tracing overhead, required bandwidth, achieved compression ratio, initialization overhead, and the 
 overall impact of compression.
 %
 Detailed evaluations on the NAS parallel benchmarks running on
-up to 1024 cores establishes the merit of our tool and our design decisions. 
+up to 1024 cores establish the merit of our tool and our design decisions. 
 \parlot can collect more than 36 MB worth of data per core per second while 
-only needing 56 kB/s of the system bandwidth and slowdown the 
-application by 2.7x, on average.
+only needing 56 kB/s of bandwidth and slowing down the 
+application by 2.7x on average.
 %
 These results are highly promising in terms of supporting 
-whole program tracing and debugging at scale.
+whole program tracing and debugging, in particular when considering that most of the overhead is due to the DBI tool and not \parlot.
 
 
 The traces collected by \parlot cut through the entire stack of heterogeneous
@@ -39,24 +34,22 @@ The traces collected by \parlot cut through the entire stack of heterogeneous
 This permits a designer to project these traces onto specific
 APIs of interest during program analysis, visualization, and debugging.
 %
-We are also building a framework for debugging parallel
-programs based on \parlot, relying on
-methods to diff executions and detect outliers.
 
 
 A number of improvements to \parlot remain to be made.
 %
 These include allowing users to selectively trace at specific
 interfaces: doing so can further increase compression efficiency
-by reducing the variety of function calls to be treated by
+by reducing the variety of function calls to be handled by
 the compressor.
 %
 We also discuss the need to bring down initialization overheads, i.e.,
 by switching to a less general-purpose DBI tool.
 %
-We are also researching similar methods to
-other CPUs and GPUs that come with binary instrumentation and tracing
-facilities similar to \pin.
-%
 
+
+
+\section{Acknowledgment}
+
+This research was supported by NSF. We thank our colleague Dr. Hari Sundar from the University of Utah who provided insight and expertise that greatly assisted the research. We also thank Texas Advanced Computing Center (TACC) and San Diego Supercomputer Center (SDSC) for providing infrastructure of our experiments. 
 %--end

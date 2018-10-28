@@ -6,11 +6,11 @@ Tracing just this small amount of information without compression when running t
 %
 Extrapolating this value to all 102,400 cores of Stampede 1 (not counting the accelerators) yields 205 GB/s of trace data, which exceeds the Lustre filesystem's parallel write performance of 150 GB/s.
 %
-Enabling ParLOT's compression algorithm reduced the emitted trace data by a factor of 100 on average, a ratio that is quite stable w.r.t scaling, making it possible to trace full-scale programs while leaving over 98\% of the I/O bandwidth to the application. Therefore, ParLOT should also work for codes with higher requirement bandwidth than the ones we tested.
+Enabling ParLOT's compression algorithm reduced the emitted trace data by a factor of 100 on average, a ratio that is quite stable w.r.t scaling, making it possible to trace full-scale programs while leaving over 98\% of the I/O bandwidth to the application. Therefore, ParLOT should also work for codes with higher bandwidth requirements than the ones we tested.
 
 Figure \ref{overview} provides a general overview of \parlot 's workflow.
 %
-Basic blocks within program executables are {\em dynamically} instrumented before being executed and collected data getting compressed on-the-fly during runtime. 
+Basic blocks within program executables are {\em dynamically} instrumented before being executed. The collected data are compressed on-the-fly at runtime. 
 %
 
 \begin{figure}[!t]
@@ -49,7 +49,7 @@ LZ implements a variant of the LZ77 algorithm~\cite{LZ}. It uses a 4096-entry ha
 
 ZE emits a bitmap in which each bit represents one input byte. The bits indicate whether the corresponding bytes are zero or not. Following each eight-bit bitmap, ZE emits the non-zero bytes.
 
-As mentioned above, we had to implement the two transformations incrementally to minimize the latency. This required breaking them up into multiple pieces. Depending on the state the compressor is in when the next trace entry needs to be processed, the appropriate piece of code is executed and the state updated. If the LZ code produces an output, which it only does some of the time, then the appropriate piece of the ZE code is executed in a similar manner.
+As mentioned above, we had to implement the two transformations incrementally to minimize the maximum latency. This required breaking them up into multiple pieces. Depending on the state the compressor is in when the next trace entry needs to be processed, the appropriate piece of code is executed and the state updated. If the LZ code produces an output, which it only does some of the time, then the appropriate piece of the ZE code is executed in a similar manner.
 
 
 \subsection{\pin and Call-Stack Correction}
