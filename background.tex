@@ -45,7 +45,7 @@ of performance analysis data.
 %
 Tools such as ScalaTrace~\cite{scalatrace}
 also exploit
-the repetitive nature of time-step simulations~\cite{freitag}. Gamblin et al. in \cite{augu
+the repetitive nature of time-step simulations~\cite{freitag}. Aguilar et al\cite{aguilar}. proposed a lossy compression mechanism using Nami library\cite{gamblinNami}  for online MPI tracing. Mohror and Karavanic\cite{mohror} investigated similarity-based trace reduction techniques to store and analyze traces in scale. 
 
 
 Many performance and debugging tools for HPC applications \cite{stat,taumrnet} rely on mechanisms such as MRNet\cite{mrnet} to accelerate the collection and aggregation of traces based on an overlay network to overcome the challenge of massive data movement and analysis. However, our experiments show that due to high compression ratio of \parlot traces, such mechanisms for data movement and aggregation may be unnecessary.
