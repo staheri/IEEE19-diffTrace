@@ -26,7 +26,7 @@ Existing tools in this space
 do not meet our criteria for efficiency and generality.
 %
 The highly acclaimed STAT~\cite{stat} tool has helped isolate
-bugs based on building equivalence classes of MPI processes, and spotting
+bugs based on building equivalence classes of MPI processes and spotting
 outliers.
 %
 We would like to go beyond the capabilities offered by STAT and support
@@ -36,7 +36,7 @@ by a  gamut of back-end tools.
 Also, STAT is usually brought into the picture
 when a failure (e.g., a deadlock or hang) is encountered. We would like
 to move toward an ``always on'' collection regime, as we cannot anticipate
-when a failure will occur -- or more importantly {\em whether the failure
+when a failure will occur -- or, more importantly, {\em whether the failure
 will be reproducible.}
 %
 There are no reported debugging studies on using STAT in
@@ -87,9 +87,9 @@ drill down and detect abnormal behaviors {\em even in the runtime and
 support library stack} such as MPI-level activities.
 %
 In HPC, it is well-known (especially on newer machines) that bugs are often due to
-broken libraries (MPI, OpenMP) or broken runtime or OS-level activities.
+broken libraries (MPI, OpenMP), a broken runtime, or OS-level activities.
 %
-Having a single low-overhead tool that can ``X-ray'' an application to this depth is a goal met by \parlot \text{-} a unique feature in today's tool eco-system.
+Having a single low-overhead tool that can ``X-ray'' an application to this depth is a goal met by \parlot --- a unique feature in today's tool eco-system.
 
 To further motivate the need for whole-program function call
 traces, consider the expression {\tt f()+g()}.
