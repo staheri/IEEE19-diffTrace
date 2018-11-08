@@ -1,12 +1,12 @@
 Our experimental results in \S\ref{sec:results} highlight why \textit{compression} is essential to make our approach work.
 %
-We used ParLOT to record a unique 16-bit identifier for every function call and return.
+We used \parlot to record a unique 16-bit identifier for every function call and return.
 %
 Tracing just this small amount of information without compression when running the Mantevo miniapps~\cite{mantevo} on Stampede 1 resulted in about 2 MB/s of data per core on average.
 %
 Extrapolating this value to all 102,400 cores of Stampede 1 (not counting the accelerators) yields 205 GB/s of trace data, which exceeds the Lustre filesystem's parallel write performance of 150 GB/s.
 %
-Enabling ParLOT's compression algorithm reduced the emitted trace data by a factor of 100 on average, a ratio that is quite stable w.r.t scaling, making it possible to trace full-scale programs while leaving over 98\% of the I/O bandwidth to the application. Therefore, ParLOT should also work for codes with higher bandwidth requirements than the ones we tested.
+Enabling \parlot's compression algorithm reduced the emitted trace data by a factor of 100 on average, a ratio that is quite stable w.r.t scaling, making it possible to trace full-scale programs while leaving over 98\% of the I/O bandwidth to the application. Therefore, \parlot should also work for codes with higher bandwidth requirements than the ones we tested.
 
 Figure \ref{overview} provides a general overview of \parlot 's workflow.
 %
