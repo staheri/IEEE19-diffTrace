@@ -1,5 +1,5 @@
-TOPLEVEL    = ESPT18-Parlot.tex
-TARGET      = ESPT18-Parlot.pdf
+TOPLEVEL    = SC19-diffTrace.tex
+TARGET      = SC19-diffTrace.pdf
 
 DEPFILES   += $(wildcard *.tex)
 DEPFILES   += $(wildcard *.bib)
