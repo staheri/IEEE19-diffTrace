@@ -1,79 +1,81 @@
-Recording a log of events during the execution of an application is essential for better understanding the program behavior and, in case of a failure, to locate the problem.
-%
-Recording this type of information requires instrumentation of the program either at the source-code or the binary-code level.
-%
-Instrumenting the source code by adding extra libraries and statements to collect the desired information is easy for developers.
-%
-However, doing so modifies the code and requires recompilation, often involving multiple different tools and complex hierarchies of makefiles and libraries, which can make this approach cumbersome and frustrating for users.
-%
-Instrumenting an executable at the binary level using a tool is typically easier, faster, and less error prone for most users.
-%
-Moreover, binary instrumentation is language independent, portable to any system that has the appropriate instrumentation tool installed, and provides machine-level insight into the behavior of the application.
-%
-
-\subsection{Binary Instrumentation}
-Executables can be instrumented \textit{statically}, where the additional code is inserted into the binary before execution, which results in a persistent modified executable, or \textit{dynamically}, where the modification of the executable is not permanent. In dynamic binary instrumentation, code behavior can be monitored at runtime, making it possible to handle dynamically-generated and self-modifying code. Furthermore, it may be feasible to attach the instrumentation to a running process, which is particularly useful for long-running applications and infinite loops.
-
-Many different tools for investigating application behavior have been designed on top of such Dynamic Binary Instrumentation (DBI) frameworks. For instance, Dyninst~\cite{dyninst} provides a dynamic instrumentation API that gives developers the ability to measure various performance aspects. It is used in tools like Open-SpeedShop~\cite{openss} and TAU~\cite{tau} as well as correctness debuggers like STAT~\cite{stat}. Moreover, VampirTrace~\cite{vampirt} uses it to provide a library for collecting program execution logs. 
-
-Valgrind~\cite{valgrind} is a shadow-value DBI framework that keeps a copy of every register and memory location. It provides developers with the ability to instrument system calls and instructions. Error detectors such as Memcheck~\cite{memcheck} and call-graph generators like \callgrind~\cite{callgrind} are built upon Valgrind.\footnote{Given the absence of tools similar to \parlot, we employ \callgrind
- as a ``close-enough'' tool in our comparisons elaborated in \S\ref{sec:tracing-tools}.
- In this capacity, \callgrind is similar to \parlotm, a variant of \parlot that only collects
- traces from the {\tt main} image. We perform such comparison to have an idea of how we fare
- with respect to one other tool. In \S\ref{sec:results}, we also present a self-assessment of \parlot separately.}
-
- 
-%
+\subsection{HPC Debugging}
 
 
-We implemented \parlot on top of \pin~\cite{pin}, a DBI framework for the IA-32, x86-64, and MIC instruction-set architectures for creating dynamic program analysis tools. There is also version of \pin available for the ARM architecture \cite{pinarm}. \parlot mutates \pin to trace the entry (call) and exit (return) of every executed function. Note that our tracing and compression approaches can equally be implemented on top of other instrumentation tools. For example, PMaC \cite{pmac} is a DBI tool for the PowerPC/AIX architecture upon which \parlot could also be based.
-
-
-\subsection{Efficient Tracing}
-When dealing with large-scale parallel programs, any attempt to capture reasonably frequent events will result in a vast amount of data. Moreover, transferring and storing the data will incur significant overhead. For example, collecting just one byte of information per executed instruction yields on the order of a gigabyte of data per second on a single high-end core. Storing the resulting multi-gigabyte traces from many cores can be a challenge, even on today's large hard disks.
-
-Hence, to be able to capture whole-program call traces, we need a way to decrease the space and runtime overhead. \textit{Compression} can encode the generated data using a smaller number of bits, help
-reduce the amount of data movement across the memory hierarchy, and
-lower storage and network demands.
-%
-Although the encoded data will later have to be decoded for analysis, compressing them during tracing enables the collection of {\em whole-program} traces.
-
-The use of compression by itself is not new.
-Various performance evaluation tools~\cite{tau,scorep,eventflowgraph} 
-already employ compression during the collection
-of performance analysis data.
-%
-Tools such as ScalaTrace~\cite{scalatrace}
-also exploit
-the repetitive nature of time-step simulations~\cite{freitag}. Aguilar et al. \cite{aguilar} proposed a lossy compression mechanism using the Nami library \cite{gamblinNami} for online MPI tracing. Mohror and Karavanic \cite{mohror} investigated similarity-based trace reduction techniques to store and analyze traces at scale. 
-
-
-Many performance and debugging tools for HPC applications \cite{stat,taumrnet} rely on mechanisms such as MRNet \cite{mrnet} to accelerate the collection and aggregation of traces based on an overlay network to overcome the challenge of massive data movement and analysis. However, our experiments show that, due to the high compression ratio of \parlot traces, such mechanisms for data movement and aggregation may be unnecessary.
-
-The novelty offered by \parlot lies in the combination of compression
-speed, efficacy, and low timing jitter
-made possible by its {\em incremental}
-lossless compression algorithm, which is
-described in \S\ref{sec:design}.
-%
-It immediately compresses all traced information while the application is running, that is, \parlot does not record the uncompressed trace in memory. 
-%
-As a result, just a few kilobytes of data need to be written out per thread and per second, thus requiring only a small fraction of the  disk or network bandwidth. 
-%
-The traces are decompressed later when they are read for offline analysis.
-%
-From the decompressed full function-call trace, the complete call-graph, 
-call-frequency, and caller-callee information can be extracted. 
-%
-This can be done at the granularity of a thread, a group of threads, or the whole application.
-%
-We now elaborate on the design of \parlot that makes
-these innovations possible.
-%--
+\begin{itemize}
+\item ScalaTrace: Scalable compression and replay of communication traces for HPC - Michael Noeth
+\item Barrier Matching for Programs with Textually unaligned barriers - Yuan Zhang
+\item Automating the Large Scale collection and analysis of performance data on linux clusters - Philip Mucci
+\item Automated Charecterization of parallel application communication patterns - philip roth
+\item Precise predictive Analysis for discovering communication deadlocks in MPI programs - vojtech forejt
+\item Problem Diagnosis in Large Scale Computing environments - Barton miller
+\item Probablistic diagnosis of performance faults in large-scale parallel applications - ignacio laguna
+\item detecting patterns in MPI communication traces - robert preissl
+\item D4: Fast concurrency debugging with parallel differntial analysis - bozhen liu
+\item Marmot: An MPI analysis and checking tool - bettina krammer
+\item MPI-checker - Static Analysis for MPI - Alexandrer droste
+\item STAT: stack trace analysis for large scale debugging - Dorian Arnold 
+\item DMTracker: Finding bugs in large-scale parallel programs by detecting anomaly in data movements - Qi Gao
+\item SyncChecker: Detecting synchronization errors between MPI applications and libraries - zhezhe chen
+\item Model Based fault localization in large-scale computing systems - Naoya Maruyama
+\item Synoptic: Studying logged behavior with inferred models - ivan beschastnikh
+\item Mining temporal invariants from partially ordered logs -  ivan beschastnikh
+\item Scalable Temporal Order Analysis for Large Scale Debugging - Dong Ahn
+\item Inferring and asserting distributed system invariants -  ivan beschastnikh - stewart grant
+\item PRODOMETER: Accurate application progress analysis for large-scale parallel debugging - subatra mitra
+\item Automaded : Automata-based debugging for dissimilar parallel tasks - greg
+\item Automaded : large scale debugging of parallel tasks with Automaded - ignacio
+\item Pivot Tracing: Dynamic causal monitoring for distributed systems - Johnathan mace
+\item Inferring models of concurrent systems from logs of their behavior with CSight - ivan
+\item A Scalable Parallel Debugging library with Pluggable communication protocols - Chai Jin, David Abramson
+\end{itemize}
 
 
 
 
+\subsubsection{Trace Analysis}
 
+
+\begin{itemize}
+\item Trace File Comparison with a hierarchical Sequence Alignment algorithm - mathias weber
+\item structural clustering : matthias weber
+\item building a better backtrace: techniques for postmortem program analysis - ben liblit
+\item automatically charecterizing large scale program behavior - timothy sherwood
+\end{itemize}
+
+\subsubsection{Debuggers}
+
+
+\begin{itemize}
+\item 
+\end{itemize}
+
+
+\subsubsection{Visualizations}
+
+
+\begin{itemize}
+\item Combing the communication hairball: Visualizing large-scale parallel execution traces using logical time - katherine e isaacs
+\item recovering logical structure from charm++ event traces - katherine ...
+\item ordering traces logically to identify lateness in message passing programs
+\item ShiViz - Debugging distributed systems - ivan 
+\end{itemize}
+
+
+
+\subsection{Concept Lattice and LCA}
+
+
+\begin{itemize}
+\item Vijay Garg - Applications of lattice theory in distributed systems
+
+\item Dimitry Ignatov \cite{ignatov} - Concept Lattice Applications in Information Retrieval
+\end{itemize}
+
+\subsection{Repetitive Patterns}
+
+
+\begin{itemize}
+\item 
+\end{itemize}
 
 
