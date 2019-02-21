@@ -6,6 +6,25 @@ Pivot Tracing: Dynamic causal monitoring for distributed systems - Johnathan mac
 
 \end{itemize}
 
+\subsection{STAT}
+
+Parallel debugger STAT\cite{stat}
+\begin{itemize}
+\item STAT gathers stack traces from all processes
+\item Merge them into prefix tree
+\item Groups processes that exhibit similar behavior into equivalent classes
+\item A single representative of each equivalence can then be examined with a full-featured debugger like TotalView or DDT
+\end{itemize}
+
+What STAT does not have?
+
+\begin{itemize}
+\item FP debugging
+\item Portability (too many dependencies)
+\item Domain-specific
+\item Loop structures and detection
+\end{itemize}
+ 
 
 \subsection{Program Understanding }
 
