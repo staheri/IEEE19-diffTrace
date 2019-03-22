@@ -1,4 +1,4 @@
-\documentclass[sigconf]{acmart}
+\documentclass[review,sigconf]{acmart}
 
 %\usepackage[table]{xcolor}
 \usepackage{xcolor}
@@ -38,7 +38,7 @@
 
 \begin{document}
 
-\title{ DiffTrace: Program Understanding}
+\title{ DiffTrace: Efficient Whole-Program Trace Analysis and Diffing}
 
 
 \author{Saeed Taheri}
@@ -50,13 +50,13 @@
   \country{United States}
 }
 
-\author{Ganesh Gopalakrishnan}
-\email{ganesh@cs.utah.edu}
+\author{Ian Briggs}
+\email{ianbriggsutah@gmail.com}
 \affiliation{%
   \institution{University of Utah}
   \city{Salt Lake City}
   \state{Utah}
-  \country{U.S.A.}
+  \country{United States}
 }
 
 \author{Martin Burtscher}
@@ -67,6 +67,17 @@
   \state{Texas}
   \country{U.S.A.}
 }
+
+\author{Ganesh Gopalakrishnan}
+\email{ganesh@cs.utah.edu}
+\affiliation{%
+  \institution{University of Utah}
+  \city{Salt Lake City}
+  \state{Utah}
+  \country{U.S.A.}
+}
+
+
 
 
 
@@ -84,11 +95,37 @@
 
 \section{Introduction}
 \label{sec:intro}
+
+
+
 %\input{intro.tex}
 
 
 \begin{itemize}
-\item
+\item HPC Bugs are expensive
+\item HPC Tracing is expensive
+\item ParLOT provides infrastructure for whole-program function call return tracing
+\item Decompressing traces produce large amount of data
+\item Smart analysis of traces, convert large amount of data from thousands of traces (processes, threads) into a valuable information which are
+	\begin{itemize}
+	\item Easy to analyze
+	\item hide the complexity of HPC
+	\item Reflect dynamic behavior of the program
+	\item see if it matches the user/developer expectations
+	\end{itemize}
+\item The basic idea is to reduce the search space and reflect abnormal behavior by:
+	\begin{itemize}
+	\item Classifying similar behavior traces into equivalent classes
+	\item Comparing representatives from equivalent classes and find the point of divergence (i.e., diffing)
+	\end{itemize}
+\item Here are the contributions:
+	\begin{itemize}
+	\item MPI fault injection
+	\item Trace decompression, loop detection, attribute extraction
+	\item Concept Lattice, Jaccard Similarity Matrix, Trace classification, outlier detection
+	\item Diffing
+	\item Floating Point Debugging
+	\end{itemize}
 \end{itemize}
 
 \section{Background and Related Work}
