@@ -95,61 +95,32 @@
 
 \section{Introduction}
 \label{sec:intro}
+\input{intro.tex}
 
 
 
-%\input{intro.tex}
+\section{cl-Trace Components}
+\label{sec:components}
+\input{components.tex}
 
+\section{Tool-Chain Design}
+\label{sec:design}
+\input{design.tex}
 
-\begin{itemize}
-\item HPC Bugs are expensive
-\item HPC Tracing is expensive
-\item ParLOT provides infrastructure for whole-program function call return tracing
-\item Decompressing traces produce large amount of data
-\item Smart analysis of traces, convert large amount of data from thousands of traces (processes, threads) into a valuable information which are
-	\begin{itemize}
-	\item Easy to analyze
-	\item hide the complexity of HPC
-	\item Reflect dynamic behavior of the program
-	\item see if it matches the user/developer expectations
-	\end{itemize}
-\item The basic idea is to reduce the search space and reflect abnormal behavior by:
-	\begin{itemize}
-	\item Classifying similar behavior traces into equivalent classes
-	\item Comparing representatives from equivalent classes and find the point of divergence (i.e., diffing)
-	\end{itemize}
-\item Here are the contributions:
-	\begin{itemize}
-	\item MPI fault injection
-	\item Trace decompression, loop detection, attribute extraction
-	\item Concept Lattice, Jaccard Similarity Matrix, Trace classification, outlier detection
-	\item Diffing
-	\item Floating Point Debugging
-	\end{itemize}
-\end{itemize}
 
 \section{Background and Related Work}
 \label{sec:bgreltool}
-Background
 \input{background.tex}
 
-\section{Design }
-\label{sec:design}
-%\input{design.tex}
 
-\section{Evaluation Methodology}
-\label{sec:evalmeth}
-%\input{evalmeth.tex}
-
-\section{Results}
-\label{sec:results}
-
+\section{Case Studies}
+\label{sec:case}
+\input{cases.tex}
 
     
-
-\section{Discussion and Conclusion}
-\label{sec:concl}
-%\input{concluding-remarks.tex}
+\section{Discussion and Future Work}
+\label{sec:discussion}
+\input{discussion.tex}
 
 
 \bibliographystyle{ACM-Reference-Format}
