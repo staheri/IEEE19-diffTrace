@@ -1,28 +1,56 @@
-\begin{itemize}
-\item HPC Bugs are expensive
-\item HPC Tracing is expensive
-\item ParLOT provides infrastructure for whole-program function call return tracing
-\item Decompressing traces produce large amount of data
-\item Smart analysis of traces, convert large amount of data from thousands of traces (processes, threads) into a valuable information which are
-	\begin{itemize}
-	\item Easy to analyze
-	\item hide the complexity of HPC
-	\item Reflect dynamic behavior of the program
-	\item see if it matches the user/developer expectations
-	\end{itemize}
-\item The basic idea is to reduce the search space and reflect abnormal behavior by:
-	\begin{itemize}
-	\item Classifying similar behavior traces into equivalent classes
-	\item Comparing representatives from equivalent classes and find the point of divergence (i.e., diffing)
-	\end{itemize}
-\item Here are the contributions:
-	\begin{itemize}
-	\item Testing framework (diffTrace) from fault injection to large-scale applications to diffing pairs of candidate trace files causing the fault. (clTrace and fpTrace)
-	\item MPI fault injection
-	\item ParLOT trace Collection
-	\item Trace Preprocessing (decompression, loop detection, attribute extraction)
-	\item Concept Lattice, Jaccard Similarity Matrix, Trace classification, outlier detection
-	\item Diffing
-	\item Floating Point Debugging
-	\end{itemize}
-\end{itemize}
+% \begin{itemize}
+% \item HPC Bugs are expensive
+% \item HPC Tracing is expensive
+% \item ParLOT provides infrastructure for whole-program function call return tracing
+% \item Decompressing traces produce large amount of data
+% \item Smart analysis of traces, convert large amount of data from thousands of traces (processes, threads) into a valuable information which are
+% 	\begin{itemize}
+% 	\item Easy to analyze
+% 	\item hide the complexity of HPC
+% 	\item Reflect dynamic behavior of the program
+% 	\item see if it matches the user/developer expectations
+% 	\end{itemize}
+% \item The basic idea is to reduce the search space and reflect abnormal behavior by:
+% 	\begin{itemize}
+% 	\item Classifying similar behavior traces into equivalent classes
+% 	\item Comparing representatives from equivalent classes and find the point of divergence (i.e., diffing)
+% 	\end{itemize}
+% \item Here are the contributions:
+% 	\begin{itemize}
+% 	\item Testing framework (diffTrace) from fault injection to large-scale applications to diffing pairs of candidate trace files causing the fault. (clTrace and fpTrace)
+% 	\item MPI fault injection
+% 	\item ParLOT trace Collection
+% 	\item Trace Preprocessing (decompression, loop detection, attribute extraction)
+% 	\item Concept Lattice, Jaccard Similarity Matrix, Trace classification, outlier detection
+% 	\item Diffing
+% 	\item Floating Point Debugging
+% 	\end{itemize}
+% \end{itemize}
+%
+
+When the next version of an HPC software system is created, logical errors often
+get introduced.
+%
+To maintain productivity, designers need effective and efficient methods to locate
+these errors.
+%
+Given the increasing use of hybrid (MPI + X) codes and library functions, errors may
+be introduced through a usage contract violation at any one of these interfaces.
+%
+Therefore, tools that record activities at multiple APIs are necessary.
+%
+Designs find most of these bugs manually, and the efficacy of a debugging tool is
+often measured by how well it can highlight the salient differences between the
+executions of two versions of software.
+%
+Given the huge number of things that could be different -- individual iterative
+patterns of function calls, groups of functions calls, or even specific instruction
+types (e.g., non-vectorized versus vectorized floating-point dot vector loops) -- designers
+cannot often afford to rerun the application multiple times to collect each facet
+of behavior separately.
+%
+These issues are well summarized in many recent studies cite-them.
+
+
+In this paper, we 
+
