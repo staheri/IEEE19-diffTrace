@@ -1,0 +1,114 @@
+
+
+Perf ideas -> debugging space : good thing
+
+Conceptual advances
+====================
+
+algos created to get this far
+
+* incremental CL generation
+  - how to argue it was "essential"
+    . complexity?
+    . Batch creation
+    
+  - incremental CL work citations
+
+* CL new in debugging (was in perf)
+
+  - scalable
+  - info extraction
+  - HB (future) [ Vijay Garg's citation ]
+
+* LCA detection
+  - jaccard pairwise [ Weber paper mentioned this? ]
+  - LCA algo implemented
+  - CL label reduction
+
+* Loop detection : new ideas
+  - started with Rep patterns [ KMR algo ]
+    . N^3
+    
+  - discarded to now use Klaus's algo
+    . K^2 N (K is "window size" of loop body size)
+    . can set K to 10 and still find nothing missing ?!
+
+    . K larger does not get us any interesting diffs (can be a result)
+
+* Diffing between seq of "symbols"
+  - Whose algo gave you the start? [ gnu diff / git / citations ]
+  - NLR - nested loop recognition
+    . comes out of the Klaus work
+    . NLR adaptation (how done?)
+  - DiffNLR
+    . hierarchical diffing
+      . can loops themselves be symbols?
+
+  - 
+
+==
+
+
+==
+
+* How we collect info matters
+  . binary tracing
+  . detect at any level of abstraction
+  . filter
+  . attribute creation
+  
+* Dissimilarity detection -> bugs
+
+* Dissimilarity must be found in richer spaces
+
+* We have created 2 such spaces
+
+  . CL -> Jaccard -> heatmap -> metrics
+
+  . Loop structure -> loop diff
+
+===
+
+* Collection
+  - DynInst
+  - other..
+  - limitations...
+
+* Existing work
+  - Auto/Stat
+    . spaces are different
+      - stack prefix
+      - not able to handle hybrid ..
+      
+  - Prod
+    . has loop ability
+      - has known limitations (Saeed)
+      
+===
+
+Evaluation of "new spaces"
+
+* full table of new tool vs. old tools
+  - desriable but not yet
+  - many existing tools don't work (- entires)
+    . dependencies are multiple (libraries... -> dyninst/ tbon)
+
+* One objective study would be nice !!!
+
+  . establish some diff ranking criteria
+  . show that the injected bugs come as the "top 2/3 of this space"
+  . do it for 2-3 "real apps"
+
+--
+
+* recompilation code rewrite avoided
+
+* [[ debugging using pin-style trace collection, aided by smart compression --> feeding into
+     the debugging pipeline of "better spaces" not done before ]]
+
+* This has been done in perf measurement but not in debugging
+  - 
+  - 
+  
+===
+
