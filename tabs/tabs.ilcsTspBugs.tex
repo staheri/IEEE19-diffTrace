@@ -1,0 +1,29 @@
+\begin{table*}[t]
+\caption{Injected Bugs to ILCS-TSP}
+\label{tab.ilcsTspBugs}
+\scalebox{0.9}{
+\begin{tabular}{|c|c|l|l|}
+\hline
+ID & Level & \multicolumn{1}{c|}{Bugs} & \multicolumn{1}{c|}{Description} \\ \hline
+1 & \multirow{8}{*}{MPI} & allRed1wrgOp-1-all-x & Different operation (MPI\_MAX) in only one (buggyProc) for first MPI\_ALLREDUCE() -- L229:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+2 &  & allRed1wrgSize-1-all-x & Wrong size in only one (buggyProc) for first MPI\_ALLREDUCE() -- L229:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+3 &  & allRed1wrgSize-all-all-x & Wrong Size in all processes for first MPI\_ALLREDUCE() -- L229:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+4 &  & allRed2wrgOp-1-all-x & Different operation (MPI\_MAX) in only one (buggyProc) for first MPI\_ALLREDUCE() -- L277:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+5 &  & allRed2wrgSize-1-all-x & Wrong size in only one (buggyProc) for first MPI\_ALLREDUCE() -- L277:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+6 &  & allRed2wrgSize-all-all-x & Wrong Size in all processes for second MPI\_ALLREDUCE() -- L277:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+7 &  & bcastWrgSize-1-all-x & Wrong Size in only one (buggyProc) of MPI\_Bcast() -- L290:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+8 &  & bcastWrgSize-all-all-x & Wrong Size n all processes for MPI\_Bcast() -- L240:ilcsTSP.c \\ \hline
+9 & \multirow{10}{*}{OMP} & misCrit-1-1-x & Missing Critical Section in buggyProc and buggyThread -- L170:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+10 &  & misCrit-all-1-x & Missing Critical Section in buggyThread  and all prcoesses -- L170:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+11 &  & misCrit-1-all-x & Missing Critical Section in buggyProc and all threads -- L170:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+12 &  & misCrit-all-all-x & Missing Critical Section in all procs and threads -- L170:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+13 &  & misCrit2-1-1-x & Missing Critical Section in buggyProc and buggyThread -- L230:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+14 &  & misCrit2-all-1-x & Missing Critical Section in buggyThread -- L230:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+15 &  & misCrit2-1-all-x & Missing Critical Section in buggyProc and all threads -- L230:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+16 &  & misCrit2-all-all-x & Missing Critical Section in all procs and threads -- L230:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+17 &  & misCrit3-1-all-x & Missing Critical Section in buggyProc and all threads -- L280:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+18 &  & misCrit3-all-all-x & Missing Critical Section in all procs and threads -- L280:ilcsTSP.c \\ \hline
+19 & General & infLoop-1-1-1 & Injected an infinite loop after CPU\_EXEC() in buggyProc,buggyThread \& buggyIter L164:ilcsTSP.c \\ \hline
+\end{tabular}
+}
+\end{table*}
