@@ -1,3 +1,74 @@
+When the next version of an HPC software system is created, logical errors often
+get introduced.
+%
+To maintain productivity, designers need effective and efficient methods to locate
+these errors.
+%
+Given the increasing use of hybrid (MPI + X) codes and library functions, errors may
+be introduced through a usage contract violation at any one of these interfaces.
+%
+Therefore, tools that record activities at multiple APIs are necessary.
+%
+Designs find most of these bugs manually, and the efficacy of a debugging tool is
+often measured by how well it can highlight the salient differences between the
+executions of two versions of software.
+%
+Given the huge number of things that could be different -- individual iterative
+patterns of function calls, groups of functions calls, or even specific instruction
+types (e.g., non-vectorized versus vectorized floating-point dot vector loops) -- designers
+cannot often afford to rerun the application multiple times to collect each facet
+of behavior separately.
+%
+These issues are well summarized in many recent studies cite-them.
+
+TODO: Cite the DOE debugging report.
+
+
+TODO: Talk about the challenges of debugging in the context of heterogeneous programs. (NSF proposal material.)
+
+TODO: Challenges in hybrid debugging and ``always on'' call for
+collecting traces efficiently.
+
+- binary tracing helps here
+
+- detect at any level of abstraction, as bugs may be present at different levels, APIs
+
+ * filter
+
+ * attribute creation
+
+TODO: Express that debugging is a matter of dissimilarity finding.
+
+  * Dissimilarities are what bugs are
+
+  * Dissimilarity must be found in richer spaces
+
+We have created 2 such spaces
+
+* Large space - need to summarize across processes, then threads
+
+    CL - Jaccard - heatmap - metrics
+
+  * TODO: most programs spend most of their time in loops.
+
+    Loop structure - loop diff
+
+**   TODO: Highlights of results obtained as a result of the above thinking should be here. THis typically
+comes before ROADMAP of paper.
+
+** restate key contributions in a few bullets
+
+
+
+TODO: Brief roadmap of paper
+
+- Sec Background.tex here. sec2 talks about ... . sec3 ...
+
+- Sec major related work will have a detailed discussion of related work
+
+- this probably can come after your Evaluation section...
+ 
+
 % \begin{itemize}
 % \item HPC Bugs are expensive
 % \item HPC Tracing is expensive
@@ -27,30 +98,4 @@
 % 	\end{itemize}
 % \end{itemize}
 %
-
-When the next version of an HPC software system is created, logical errors often
-get introduced.
-%
-To maintain productivity, designers need effective and efficient methods to locate
-these errors.
-%
-Given the increasing use of hybrid (MPI + X) codes and library functions, errors may
-be introduced through a usage contract violation at any one of these interfaces.
-%
-Therefore, tools that record activities at multiple APIs are necessary.
-%
-Designs find most of these bugs manually, and the efficacy of a debugging tool is
-often measured by how well it can highlight the salient differences between the
-executions of two versions of software.
-%
-Given the huge number of things that could be different -- individual iterative
-patterns of function calls, groups of functions calls, or even specific instruction
-types (e.g., non-vectorized versus vectorized floating-point dot vector loops) -- designers
-cannot often afford to rerun the application multiple times to collect each facet
-of behavior separately.
-%
-These issues are well summarized in many recent studies cite-them.
-
-
-In this paper, we 
 
