@@ -1,11 +1,8 @@
-When the next version of an HPC software system is created, logical errors often
-get introduced.
+When the next version of an HPC software system is created, logical errors often get introduced.
 %
-To maintain productivity, designers need effective and efficient methods to locate
-these errors.
+To maintain productivity, designers need effective and efficient methods to locate these errors.
 %
-Given the increasing use of hybrid (MPI + X) codes and library functions, errors may
-be introduced through a usage contract violation at any one of these interfaces.
+Given the increasing use of hybrid (MPI + X) codes and library functions, errors may be introduced through a usage contract violation at any one of these interfaces.
 %
 Therefore, tools that record activities at multiple APIs are necessary.
 %
@@ -19,63 +16,98 @@ types (e.g., non-vectorized versus vectorized floating-point dot vector loops) -
 cannot often afford to rerun the application multiple times to collect each facet
 of behavior separately.
 %
-These issues are well summarized in many recent studies cite-them.
-
-TODO: Cite the DOE debugging report.
+These issues are well summarized in many recent studies \cite{hpcdoe}
 
 
-TODO: Talk about the challenges of debugging in the context of heterogeneous programs. (NSF proposal material.)
+%TODO: Cite the DOE debugging report.
+%Done
 
-TODO: Challenges in hybrid debugging and ``always on'' call for
-collecting traces efficiently.
+One of the major challenges of HPC debugging is the huge diversity of the applications, which encompass domains such as computational chemistry, molecular dynamics, and climate simulation.
+%
+In addition, there are many types of possible “bugs” or, more precisely, errors. An \textbf{error} may be a deadlock or a resource leak. These errors may be caused by different \textbf{faults}: an unexpected message reordering rule (for a deadlock) or a forgotten free statement (for a resource leak).
+%
+There exists a collection of scenarios in which a bug can be introduced: when developing a brand new application, optimizing an existing application, upscaling an application, porting to a new platform, changing the compiler, or even changing compiler flags.
+%
+ Unlike traditional software, there are hardly any bug-repositories, collection of trace data or debugging-purpose benchmarks in HPC community.
+ %
+The heterogeneous nature of HPC bugs make developers come up with their own solutions to resolve specific class of bugs on specific architecture or platforms that are not usable on other \cite{hpcdoe}.
 
-- binary tracing helps here
-
-- detect at any level of abstraction, as bugs may be present at different levels, APIs
-
- * filter
-
- * attribute creation
-
-TODO: Express that debugging is a matter of dissimilarity finding.
-
-  * Dissimilarities are what bugs are
-
-  * Dissimilarity must be found in richer spaces
-
-We have created 2 such spaces
-
-* Large space - need to summarize across processes, then threads
-
-    CL - Jaccard - heatmap - metrics
-
-  * TODO: most programs spend most of their time in loops.
-
-    Loop structure - loop diff
-
-**   TODO: Highlights of results obtained as a result of the above thinking should be here. THis typically
-comes before ROADMAP of paper.
-
-** restate key contributions in a few bullets
-
-ONE KEY CONTRIB is that we have a powerful combination of ideas to locate bugs
-
-1. JS based location of i,j pair that matters
-
-2. NLR-based identification of WHY it matters (and is a bug)
-
-EVAL method:
-initial recommendation turns into NLR-observable bug and confusion matrix scores how many TP,FP,TN,FN
+%
+%TODO: Talk about the challenges of debugging in the context of heterogeneous programs. (NSF proposal material.)
+%Done
 
 
-TODO: Brief roadmap of paper
+% Why we need always on tracing
+When a failure occurs (e.g., deadlock or crash) or the application outputs an unexpected result, it is not economic to rerun the application and consume resources to reproduce the failure. In addition, HPC bugs might not be reproducible due to non-deterministic behavior of most of HPC applications. Also the failure might be caused by a bug present at different APIs, system levels or network, thus multiple reruns might be needed to locate the buggy area.
+%ParLOT introduction
+In our previous work\cite{parlot}, we have introduced ParLOT that collects whole program function call traces efficiently using dynamic binary instrumentation.
+%
+ParLOT captures function calls and returns at different levels (e.g., source-code and library) and incrementally compress them on-the-fly, resulting in low runtime overhead and significantly low required bandwidth
+%
 
-- Sec Background.tex here. sec2 talks about ... . sec3 ...
+%TODO: Challenges in hybrid debugging and ``always on'' call for collecting traces efficiently.
+%Done
 
-- Sec major related work will have a detailed discussion of related work
+% Post-mortem analysis to obtain understanding about different aspects of the dynamic behavior
+In the current work, we introduce DiffTrace, a tool-chain that post-mortem analyze ParLOT traces in order to supply developers with information about dynamic behavior of HPC application at different levels towards debugging. 
+%
+Topology of HPC tasks on both distributed and shared memory often follow a ``symmetric'' control flow such as SPMD, master/worker and odd/even where multiple tasks contain \textit{similar} events in their control flow. 
+%
+HPC bugs often manifest themselves as divergence in the control flow of processes comparing to what was expected.
+%
+In other words, HPC bugs violates the rule of ``symmetric'' and ``similar'' control flow of one or more thread/process in typical HPC applications based on the original topology of the application.
+%
+We believe that finding the dissimilarities among traces is the essential initial step towards finding the bug manifestation, and consequently the bug root cause.
+% 
+//
+Large-scale HPC application execution would result in thousands of ParLOT trace files due to execution of thousands of processes and threads.
+%
+Since HPC applications spend most of their time in an outer main loop, every single trace file also may contain million-long sequence of trace entries (i.e., function calls and returns).
+%
+Finding the bug manifestation (i.e., dissimilarities caused by the bug) among large number of long traces is the problem of finding the needle in the haystack.
 
-- this probably can come after your Evaluation section...
+
+%
+
+TOCOMPELETE: Intra-trace summarization: NLR
+
+%
+
+After some pre-processing on collected ParLOT traces, DiffTrace then extract \textit{attributes} from decompressed traces and inject them to a concept hierarchy data structure called Concept Lattice \cite{clbook}.
+%
+Concept lattices give us the capability of reducing the search space from thousands of instances to just a few \textit{equivalent behavior classes of traces} measuring the similarity of traces\cite{Alqadah2011}
+
+TOCOMPELETE: Inter-trace summarization: FCA
+
+%
  
+
+
+
+**   TODO: Highlights of results obtained as a result of the above thinking should be here. THis typically comes before ROADMAP of paper.
+
+In summary, here are our main contributions:
+\begin{itemize}
+\item we have a powerful combination of ideas to locate bugs
+\item A variation of NLR algorithm to compress traces in lossless fashion for easier analysis and detecting (broken) loop structures 
+\item FCA-based clustering of similar behavior traces, efficient, 
+\item Ranking system based on delta-sim
+\item Visualization diffNLR
+\end{itemize}
+
+%
+
+The rest of the paper is as follows:
+
+- Sec 2 talks about backgrounds 
+
+- Sec 3: Talks about the design of diffTrace
+
+- Sec 4: Evaluates diffNLR by initial recommendation turns into NLR-observable bug and confusion matrix scores how many TP,FP,TN,FN
+
+- Sec 5 major related work will have a detailed discussion of related work
+
+- Sec 6 discusses the potential limitations, future work,  and conclusion.
 
 % \begin{itemize}
 % \item HPC Bugs are expensive
