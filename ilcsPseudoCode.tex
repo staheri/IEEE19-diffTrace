@@ -1,0 +1,85 @@
+
+\begin{frame}{}
+  \lstset{language=C, numbers=left}
+ \begin{lstlisting}
+int main(argc,argv){
+ MPI_Init();
+ MPI_Comm_size()
+ MPI_Comm_rank(my_rank)
+ //Figuring local number of CPUs
+ MPI_Reduce() // Figuring global number of CPUs
+ CPU_Init();
+ //For storing local champion results
+ champ[CPUs] = malloc(); 
+ MPI_Barrier();
+ #pragma omp parallel num_threads(CPUs+1)
+ {
+  rank = omp_get_thread_num()
+  if (rank == 0){ //communication thread
+   do{
+    //Find and report the thread with 
+    //local champion, global champion
+    MPI_AllReduce();
+    //Find and report the process with
+    //global champion
+    MPI_AllReduce();	
+    //The process with the global champion
+    //copy its results to bcast_buffer	
+    if (my_rank == global_champion){
+     #pragma omp cirtical
+     memcpy(bcast_buffer,local_champ)
+    }
+    //Broadcast the champion
+    MPI_Bcast(bcast_buffer)
+   } while (no_change_threshold);
+   cont=0 // signal worker threads to stop
+  } else{ // worker threads
+   while(cont){
+    //Calculate Seed
+    local_result = CPU_Exec()
+    if (local_result < champ[rank]){
+     #pragma omp cirtical
+     memcpy(champ[rank],local_result)
+    }
+   }
+  }
+ }
+ //Find and report the thread with 
+ //local champion, global champion
+ MPI_AllReduce();
+ //Find and report the process with 
+ //global champion
+ MPI_AllReduce();
+ // The process with the global champion
+ // copy its results to bcast_buffer	
+ if (my_rank == global_champion){
+  #pragma omp cirtical
+  memcpy(bcast_buffer,local_champ)
+ }
+ //Broadcast the champion
+ MPI_Bcast(bcast_buffer)
+ if(my_rank==0){
+  CPU_Output(champ)
+ }
+ MPI_Finalize()
+}
+
+/* User code for TSP problem */
+
+CPU_Init(){
+ // Read In data from cities
+ // Calculate distances
+ // Return data structure to store champion
+}
+
+CPU_Exec(){
+ // Find local champions (TSP tours)
+}
+
+CPU_Output(){
+ // Output champion
+}
+
+
+\end{lstlisting}
+\end{frame}

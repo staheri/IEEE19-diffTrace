@@ -5,9 +5,9 @@
 \begin{tabular}{|c|c|l|l|}
 \hline
 ID & Level & \multicolumn{1}{c|}{Bugs} & \multicolumn{1}{c|}{Description} \\ \hline
-1 & \multirow{8}{*}{MPI} & allRed1wrgOp-1-all-x & Different operation (MPI\_MAX) in only one (buggyProc) for first MPI\_ALLREDUCE() -- L229:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
-2 &  & allRed1wrgSize-1-all-x & Wrong size in only one (buggyProc) for first MPI\_ALLREDUCE() -- L229:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
-3 &  & allRed1wrgSize-all-all-x & Wrong Size in all processes for first MPI\_ALLREDUCE() -- L229:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
+1 & \multirow{8}{*}{MPI} & allRed1wrgOp-1-all-x & Different operation (MPI\_MAX) in only one process (buggyProc = 2) for MPI\_ALLREDUCE() in Line 21 \\ \cline{1-1} \cline{3-4} 
+2 &  & allRed1wrgSize-1-all-x & Wrong size in only one process (buggyProc = 2) for MPI\_ALLREDUCE() in Line 21 \\ \cline{1-1} \cline{3-4} 
+3 &  & allRed1wrgSize-all-all-x & Wrong Size in all processes for MPI\_ALLREDUCE() in Line 21 \\ \cline{1-1} \cline{3-4} 
 4 &  & allRed2wrgOp-1-all-x & Different operation (MPI\_MAX) in only one (buggyProc) for first MPI\_ALLREDUCE() -- L277:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
 5 &  & allRed2wrgSize-1-all-x & Wrong size in only one (buggyProc) for first MPI\_ALLREDUCE() -- L277:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 
 6 &  & allRed2wrgSize-all-all-x & Wrong Size in all processes for second MPI\_ALLREDUCE() -- L277:ilcsTSP.c \\ \cline{1-1} \cline{3-4} 

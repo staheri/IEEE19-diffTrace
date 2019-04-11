@@ -1,28 +1,35 @@
-Table \ref{tab.ilcsTspBugs} describes the bug that I injected to ILCS-TSP
 
+\subsection{Case Study: ILCS-TSP}
+Here is the ILCS framework pseudo-code. User needs to write \texttt{CPU\_Init()},\texttt{CPU\_Exec()} and \texttt{CPU\_Output()}.
+% ILCS Code for later references
+\input{ilcsPseudoCode.tex}
+
+\clearpage
+
+Table \ref{tab.ilcsTspBugs} describes the bug that I injected to ILCS-TSP
 \input{tabs/tabs.ilcsTspBugs.tex}
 
-\subsection{MPI Bugs}
+\clearpage
+\subsubsection{1: AllReduce wrong op - proc 2}
 
+
+Bug injected within to MPI\_AllReduce() in line 21 where the local champions of all processes are about computed and their MIN is going to be distributed to all other processes. However, with injecting the wrong operation (MAX instead of MIN) to one (or more) of the processes, the logic of if statement in line 24 would be violated and the control flow of the code would not take this branch which is the the core part of ILCS (deciding champion to broadcast to other processes).
+
+After collecting traces from bug-free version and this buggy version of ILCS-TSP, and after applying filters and detecting loops, my ranking system, with the highest possible score, recommends to look at figure \ref{bug1.1} diffNLR. This diffNLR shows that in the bug free version, we are expecting that at least one of the processes (in this case process 6 to win the championship, copy the result of that process to broadcast\_buffer and broadcast it to all other processes. However, in the buggy version, the champion never gets updated (never goes through OMP critical section).
+
+The recommendation system that I designed tries to find the pairs of traces that their similarities changed the most. In other word, this recommendation system wants to suggest top diffNLRs that are candidates to show the impact of the bug based on trace similarities. (table
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=3.4in,height=1.9in]{figs/{figs.rankingTabSample}.png}
-\caption{Recommendation Table Sample for one of the bugs}
+\includegraphics[width=3.4in,height=1.9in]{figs/{rankTable.bug1.1}.png}
+\caption{Recommendation Table Bug 1}
 \label{rankingTabSample}
 \end{figure}
 
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=5.9in]{figs/{miscrit1all_r624.27023.3_r624.27026.3}.pdf}
-\caption{sample diffNLR}
-\label{sampDiffNLR}
-\end{figure*}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=6in]{figs/{3_r669.8124.0_r669.8125.0}.pdf}
-\caption{sample diffNLR2}
-\label{sampDiffNLR2}
+\includegraphics[width=5.9in]{figs/{allRed1wrgOp-2_6}.pdf}
+\caption{diffNLR of process 2 and process 6 buggy( AllReduce() wrong op) vs. bug-free}
+\label{bug1.1}
 \end{figure*}
