@@ -9,7 +9,6 @@ Here is the ILCS framework pseudo-code. User needs to write \texttt{CPU\_Init()}
 Table \ref{tab.ilcsTspBugs} describes the bug that I injected to ILCS-TSP
 \input{tabs/tabs.ilcsTspBugs.tex}
 
-\clearpage
 \subsubsection{1: AllReduce wrong op - proc 2}
 
 
@@ -32,4 +31,78 @@ The recommendation system that I designed tries to find the pairs of traces that
 \includegraphics[width=5.9in]{figs/{allRed1wrgOp-2_6}.pdf}
 \caption{diffNLR of process 2 and process 6 buggy( AllReduce() wrong op) vs. bug-free}
 \label{bug1.1}
+\end{figure*}
+
+\subsubsection{2: AllReduce wrong size - one and all}
+
+This bug made the code crash with showing an error in MPI\_Bcast(), although the bug was injected to MPI\_AllReduce(). Figure \ref{bug2.1} $CMPdiffNLR(P_{2.0},P_{6.0}) $ and \ref{bug2.2} CMPdiffNLR$(P_{1.0},P_{6.0}) $, where CMPdiffNLR$(P_i,P_j)$ shows the comparison of 
+
+$diffNLR(P_{i.buggy},P_{j.buggy})$ 
+ 
+and
+  
+$diffNLR(P_{i.bugFree},P_{j.bugFree})$
+
+Ranking table is showing all 1.00 since most of the traces did not go through.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{allRed1wrgSize-2_6}.pdf}
+\caption{diffNLR of process 2 and process 6 buggy( AllReduce() wrong size) vs. bug-free}
+\label{bug2.1}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{allRed1wrgSize-1_6}.pdf}
+\caption{diffNLR of process 1 and process 6 buggy( AllReduce() wrong size) vs. bug-free}
+\label{bug2.2}
+\end{figure*}
+
+
+\subsubsection{3: Missing Critical Section one thread in on process}
+
+I planted the bug (missing critical section) in process 2
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=6in]{figs/{miscrit-1-1-ranking}.png}
+\caption{Part of ranking table for MisCrit 1-1}
+\label{miscrit-1-1-rank}
+\end{figure*}
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{miscrit-1-1-1.3_2.3}.pdf}
+\caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
+\label{bug2.2}
+\end{figure*}
+
+
+
+\subsubsection{4: Missing Critical Section one thread in on process}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=6in]{figs/{miscrit-1-all-ranking}.png}
+\caption{Part of ranking table for MisCrit 1-all}
+\label{miscrit-1-1-rank}
+\end{figure*}
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{miscrit-1-all.1.2_4.2}.pdf}
+\caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
+\label{bug2.2}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{miscrit-1-all.2.4_4.4}.pdf}
+\caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
+\label{bug2.2}
 \end{figure*}
