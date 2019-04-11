@@ -1,6 +1,8 @@
-Why we need our components:
-
-- ParLOT collects whole program function call trace with the mindset of paying a little upfront and save resource and time cost of reproducing the bug.
+There are two major phases in any ``Program Understanding'' tool: \textit{data collection} and \textit{data analysis}.
+%
+To understand the runtime behavior of applications, an efficient tracing mechanism is required to collect informative data during execution of the application.
+%
+ParLOT collects whole program function call traces with the mindset of \textit{paying a little upfront and save resource and time cost of reproducing the bug}.
 
 - detection of loops, lossless Compression, easier to analyze, information about loop structures, how many iteration each loop executed matters, broken loop matters
 
@@ -14,15 +16,14 @@ Why we need our components:
 % Binary tracing
 \subsection{Parlot Summary (changeme)}
 
-- why binary instrumentation? no need to modify the code to instrument - no need to recompile
+- why binary instrumentation? no need to modify the code to instrument - no need to recompile, unlike most of HPC tools (performance tools like TAU\cite{tau}, Score-p\cite{scorep} and debugging tools like STAT\cite{stat} and AutomaDeD\cite{automaded-laguna} that requires Dyninst\cite{dyninst} for instrumentation and MRNet\cite{mrnet} and TBON \cite{tbon})
 
-- Parlot is portable, scalable, efficient, 
+To overcome the trade-off of comprehensive data collection while adding low time and space overhead, HPC program analysis tools often sacrifice one for the other. However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leave majority of the system bandwidth for the application. 
 
-
-mini related work discussion here, mainly to refocus mind to accepting that binary tracing has several advantages
-that don't come with other tracing approaches such as Dyninst etc.
+Each ParLOT Trace (PT) contain full sequence of function calls and returns for every single thread that running the application code, reflecting the dynamic control flow and call-stack of the application.
 
 
+ 
 % CLs
 \subsection{Equivalencing behavior via concept lattices (changeme)}
 
