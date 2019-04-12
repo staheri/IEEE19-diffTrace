@@ -106,3 +106,32 @@ I planted the bug (missing critical section) in process 2
 \caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
 \label{bug2.2}
 \end{figure*}
+
+
+\clearpage
+
+\subsection{Case Study: Hybrid (MPI+OMP) Matmul}
+
+Below is the JSM of bug free version of hybrid matmul applying different filters to understand its behavior.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=7in]{figs/{hybridMatmul.all}.pdf}
+\caption{JSM of bug-free version of hybrid Matmul (all functions)}
+\label{hybridMatmulAll}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=7in]{figs/{hybridMatmul.mpiOmp}.pdf}
+\caption{JSM of bug-free version of hybrid Matmul (MPI and OMP functions)}
+\label{hybridMatmuMPIOMP}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=7in]{figs/{hybridMatmul.mpiOnly}.pdf}
+\caption{JSM of bug-free version of hybrid Matmul (MPI Only)}
+\label{hybridMatmuMPI}
+\end{figure*}
+
