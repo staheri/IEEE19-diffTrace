@@ -16,6 +16,8 @@
 \usepackage{multirow}
 \usepackage{dblfloatfix}
 \usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
 
 %\usepackage[table,xcdraw]{xcolor}
 %\usepackage[table]{xcolor}
@@ -97,15 +99,25 @@
 \label{sec:intro}
 \input{intro.tex}
 
+\clearpage
 
-\section{Background and Related Work}
-\label{sec:bgreltool}
+\section{Background}
+\label{sec:background}
 \input{background.tex}
 
+\clearpage
+
+\section{Related Work}
+\label{sec:related}
+\input{relatedwork.tex}
+
+\clearpage
 
 \section{dffTrace Tool Architecture}
 \label{sec:components}
 \input{components.tex}
+
+\clearpage
 
 \section{Experimental Studies}
 \label{sec:experimental}
@@ -114,24 +126,12 @@
 
 \clearpage
 
-
-
-
-
-
-
-\section{Results}
-\label{res}
-\input{results.tex}
-
-\section{Case Studies}
-\label{sec:case}
-\input{cases.tex}
-
     
 \section{Discussion and Future Work}
 \label{sec:discussion}
 \input{discussion.tex}
+
+\clearpage
 
 
 \bibliographystyle{ACM-Reference-Format}

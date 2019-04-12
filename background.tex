@@ -4,9 +4,11 @@ To understand the runtime behavior of applications, an efficient tracing mechani
 %
 ParLOT collects whole program function call traces with the mindset of \textit{paying a little upfront and save resource and time cost of reproducing the bug}.
 
-- detection of loops, lossless Compression, easier to analyze, information about loop structures, how many iteration each loop executed matters, broken loop matters
+[[ToBeADDED to the background story]]:
 
-- Concept lattices, throw inter-process information, similarity, clustering
+- Nested Loop Recognition (NLR): Easier to analyze, information about loop structures, how many iteration each loop executed matters, broken loop matters
+
+- Concept lattices, inter-process information, similarity, clustering, efficient, scalable, can be used as execution model, can be used in machine learning, can be used to extract HB relation in events.
 
 - diffNLR visualizes pairs of traces and reflect their differences where they are supposed to be equal. 
 
@@ -15,15 +17,13 @@ ParLOT collects whole program function call traces with the mindset of \textit{p
 
 % Binary tracing
 \subsection{Parlot Summary (changeme)}
-
-- why binary instrumentation? no need to modify the code to instrument - no need to recompile, unlike most of HPC tools (performance tools like TAU\cite{tau}, Score-p\cite{scorep} and debugging tools like STAT\cite{stat} and AutomaDeD\cite{automaded-laguna} that requires Dyninst\cite{dyninst} for instrumentation and MRNet\cite{mrnet} and TBON \cite{tbon})
+The final executable of real HPC applications are often a production of a large code base and a complex build system with numerous dependencies and libraries. Injecting instrumentation code to source code, as in traditional tools like [????], is not feasible in HPC space. Also recompilation of the application with tools` compile-wrappers, as in TAU\cite{tau} and Score-p\cite{scorep}, may break the build system. 
+Also instrumentation and tracing mechanism of existing tools are often dependent to other libraries that are need to be present on the supercomputer for trace collection. [[ Example: STAT\cite{stat} and AutomaDeD\cite{automaded-laguna} that requires Dyninst\cite{dyninst} for instrumentation and MRNet\cite{mrnet} and TBON \cite{tbon}]]
 
 To overcome the trade-off of comprehensive data collection while adding low time and space overhead, HPC program analysis tools often sacrifice one for the other. However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leave majority of the system bandwidth for the application. 
 
-Each ParLOT Trace (PT) contain full sequence of function calls and returns for every single thread that running the application code, reflecting the dynamic control flow and call-stack of the application.
+Each ParLOT Trace (from now on in this paper, PT refers to \textit{single ParLOT Trace}) contain full sequence of function calls and returns for every single thread that running the application code, reflecting the dynamic control flow and call-stack of the application.
 
-
- 
 % CLs
 \subsection{Equivalencing behavior via concept lattices (changeme)}
 
@@ -78,102 +78,3 @@ what you adapted
 how does it help
 
 \cite{diff-myers}
-
-\clearpage
-
-\subsection{STAT}
-
-Parallel debugger STAT\cite{stat}
-\begin{itemize}
-\item STAT gathers stack traces from all processes
-\item Merge them into prefix tree
-\item Groups processes that exhibit similar behavior into equivalent classes
-\item A single representative of each equivalence can then be examined with a full-featured debugger like TotalView or DDT
-\end{itemize}
-
-What STAT does not have?
-
-\begin{itemize}
-\item FP debugging
-\item Portability (too many dependencies)
-\item Domain-specific
-\item Loop structures and detection
-\end{itemize}
- 
-
-\subsection{Program Understanding }
-
-
-
-\begin{itemize}
-\item Score-P \cite{scorep}
-\item TAU \cite{tau}
-\item ScalaTrace: Scalable compression and replay of communication traces for HPC  \cite{scalatrace}
-\item Barrier Matching for Programs with Textually unaligned barriers \cite{zhang07}
-\item Pivot Tracing: Dynamic causal monitoring for distributed systems - Johnathan mace \cite{pivot}
-\item Automated Charecterization of parallel application communication patterns \cite{roth-15}
-\item Problem Diagnosis in Large Scale Computing environments \cite{miller06}
-\item Probablistic diagnosis of performance faults in large-scale parallel applications \cite{laguna-12}
-\item detecting patterns in MPI communication traces - robert preissl \cite{preissl-08}
-\item D4: Fast concurrency debugging with parallel differntial analysis - bozhen liu \cite{liu-18}
-\item Marmot: An MPI analysis and checking tool - bettina krammer \cite{marmot}
-\item MPI-checker - Static Analysis for MPI - Alexandrer droste \cite{mpi-checker}
-\item STAT: stack trace analysis for large scale debugging - Dorian Arnold \cite{stat}
-\item DMTracker: Finding bugs in large-scale parallel programs by detecting anomaly in data movements \cite{dmtracker}
-\item SyncChecker: Detecting synchronization errors between MPI applications and libraries - \cite{syncChecker}
-\item Model Based fault localization in large-scale computing systems - Naoya Maruyama \cite{satoshi-08}
-\item Synoptic: Studying logged behavior with inferred models - ivan beschastnikh \cite{beschastnikh-synoptic}
-\item Mining temporal invariants from partially ordered logs -  ivan beschastnikh \cite{beschastnikh-pologs}
-\item Scalable Temporal Order Analysis for Large Scale Debugging - Dong Ahn \cite{Ahn:2009}
-\item Inferring and asserting distributed system invariants -  ivan beschastnikh - stewart grant \cite{grant18}
-\item PRODOMETER: Accurate application progress analysis for large-scale parallel debugging - subatra mitra \cite{prodometer}
-\item Automaded : Automata-based debugging for dissimilar parallel tasks - greg \cite{automaded-GBron}
-\item Automaded : large scale debugging of parallel tasks with Automaded - ignacio \cite{automaded-laguna}
-
-\item Inferring models of concurrent systems from logs of their behavior with CSight - ivan \cite{beschastnikh-csight}
-\end{itemize}
-
-
-
-
-\subsection{Trace Analysis}
-
-
-\begin{itemize}
-\item Trace File Comparison with a hierarchical Sequence Alignment algorithm \cite{weber-seqAlign}
-\item structural clustering : matthias weber \cite{weberStructural}
-\item building a better backtrace: techniques for postmortem program analysis - ben liblit \cite{liblit02}
-\item automatically charecterizing large scale program behavior - timothy sherwood \cite{sherwood02}
-\end{itemize}
-
-
-\subsection{Visualizations}
-
-
-\begin{itemize}
-\item Combing the communication hairball: Visualizing large-scale parallel execution traces using logical time - katherine e isaacs \cite{ravel}
-\item recovering logical structure from charm++ event traces \cite{charmVis}
-\item ShiViz - Debugging distributed systems - \cite{shiviz}
-\end{itemize}
-
-
-
-\subsection{Concept Lattice and LCA}
-
-
-\begin{itemize}
-\item Vijay Garg - Applications of lattice theory in distributed systems
-
-\item Dimitry Ignatov \cite{ignatov} - Concept Lattice Applications in Information Retrieval
-
-\item \cite{clbook} \cite{clconst} \cite{bender05} \citep{latticeForDistConst} \cite{diff-myers}
-\end{itemize}
-
-\subsection{Repetitive Patterns}
-
-
-\begin{itemize}
-\item \cite{kmruse} \cite{kmr} \cite{nakamura_fast_2013} \cite{crochemore_jewels_2002} \citep{Crochemore:1994:TA:199269}
-\end{itemize}
-
-
