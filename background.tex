@@ -111,7 +111,57 @@ and left rest of its properties for our future work.
 %
 Due to typical HPC application common topologies such as SPMD, master/worker and odd/even where multiple processes/threads behave similarly, our experiments show that large number of PTs can be reduced to just a few groups.
 %
-\\
+
+\begin{frame}{}
+  \lstset{language=C, numbers=left}
+ \begin{lstlisting}
+main(){
+ int rank;
+ int src;
+ MPI_Init()
+ MPI_Comm_size(MPI_COMM_WORLD)
+ MPI_Comm_rank(MPI_COMM_WORLD,&rank)    
+ if (rank != 0) {
+  MPI_Send(0) // Send to rank 0
+ } else{ /* rank = 0
+  MPI_Recv(1) // Receive from rank 1
+  MPI_Recv(2) // Receive from rank 2
+  MPI_Recv(3) // Receive from rank 3
+ }
+ MPI_Finalize()
+}   
+\end{lstlisting}
+\end{frame}
+
+
+\input{tabs/tabs.sampleContext.tex}
+
+\begin{figure}[t]
+\centering
+\scalebox{0.5}{
+\includegraphics[width=3.4in]{figs/{sample}.pdf}}
+\caption{Sample Concept Lattice from Obj-Atr Context in table\ref{tab:sampleContext}}
+
+\label{fig:sampleCL}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\scalebox{0.5}{
+\includegraphics[width=3.4in]{figs/{sample-reduced}.pdf}}
+\caption{Concept Lattice with reduced labels}
+\label{fig:sampleCL}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\scalebox{0.8}{
+\includegraphics[width=3.4in]{figs/{fancy1}.pdf}}
+\caption{Pair-wise Jaccard Similarity Matrix (JSM) of MPI processes in Sample code}
+\label{fig:jsm}
+\end{figure}
+
 An example with 
 \\
 - Source code
