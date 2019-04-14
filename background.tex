@@ -46,6 +46,7 @@ ParLOT collects \textit{whole} program function call traces with the mindset of 
 ParLOT instruments the entry and exit point of each function in the binary using Pin\cite{pin} (fig. \ref{fig.parlotOverview}). Each ParLOT Trace contain full sequence of function calls and returns for every single thread that running the application code, reflecting the dynamic control flow and call-stack of the application individually.
 %
 Here we define ParLOT Trace, as we refer to it in the paper:
+
 \begin{definition}{ParLOT Trace (PT)}
 A ParLOT Trace $(PT)$ is a sequence of ordered integers $<f_i,...,f_j>$ where $f_0$ is \textit{return} and $f_k$ is the id of \textit{function k} ($k!=0$).
 \end{definition}
