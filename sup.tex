@@ -1,0 +1,106 @@
+
+\subsection{Case Study: Hybrid (MPI+OMP) Matmul}
+
+Below is the JSM of bug free version of hybrid matmul applying different filters to understand its behavior.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=7in]{figs/{hybridMatmul.all}.pdf}
+\caption{JSM of bug-free version of hybrid Matmul (all functions)}
+\label{hybridMatmulAll}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=7in]{figs/{hybridMatmul.mpiOmp}.pdf}
+\caption{JSM of bug-free version of hybrid Matmul (MPI and OMP functions)}
+\label{hybridMatmuMPIOMP}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=7in]{figs/{hybridMatmul.mpiOnly}.pdf}
+\caption{JSM of bug-free version of hybrid Matmul (MPI Only)}
+\label{hybridMatmuMPI}
+\end{figure*}
+
+
+
+
+\subsection{Bug: AllReduce wrong op - proc 2}
+
+
+Bug injected within to MPI\_AllReduce() in line 21 where the local champions of all processes are about computed and their MIN is going to be distributed to all other processes. However, with injecting the wrong operation (MAX instead of MIN) to one (or more) of the processes, the logic of if statement in line 24 would be violated and the control flow of the code would not take this branch which is the the core part of ILCS (deciding champion to broadcast to other processes).
+
+After collecting traces from bug-free version and this buggy version of ILCS-TSP, and after applying filters and detecting loops, my ranking system, with the highest possible score, recommends to look at figure \ref{bug1.1} diffNLR. This diffNLR shows that in the bug free version, we are expecting that at least one of the processes (in this case process 6 to win the championship, copy the result of that process to broadcast\_buffer and broadcast it to all other processes. However, in the buggy version, the champion never gets updated (never goes through OMP critical section).
+
+The recommendation system that I designed tries to find the pairs of traces that their similarities changed the most. In other word, this recommendation system wants to suggest top diffNLRs that are candidates to show the impact of the bug based on trace similarities. (table
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=3.4in,height=1.9in]{figs/{rankTable.bug1.1}.png}
+\caption{Recommendation Table Bug 1}
+\label{rankingTabSample}
+\end{figure}
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{allRed1wrgOp-2_6}.pdf}
+\caption{diffNLR of process 2 and process 6 buggy( AllReduce() wrong op) vs. bug-free}
+\label{bug1.1}
+\end{figure*}
+
+\subsection{Bug: AllReduce wrong size - one and all}
+
+This bug made the code crash with showing an error in MPI\_Bcast(), although the bug was injected to MPI\_AllReduce(). Figure \ref{bug2.1} $CMPdiffNLR(P_{2.0},P_{6.0}) $ and \ref{bug2.2} CMPdiffNLR$(P_{1.0},P_{6.0}) $, where CMPdiffNLR$(P_i,P_j)$ shows the comparison of 
+
+$diffNLR(P_{i.buggy},P_{j.buggy})$ 
+ 
+and
+  
+$diffNLR(P_{i.bugFree},P_{j.bugFree})$
+
+Ranking table is showing all 1.00 since most of the traces did not go through.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{allRed1wrgSize-2_6}.pdf}
+\caption{diffNLR of process 2 and process 6 buggy( AllReduce() wrong size) vs. bug-free}
+\label{bug2.1}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{allRed1wrgSize-1_6}.pdf}
+\caption{diffNLR of process 1 and process 6 buggy( AllReduce() wrong size) vs. bug-free}
+\label{bug2.2}
+\end{figure*}
+
+
+
+
+\subsection{Bug: Missing Critical Section one thread in on process}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=6in]{figs/{miscrit-1-all-ranking}.png}
+\caption{Part of ranking table for MisCrit 1-all}
+\label{miscrit-1-1-rank}
+\end{figure*}
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{miscrit-1-all.1.2_4.2}.pdf}
+\caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
+\label{bug2.2}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{miscrit-1-all.2.4_4.4}.pdf}
+\caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
+\label{bug2.2}
+\end{figure*}

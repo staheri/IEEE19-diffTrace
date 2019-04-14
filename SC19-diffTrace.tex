@@ -1,5 +1,6 @@
-\documentclass[sigconf]{acmart}
-
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
 %\usepackage[table]{xcolor}
 \usepackage{xcolor}
 \usepackage{booktabs} % For formal tables
@@ -18,124 +19,67 @@
 \usepackage{listings}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-
-%\usepackage[table,xcdraw]{xcolor}
-%\usepackage[table]{xcolor}
-%--
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+    
 \input{macros.tex}
-%--
-
-
-
-% Copyright
-%\setcopyright{none}
-%\setcopyright{acmcopyright}
-%\setcopyright{acmlicensed}
-%\setcopyright{rightsretained}
-%\setcopyright{usgov}
-%\setcopyright{usgovmixed}
-%\setcopyright{cagov}
-%\setcopyright{cagovmixed}
-
 
 \begin{document}
 
-\title{ DiffTrace: Efficient Whole-Program Trace Analysis and Diffing}
-
-
-\author{Saeed Taheri}
-\email{staheri@cs.utah.edu}
-\affiliation{%
-  \institution{University of Utah}
-  \city{Salt Lake City}
-  \state{Utah}
-  \country{United States}
-}
-
-\author{Ian Briggs}
-\email{ianbriggsutah@gmail.com}
-\affiliation{%
-  \institution{University of Utah}
-  \city{Salt Lake City}
-  \state{Utah}
-  \country{United States}
-}
-
-\author{Martin Burtscher}
-\email{burtscher@cs.txstate.edu}
-\affiliation{%
-  \institution{Texas State University}
-  \city{San Marcos}
-  \state{Texas}
-  \country{U.S.A.}
-}
-
-\author{Ganesh Gopalakrishnan}
-\email{ganesh@cs.utah.edu}
-\affiliation{%
-  \institution{University of Utah}
-  \city{Salt Lake City}
-  \state{Utah}
-  \country{U.S.A.}
+\title{DiffTrace: Efficient Whole-Program Trace Analysis and Diffing
 }
 
 
 
 
+\author{\IEEEauthorblockN{Saeed Taheri}
+\IEEEauthorblockA{\textit{School of Computing} \\
+\textit{University of Utah}\\
+Salt Lake City, Utah, USA \\
+staheri@cs.utah.edu}
+\and
+\IEEEauthorblockN{Sindhu Devale}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Texas State University}\\
+San Marcos, Texas, USA \\
+sindhu.devale@gmail.com}
+\and
 
-%\renewcommand{\shortauthors}{S. Taheri et al.}
+\IEEEauthorblockN{Ganesh Gopalakrishnan}
+\IEEEauthorblockA{\textit{School of Computing} \\
+\textit{University of Utah}\\
+Salt Lake City, Utah, USA \\
+ganesh@cs.utah.edu}
+\and
+
+\IEEEauthorblockN{Martin Burtscher}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Texas State University}\\
+San Marcos, Texas, USA \\
+burtscher@cs.txstate.edu}
+}
+
+\maketitle
 
 \begin{abstract}
 \label{abs}
 \input{abstract.tex}
 \end{abstract}
 
-\keywords{diffing, tracing, debugging}
-
-\maketitle
+\begin{IEEEkeywords}
+diffing, tracing, debugging
+\end{IEEEkeywords}
 
 
 \section{Introduction}
 \label{sec:intro}
 \input{intro.tex}
 
-\clearpage
+%\clearpage
 
 \section{Background}
 \label{sec:background}
 \input{background.tex}
-
-\clearpage
-
-\section{Related Work}
-\label{sec:related}
-\input{relatedwork.tex}
-
-\clearpage
-
-\section{dffTrace Tool Architecture}
-\label{sec:components}
-\input{components.tex}
-
-\clearpage
-
-\section{Experimental Studies}
-\label{sec:experimental}
-\input{experimental.tex}
-
-
-\clearpage
-
-    
-\section{Discussion and Future Work}
-\label{sec:discussion}
-\input{discussion.tex}
-
-\clearpage
-
-
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{bibs}
 
 
 \end{document}
