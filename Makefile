@@ -1,5 +1,5 @@
-TOPLEVEL    = SC19-diffTrace.tex
-TARGET      = SC19-diffTrace.pdf
+TOPLEVEL    = IEEE19-diffTrace.tex
+TARGET      = IEEE19-diffTrace.pdf
 
 DEPFILES   += $(wildcard *.tex)
 DEPFILES   += $(wildcard *.bib)

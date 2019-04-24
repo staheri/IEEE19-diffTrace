@@ -30,16 +30,16 @@ Section \ref{subsec:addrem} discusses some additional remarks (limitations, effe
 \\
 %
 
-%TODO: The story builds on powerful components we have created. 
+%TODO: The story builds on powerful components we have created.
 
 % Binary tracing
 \subsection{ParLOT: Efficient Trace Collection}
 \label{subsec:parlot}
 
-The final executable of real HPC applications are often a production of a large code base and a complex build system with numerous dependencies and libraries. Injecting instrumentation code to the source code, as in traditional tools like [????], is not feasible in HPC space. Also recompilation of the application with tools` compile-wrappers, as in TAU\cite{tau} and Score-p\cite{scorep}, may break the build system. 
+The final executable of real HPC applications are often a production of a large code base and a complex build system with numerous dependencies and libraries. Injecting instrumentation code to the source code, as in traditional tools like [????], is not feasible in HPC space. Also recompilation of the application with tools` compile-wrappers, as in TAU\cite{tau} and Score-p\cite{scorep}, may break the build system.
 Also instrumentation and tracing mechanism of existing tools are often dependent to other libraries that are need to be present on the supercomputer for trace collection. [[ Example: STAT\cite{stat} and AutomaDeD\cite{automaded-laguna} that requires Dyninst\cite{dyninst} for instrumentation and MRNet\cite{mrnet} and TBON \cite{tbon}]]
 %
-To overcome the trade-off of comprehensive data collection while adding low time and space overhead, HPC program analysis tools often sacrifice one for the other. However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leave majority of the system bandwidth for the application. 
+To overcome the trade-off of comprehensive data collection while adding low time and space overhead, HPC program analysis tools often sacrifice one for the other. However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leave majority of the system bandwidth for the application.
 %
 ParLOT collects \textit{whole} program function call traces with the mindset of \textit{paying a little upfront and save resource and time cost of reproducing the bug}.
 %
@@ -51,7 +51,7 @@ Here we define ParLOT Trace, as we refer to it in the paper:
 A ParLOT Trace $(PT)$ is a sequence of ordered integers $<f_i,...,f_j>$ where $f_0$ is \textit{return} and $f_k$ is the id of \textit{function k} ($k!=0$).
 \end{definition}
 %
-Note that the $PT$ is the pre-processed (decompressed and filtered) version of immediate ParLOT traces. The fresh output of ParLOT traces are highly compressed byte-codes. 
+Note that the $PT$ is the pre-processed (decompressed and filtered) version of immediate ParLOT traces. The fresh output of ParLOT traces are highly compressed byte-codes.
 %
 Also Note that $PT_{p.t}$ refers to the $PT$ that belongs to process $p$ and thread $t$ of that process.
 %
@@ -77,17 +77,17 @@ We propose a representation of PT elements (intra-PT compression) in form of \te
 
 \subsubsection{Loops definition}
 
-According to Makoto Kobayashi\cite{kobayashi-84} definition of loops, an occurrence of a \textit{loop} is defined as \textit{a sequence of elements} in which a particular sequence of \textit{distinct elements} (called the \textit{cycle} of the loop) is successively repeated. 
+According to Makoto Kobayashi\cite{kobayashi-84} definition of loops, an occurrence of a \textit{loop} is defined as \textit{a sequence of elements} in which a particular sequence of \textit{distinct elements} (called the \textit{cycle} of the loop) is successively repeated.
 %
 Later Alain Ketterlin in \cite{Ketterlin-nlr} expanded this definition to numerical values for compressing and predicting memory access addresses and designed Nested Loop Recognition (NLR) algorithm.
 %
-The basic idea behind NLR algorithm is that a linear function model can be extracted from the linear progression in a sequence of numbers and these linear functions form a tree in which depth of each node is the depth of \textit{nested} loop(e.g., most outer loop's function is the root of the tree with depth 0). 
+The basic idea behind NLR algorithm is that a linear function model can be extracted from the linear progression in a sequence of numbers and these linear functions form a tree in which depth of each node is the depth of \textit{nested} loop(e.g., most outer loop's function is the root of the tree with depth 0).
 %
 We have modified NLR algorithm to make it suitable for PTs.
 %
 Each repetitive pattern and its frequency of consecutive appearances would be compressed to a single \textit{Loop Structure (LS)} entry.
 %
-\begin{definition}{Loop Structure} $LS = LB \; \hat{} \; LC$ where $LB  = <pt_i,...,pt_j>$ ($0<= i < j < len(PT)$) that occur $LC$ times is in a sub-sequence $ <pt_i,...,pt_k>$($k = 3j, k<len(PT)$) 
+\begin{definition}{Loop Structure} $LS = LB \; \hat{} \; LC$ where $LB  = <pt_i,...,pt_j>$ ($0<= i < j < len(PT)$) that occur $LC$ times is in a sub-sequence $ <pt_i,...,pt_k>$($k = 3j, k<len(PT)$)
 
 \end{definition}
 %
@@ -98,7 +98,7 @@ Later we will explain how this lossless representation of PTs eases the process 
 % CLs
 \subsection{Equivalencing behavior via FCA}
 \label{subsec:fca}
-To Reduce the search space from thousands of PTs to just a few groups of equivalent PTs (i.e., inter-PT compression not only requires a similarity measure based on a call matrix, but also requires a scheme that is efficient even for large process counts.
+To Reduce the search space from thousands of PTs to just a few groups of equivalent PTs (i.e., inter-PT compression) not only requires a similarity measure based on a call matrix, but also requires a scheme that is efficient even for large process counts.
 %
 Since a pair-wise comparison of all processes is highly inefficient, we use \textit{concept lattices} that stem from \textit{formal concept analysis}(FCA)\cite{clbook} to store and compute groups of similar PTs.
 %
@@ -114,14 +114,14 @@ Due to typical HPC application common topologies such as SPMD, master/worker and
 %
 
 \begin{frame}{}
-  \lstset{language=C, numbers=left}
+  \lstset{language=C}
  \begin{lstlisting}
 main(){
  int rank;
  int src;
  MPI_Init()
  MPI_Comm_size(MPI_COMM_WORLD)
- MPI_Comm_rank(MPI_COMM_WORLD,&rank)    
+ MPI_Comm_rank(MPI_COMM_WORLD,&rank)
  if (rank != 0) {
   MPI_Send(0) // Send to rank 0
  } else{ /* rank = 0
@@ -130,7 +130,7 @@ main(){
   MPI_Recv(3) // Receive from rank 3
  }
  MPI_Finalize()
-}   
+}
 \end{lstlisting}
 \end{frame}
 
@@ -163,7 +163,7 @@ main(){
 \label{fig:jsm}
 \end{figure}
 
-An example with 
+An example with
 \\
 - Source code [done]
 \\
@@ -177,14 +177,14 @@ An example with
 \\
 - Visualization of LCA [not yet]
 \\
-- CL construction \cite{clconst} \cite{bender05}  
+- CL construction \cite{clconst} \cite{bender05}
 \\
 - Attribute Table
 
 
 \subsection{diffNLR: Reflecting differences}
 \label{subsec:diffnlr}
--From fig we can see that PT0 and PT1 are in different groups with similarity of XX. 
+-From fig we can see that PT0 and PT1 are in different groups with similarity of XX.
 %
 \\
 Inspired by \texttt{diff} original algorithm\cite{diff-myers} that has bin used in Git and GNU Diff, we visualize the differences of a pair of PT as shown in fig \ref{fig:sampleDiffNLR}.
@@ -206,7 +206,7 @@ In section \ref{sec:experimental} we show how this visualization can help us loc
 
 - Candidates to look at and observe their diffNLR: $(PT_i, PT_j) = Max | JSM[i][j](buggy) - JSM[i][j](bugfree)| $
 
-- It means the similarity of $(PT_i, PT_j)$ of buggy execution have the highest difference with its corresponding similarity of the bug-free execution. 
+- It means the similarity of $(PT_i, PT_j)$ of buggy execution have the highest difference with its corresponding similarity of the bug-free execution.
 
 - Figures are showing two \textit{diffNLR} side by side, one is $diffNLR(i,j)_{buggy}$ and the other one is  $diffNLR(i,j)_{bugfree}$ where $i, j$ obtained from candidate tables.
 

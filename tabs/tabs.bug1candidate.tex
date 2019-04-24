@@ -1,0 +1,62 @@
+\begin{table}[t]
+\caption{Bug 1: Wrong MPI operation in AllReduce() Candidate Table}
+\label{tab:bug1candidate}
+\scalebox{0.9}{
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Filter & Attribute & \begin{tabular}[c]{@{}c@{}}K: \# of \\ diff Clusters\end{tabular} & \begin{tabular}[c]{@{}c@{}}\# Objects in each\\  Cluster (CL i)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Candidate PT\\ Outliers\end{tabular} \\ \hline
+ &  &  & CL 0:34 & - \\ \cline{4-5} 
+\multirow{-2}{*}{11.mpi.cust.0K10} & \multirow{-2}{*}{sing.orig} & \multirow{-2}{*}{2} & CL 1:6 & - \\ \hline
+ &  &  & CL 0:34 & - \\ \cline{4-5} 
+ &  &  & CL 1:5 & \{2 3 4 27 29 \} \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{sing.orig} & \multirow{-3}{*}{3} & CL 2:1 & \{22 \} \\ \hline
+ &  &  & CL 0:3 & \{24 38 39 \} \\ \cline{4-5} 
+ &  &  & CL 1:31 & - \\ \cline{4-5} 
+ &  &  & CL 2:5 & \{2 3 4 27 29 \} \\ \cline{4-5} 
+\multirow{-4}{*}{11.mpi.cust.0K10} & \multirow{-4}{*}{sing.orig} & \multirow{-4}{*}{4} & CL 3:1 & \{22 \} \\ \hline
+ &  &  & CL 0:34 & - \\ \cline{4-5} 
+\multirow{-2}{*}{11.mpi.cust.0K10} & \multirow{-2}{*}{sing.log10} & \multirow{-2}{*}{2} & CL 1:6 & - \\ \hline
+ &  &  & CL 0:34 & - \\ \cline{4-5} 
+ &  &  & CL 1:5 & \{2 3 4 27 29 \} \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{sing.log10} & \multirow{-3}{*}{3} & CL 2:1 & \{22 \} \\ \hline
+ &  &  & CL 0:3 & \{24 38 39 \} \\ \cline{4-5} 
+ &  &  & CL 1:31 & - \\ \cline{4-5} 
+ &  &  & CL 2:5 & \{2 3 4 27 29 \} \\ \cline{4-5} 
+\multirow{-4}{*}{11.mpi.cust.0K10} & \multirow{-4}{*}{sing.log10} & \multirow{-4}{*}{4} & CL 3:1 & \{22 \} \\ \hline
+ &  &  & CL 0:34 & - \\ \cline{4-5} 
+\multirow{-2}{*}{11.mpi.cust.0K10} & \multirow{-2}{*}{sing.actual} & \multirow{-2}{*}{2} & CL 1:6 & - \\ \hline
+ &  &  & CL 0:34 & - \\ \cline{4-5} 
+ &  &  & CL 1:5 & \{2 3 4 27 29 \} \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{sing.actual} & \multirow{-3}{*}{3} & CL 2:1 & \{22 \} \\ \hline
+ &  &  & CL 0:3 & \{24 38 39 \} \\ \cline{4-5} 
+ &  &  & CL 1:31 & - \\ \cline{4-5} 
+ &  &  & CL 2:5 & \{2 3 4 27 29 \} \\ \cline{4-5} 
+\multirow{-4}{*}{11.mpi.cust.0K10} & \multirow{-4}{*}{sing.actual} & \multirow{-4}{*}{4} & CL 3:1 & \{22 \} \\ \hline
+ &  &  & CL 0:39 & - \\ \cline{4-5} 
+\multirow{-2}{*}{11.mpi.cust.0K10} & \multirow{-2}{*}{doub.orig} & \multirow{-2}{*}{2} & \textbf{CL 1:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:32 & - \\ \cline{4-5} 
+ &  &  & CL 1:7 & - \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{doub.orig} & \multirow{-3}{*}{3} & \textbf{CL 2:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:32 & - \\ \cline{4-5} 
+ &  &  & CL 1:7 & - \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{doub.orig} & \multirow{-3}{*}{4} & \textbf{CL 2:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:39 & - \\ \cline{4-5} 
+\multirow{-2}{*}{11.mpi.cust.0K10} & \multirow{-2}{*}{doub.log10} & \multirow{-2}{*}{2} & \textbf{CL 1:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:32 & - \\ \cline{4-5} 
+ &  &  & CL 1:7 & - \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{doub.log10} & \multirow{-3}{*}{3} & \textbf{CL 2:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:32 & - \\ \cline{4-5} 
+ &  &  & CL 1:7 & - \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{doub.log10} & \multirow{-3}{*}{4} & \textbf{CL 2:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:39 & - \\ \cline{4-5} 
+\multirow{-2}{*}{11.mpi.cust.0K10} & \multirow{-2}{*}{doub.actual} & \multirow{-2}{*}{2} & \textbf{CL 1:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:32 & - \\ \cline{4-5} 
+ &  &  & CL 1:7 & - \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{doub.actual} & \multirow{-3}{*}{3} & \textbf{CL 2:1} & \textbf{\{0\}} \\ \hline
+ &  &  & CL 0:32 & - \\ \cline{4-5} 
+ &  &  & CL 1:7 & - \\ \cline{4-5} 
+\multirow{-3}{*}{11.mpi.cust.0K10} & \multirow{-3}{*}{doub.actual} & \multirow{-3}{*}{4} & \textbf{CL 2:1} & \textbf{\{0\}} \\ \hline
+\multicolumn{2}{|c|}{\cellcolor[HTML]{C0C0C0}{\color[HTML]{C0C0C0} }} & \textbf{\begin{tabular}[c]{@{}c@{}}TOP Suspicious\\ Traces to check\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}1-0\\ 2-2\\ 3-3\end{tabular}} & - \\ \hline
+\end{tabular}
+}
+\end{table}

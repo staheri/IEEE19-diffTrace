@@ -1,0 +1,222 @@
+╒════╤═════════════════════╤══════════════╤═════════════════╤═══════════════════════╕
+,    , Filter              , Attributes   , K(cluster)      , # Objects diff        ,
+╞════╪═════════════════════╪══════════════╪═════════════════╪═══════════════════════╡
+,  0 , 11.mpiall.cust.0K10 , sing.orig    , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+,  1 , 11.mpiall.cust.0K10 , sing.orig    , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+,  2 , 11.mpiall.cust.0K10 , sing.orig    , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+,  3 , 11.mpiall.cust.0K10 , sing.log10   , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+,  4 , 11.mpiall.cust.0K10 , sing.log10   , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+,  5 , 11.mpiall.cust.0K10 , sing.log10   , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+,  6 , 11.mpiall.cust.0K10 , sing.actual  , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+,  7 , 11.mpiall.cust.0K10 , sing.actual  , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+,  8 , 11.mpiall.cust.0K10 , sing.actual  , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+,  9 , 11.mpiall.cust.0K10 , doub.orig    , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 10 , 11.mpiall.cust.0K10 , doub.orig    , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 11 , 11.mpiall.cust.0K10 , doub.orig    , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 12 , 11.mpiall.cust.0K10 , doub.log10   , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 13 , 11.mpiall.cust.0K10 , doub.log10   , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 14 , 11.mpiall.cust.0K10 , doub.log10   , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 15 , 11.mpiall.cust.0K10 , doub.actual  , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 16 , 11.mpiall.cust.0K10 , doub.actual  , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 17 , 11.mpiall.cust.0K10 , doub.actual  , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 18 ,                     ,              , TOP Suspicious  , 1-0                   ,
+,    ,                     ,              , Traces to check , 2-2                   ,
+,    ,                     ,              ,                 , 3-3                   ,
+
+, 19 , 11.mpicol.cust.0K10 , sing.orig    , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+, 20 , 11.mpicol.cust.0K10 , sing.orig    , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+, 21 , 11.mpicol.cust.0K10 , sing.orig    , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+, 22 , 11.mpicol.cust.0K10 , sing.log10   , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+, 23 , 11.mpicol.cust.0K10 , sing.log10   , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+, 24 , 11.mpicol.cust.0K10 , sing.log10   , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+, 25 , 11.mpicol.cust.0K10 , sing.actual  , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+, 26 , 11.mpicol.cust.0K10 , sing.actual  , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+, 27 , 11.mpicol.cust.0K10 , sing.actual  , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+, 28 , 11.mpicol.cust.0K10 , doub.orig    , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 29 , 11.mpicol.cust.0K10 , doub.orig    , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 30 , 11.mpicol.cust.0K10 , doub.orig    , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 31 , 11.mpicol.cust.0K10 , doub.log10   , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 32 , 11.mpicol.cust.0K10 , doub.log10   , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 33 , 11.mpicol.cust.0K10 , doub.log10   , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 34 , 11.mpicol.cust.0K10 , doub.actual  , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 35 , 11.mpicol.cust.0K10 , doub.actual  , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 36 , 11.mpicol.cust.0K10 , doub.actual  , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 37 ,                     ,              , TOP Suspicious  , 1-0                   ,
+,    ,                     ,              , Traces to check , 2-2                   ,
+,    ,                     ,              ,                 , 3-3                   ,
+
+, 38 , 11.mpi.cust.0K10    , sing.orig    , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+, 39 , 11.mpi.cust.0K10    , sing.orig    , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+, 40 , 11.mpi.cust.0K10    , sing.orig    , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+, 41 , 11.mpi.cust.0K10    , sing.log10   , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+, 42 , 11.mpi.cust.0K10    , sing.log10   , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+, 43 , 11.mpi.cust.0K10    , sing.log10   , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+, 44 , 11.mpi.cust.0K10    , sing.actual  , 2               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:6                ,
+
+, 45 , 11.mpi.cust.0K10    , sing.actual  , 3               , CL 0:34               ,
+,    ,                     ,              ,                 , CL 1:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 2:1,{22 }          ,
+
+, 46 , 11.mpi.cust.0K10    , sing.actual  , 4               , CL 0:3,{24 38 39 }    ,
+,    ,                     ,              ,                 , CL 1:31               ,
+,    ,                     ,              ,                 , CL 2:5,{2 3 4 27 29 } ,
+,    ,                     ,              ,                 , CL 3:1,{22 }          ,
+
+, 47 , 11.mpi.cust.0K10    , doub.orig    , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 48 , 11.mpi.cust.0K10    , doub.orig    , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 49 , 11.mpi.cust.0K10    , doub.orig    , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 50 , 11.mpi.cust.0K10    , doub.log10   , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 51 , 11.mpi.cust.0K10    , doub.log10   , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 52 , 11.mpi.cust.0K10    , doub.log10   , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 53 , 11.mpi.cust.0K10    , doub.actual  , 2               , CL 0:39               ,
+,    ,                     ,              ,                 , CL 1:1,{0 }           ,
+
+, 54 , 11.mpi.cust.0K10    , doub.actual  , 3               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 55 , 11.mpi.cust.0K10    , doub.actual  , 4               , CL 0:32               ,
+,    ,                     ,              ,                 , CL 1:7                ,
+,    ,                     ,              ,                 , CL 2:1,{0 }           ,
+
+, 56 ,                     ,              , TOP Suspicious  , 1-0                   ,
+,    ,                     ,              , Traces to check , 2-2                   ,
+,    ,                     ,              ,                 , 3-3                   ,
+╘════╧═════════════════════╧══════════════╧═════════════════╧═══════════════════════╛
