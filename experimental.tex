@@ -74,7 +74,7 @@ The last row of table \ref{tab:bug1candidate} is telling us that among all combi
 We have injected a bug (row 2 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong size. \textbf{::MORE EXPLANATIONS ABOUT WHAT THE BUG IS::}
 %
 
-\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI_Bcast: Invalid root}
+%\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI\_Bcast: Invalid root}
 
 Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to check $PT_{1,0}$ and $PT_{3,0}$. Note that the bug injected to only one process ($P_3$) to have the wrong size.)
 
@@ -105,7 +105,7 @@ Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to ch
 We have injected a bug (row 3 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong size. \textbf{::MORE EXPLANATIONS ABOUT WHAT THE BUG IS::}
 %
 
-\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI_Bcast: Invalid root}
+\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI\_Bcast: Invalid root}
 
 Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to check $PT_{1,0}$ and $PT_{3,0}$. Note that the bug injected to only one process ($P_3$) to have the wrong size.)
 
@@ -122,7 +122,7 @@ Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to ch
 \centering
 \scalebox{0.5}{
 \includegraphics[width=6in]{figs/diffNLR/{bug2-2}.pdf}}
-\caption{Bug2: diffNLR $PT_{1,0}$ - buggy vs. native}
+%\caption{Bug2: diffNLR $PT_{1,0}$ - buggy vs. native}
 \label{fig:bug2-2}
 \end{figure}
 

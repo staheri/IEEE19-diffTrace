@@ -28,7 +28,7 @@ In addition, there are many types of possible “bugs” or, more precisely, err
 %
 There exists a collection of scenarios in which a bug can be introduced: when developing a brand new application, optimizing an existing application, upscaling an application, porting to a new platform, changing the compiler, or even changing compiler flags.
 %
- Unlike traditional software, there are hardly any bug-repositories, collection of trace data or debugging-purpose benchmarks in HPC community.
+Unlike traditional software, there are hardly any bug-repositories, collection of trace data or debugging-purpose benchmarks in HPC community.
  %
 The heterogeneous nature of HPC bugs make developers come up with their own solutions to resolve specific class of bugs on specific architecture or platforms that are not usable on other \cite{hpcdoe}.
 
@@ -49,7 +49,7 @@ ParLOT captures function calls and returns at different levels (e.g., source-cod
 %Done
 
 % Post-mortem analysis to obtain understanding about different aspects of the dynamic behavior
-In the current work, we introduce DiffTrace, a tool-chain that post-mortem analyze ParLOT traces in order to supply developers with information about dynamic behavior of HPC applications at different levels towards debugging. 
+In the current work, we introduce DiffTrace, a tool-chain that post-mortem analyze \textit{ParLOT Traces} (PTs)  in order to supply developers with information about dynamic behavior of HPC applications at different levels with different granularities towards debugging. 
 %
 Topology of HPC tasks on both distributed and shared memory often follow a ``symmetric'' control flow such as SPMD, master/worker and odd/even where multiple tasks contain \textit{similar} events in their control flow. 
 %
@@ -60,76 +60,57 @@ In other words, HPC bugs violates the rule of ``symmetric'' and ``similar'' cont
 We believe that finding the dissimilarities among traces is the essential initial step towards finding the bug manifestation, and consequently the bug root cause.
 % 
 \\
-Large-scale HPC application execution would result in thousands of ParLOT trace files due to execution of thousands of processes and threads.
+Large-scale HPC application execution would result in thousands of PTs due to execution of thousands of processes and threads.
 %
-Since HPC applications spend most of their time in an outer main loop, every single trace file also may contain million-long sequence of trace entries (i.e., function calls and returns).
+Since HPC applications spend most of their time in an outer main loop, every single PT also may contain million-long sequence of trace entries (i.e., function calls and returns).
 %
-Finding the bug manifestation (i.e., dissimilarities caused by the bug) among large number of long traces is the problem of finding the needle in the haystack.
+Finding the bug manifestation (i.e., dissimilarities caused by the bug) among large number of long PTs is the problem of finding the needle in the haystack.
 
 %
-Decompressing ParLOT traces collected from long-running large-scale HPC applications for offline analysis produce overwhelming amount of data. However, missing any piece of collected data may result in loosing key information about the application behavior.
+Decompressing PTs collected from long-running large-scale HPC applications for offline analysis produce overwhelming amount of data. However, missing any piece of collected data may result in loosing key information about the application behavior.
 %
-We propose a variation of NLR (Nested Loop Recognition) algorithm \cite{Ketterlin-nlr} that takes a sequence of trace entries as input and by recursively detecting repetitive patterns, re-compresses traces into ``iterative sets'' in a lossless fashion (intra-trace compression).  
+We propose a variation of NLR (Nested Loop Recognition) algorithm \cite{Ketterlin-nlr} that takes a sequence of trace entries as input and by recursively detecting repetitive patterns, re-compresses traces into ``iterative sets'' in a lossless fashion (intra-PT compression).  
 %
-Analyzing the application execution as a whole is another goal that we are pursuing in this work. 
-%
-By extracting \textit{attributes} from pre-processed traces, we inject them a concept hierarchy data structure called Concept Lattice \cite{clbook}.  
-%
-Concept lattices give us the capability of reducing the search space from thousands of instances to just a few \textit{equivalent behavior classes of traces} by measuring the similarity of traces\cite{Alqadah2011}
-% 
 
-**   TODO: Highlights of results obtained as a result of the above thinking should be here. THis typically comes before ROADMAP of paper.
+Analyzing the application execution as a whole (inter-PT compression) is another goal that we are pursuing in this work. 
+%
+By extracting \textit{attributes} from pre-processed traces, we inject them into a concept hierarchy data structure called Concept Lattice \cite{clbook}.  
+%
+Concept lattices give us the capability of reducing the search space from thousands of instances to just a few \textit{equivalent behavior classes of traces} by measuring the similarity of traces\cite{Alqadah2011}, making the process of finding the needle more feasible.
+%
+Comparison of bug-free concept lattice and its equivalent classes with the buggy version of the same application would reveal insights about the dynamic behavior of the program and how the bug changed the classes and their members.
+%
+
+Fowlkes et. al. \cite{fowlkes83} proposed a method for comparing two hierarchical clustering, that is counting the objects that fall into different or same clusters in two different clusterings.
+%
+Inspired by Fowlkes's approach, we believe that the PTs that fall into different classes before and after the bug are the potential PTs that either manifest the bug impact or reflect the bug root cause.
+%
+These candidate PTs then require further deeper \textit{observing} and \textit{diffing} with their corresponding bug-free PTs to see what has been changed after the bug introduced.
+%
+\\
+Our results show 
+\hl{**   TODO: Highlights of results obtained as a result of the above thinking should be here. This typically comes before ROADMAP of paper.}
 
 In summary, here are our main contributions:
 \begin{itemize}
-\item we have a powerful combination of ideas to locate bugs
-\item A variation of NLR algorithm to compress traces in lossless fashion for easier analysis and detecting (broken) loop structures 
-\item FCA-based clustering of similar behavior traces, efficient, 
-\item Ranking system based on delta-sim
-\item Visualization diffNLR
+\item A tunable tracing and trace analysis tool-chain for HPC application program understanding and debugging
+\item A variation of NLR algorithm to compress traces in lossless fashion for easier analysis and detecting (broken) loop structures
+\item A FCA-based clustering approach to efficiently classify similar behavior traces
+\item A Tunable ranking mechanism to bold suspicious trace instances for deeper study
+\item A visualization framework that reflects the points of differences or divergence in a pair of sequences.
 \end{itemize}
 
 %
-
+\hl{
 The rest of the paper is as follows:
 
 - Sec 2: Background
 
-- Sec 3: Related Work
+- Sec 3: Experimental Methodology
 
-- Sec 4: DiffTrace Components and Design
+- Sec 4: Case Studies
 
-- Sec 5: DiffTrace Evaluation and Experiments
+- Sec 5: Related Work
 
 - Sec 6: Discussion, Limitations, Conclusion, Future Work
-
-% \begin{itemize}
-% \item HPC Bugs are expensive
-% \item HPC Tracing is expensive
-% \item ParLOT provides infrastructure for whole-program function call return tracing
-% \item Decompressing traces produce large amount of data
-% \item Smart analysis of traces, convert large amount of data from thousands of traces (processes, threads) into a valuable information which are
-% 	\begin{itemize}
-% 	\item Easy to analyze
-% 	\item hide the complexity of HPC
-% 	\item Reflect dynamic behavior of the program
-% 	\item see if it matches the user/developer expectations
-% 	\end{itemize}
-% \item The basic idea is to reduce the search space and reflect abnormal behavior by:
-% 	\begin{itemize}
-% 	\item Classifying similar behavior traces into equivalent classes
-% 	\item Comparing representatives from equivalent classes and find the point of divergence (i.e., diffing)
-% 	\end{itemize}
-% \item Here are the contributions:
-% 	\begin{itemize}
-% 	\item Testing framework (diffTrace) from fault injection to large-scale applications to diffing pairs of candidate trace files causing the fault. (clTrace and fpTrace)
-% 	\item MPI fault injection
-% 	\item ParLOT trace Collection
-% 	\item Trace Preprocessing (decompression, loop detection, attribute extraction)
-% 	\item Concept Lattice, Jaccard Similarity Matrix, Trace classification, outlier detection
-% 	\item Diffing
-% 	\item Floating Point Debugging
-% 	\end{itemize}
-% \end{itemize}
-%
-
+}

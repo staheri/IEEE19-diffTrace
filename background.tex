@@ -4,12 +4,11 @@ To understand the runtime behavior of applications, an efficient tracing mechani
 %
 Upon failure or observing unexpected behavior of the program (e.g., wrong answer), studying collected execution data would reveal insight about how program dynamically behaved and what went wrong.
 %
-In this section, we explain our methodology of data collection and data analysis towards debugging and locating potential root causes of unexpected behavior.
+In this section, we explain our methodology of data collection and data analysis towards debugging and locating potential root causes of the unexpected behavior.
 %
-The main source of whole-program dynamic behavior is provided by ParLOT, a dynamic binary tracing tool that captures all function calls and returns and compress them on the fly (section \ref{subsec:parlot}).
+The main source of whole-program dynamic behavior is provided by ParLOT, a dynamic binary tracing tool that captures all function calls and returns and compress them on the fly (section \ref{subsec:parlot}), producing a set of highly compact \textit{ParLOT Traces} (PTs).
 %
-After pre-processing ParLOT traces, a loop-detection-based lossless data reduction mechanism applies to each trace to
-simplify collected data and reflect facts about loop structures (section \ref{subsec:nlr}).
+After pre-processing PTs, a loop-detection-based lossless data reduction mechanism applies to each trace to simplify collected data and reflect facts about loop structures (section \ref{subsec:nlr}).
 %
 Whole-program analysis in HPC applications only makes sense when the analysis includes cross-thread and cross-process as well as analysis of sequential control flow of every single running thread.
 %
@@ -17,27 +16,21 @@ Inspired by many works\cite{weberStructural} \cite{Alqadah2011} \cite{Ignatov17}
 %
 The major advantage of FCA, is that we can extract a full pair-wise similarity score matrix for all traces of a single execution in an efficient and scalable way, based on attributes that we extract from pre-processed traces.
 %
-Relying on similarities of traces, we classify traces (i.e., threads) into equivalent-behavior groups.
+Relying on similarities of traces, we classify PTs into equivalent-behavior classes.
 %
-This way we reduce the search space from thousands of long traces to just a few classes of simplified trace representation
-%
-Any abnormal behavior of a thread (e.g., outlier) or group of threads can be detected (section \ref{subsec:exptmet}),
-%
-and for more-in-depth analysis, any pair of traces can be studied with respect to their entry orders and differences using a visualization (section \ref{subsec:diffnlr}).
-%
+This way we reduce the search space from thousands of long PTs to just a few classes of simplified trace representation
 \\
-Section \ref{subsec:addrem} discusses some additional remarks (limitations, effectiveness of our approach)
+Section \ref{subsec:ranking} \hl{ talk about how we rank PTs based on their comparison with corresponding PTs from bug-free execution and how we pick some PTs for deeper study.}
 \\
-%
+Section \ref{subsec:diffnlr}\hl{ explain why visualizing diffs of a pair of PT is useful and some backgrounds about it.}
 
-%TODO: The story builds on powerful components we have created.
 
 % Binary tracing
 \subsection{ParLOT: Efficient Trace Collection}
 \label{subsec:parlot}
 
-The final executable of real HPC applications are often a production of a large code base and a complex build system with numerous dependencies and libraries. Injecting instrumentation code to the source code, as in traditional tools like [????], is not feasible in HPC space. Also recompilation of the application with tools` compile-wrappers, as in TAU\cite{tau} and Score-p\cite{scorep}, may break the build system.
-Also instrumentation and tracing mechanism of existing tools are often dependent to other libraries that are need to be present on the supercomputer for trace collection. [[ Example: STAT\cite{stat} and AutomaDeD\cite{automaded-laguna} that requires Dyninst\cite{dyninst} for instrumentation and MRNet\cite{mrnet} and TBON \cite{tbon}]]
+The final executable of real HPC applications are often a production of a large code base and a complex build system with numerous dependencies and libraries. Injecting instrumentation code to the source code, as in \hl{traditional tools like [????]}, is not feasible in HPC space. Also recompilation of the application with tools` compile-wrappers, as in TAU\cite{tau} and Score-p\cite{scorep}, may break the build system.
+Also instrumentation and tracing mechanism of existing tools are often dependent to other libraries that are need to be present on the supercomputer for trace collection. \hl{Example: STAT}\cite{stat}\hl{ and AutomaDeD}\cite{automaded-laguna}\hl{ that requires Dyninst}\cite{dyninst}\hl{ for instrumentation and MRNet}\cite{mrnet}\hl{ and TBON }\cite{tbon}.
 %
 To overcome the trade-off of comprehensive data collection while adding low time and space overhead, HPC program analysis tools often sacrifice one for the other. However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leave majority of the system bandwidth for the application.
 %
@@ -61,7 +54,7 @@ Also Note that $PT_{p.t}$ refers to the $PT$ that belongs to process $p$ and thr
 \label{fig.parlotOverview}
 \end{figure}
 
-
+\hl{What else do we need here?}
 
 % NLRs
 \subsection{Loop structure detection}
@@ -94,6 +87,8 @@ Each repetitive pattern and its frequency of consecutive appearances would be co
 By converting each PT to a sequence of $LS_i$ , we reduce the length of PT by a factor of $\sum_i len(LB_i) * LC_i$.
 %
 Later we will explain how this lossless representation of PTs eases the process of diffing between a pair of PTs.
+
+\hl{What else do we need here?}
 
 % CLs
 \subsection{Equivalencing behavior via FCA}
@@ -155,6 +150,15 @@ main(){
 \end{figure}
 
 
+
+
+
+\subsubsection{Jaccard Similarity Scores}
+
+\hl{- Some background about Jaccard Similarity Score
+
+- How to obtain full pair-wise Jaccard Similarty Matrix (JSM) from a concept lattice (e.g., LCA approach)
+}
 \begin{figure}[t]
 \centering
 \scalebox{0.8}{
@@ -163,28 +167,19 @@ main(){
 \label{fig:jsm}
 \end{figure}
 
-An example with
-\\
-- Source code [done]
-\\
-- Simple attributes and Context [done]
-\\
-- Concept Lattice [done]
-\\
-- Jaccard Similarity (heatmap or matrix) [done]
-\\
-- How we obtained JSM elements
-\\
-- Visualization of LCA [not yet]
-\\
-- CL construction \cite{clconst} \cite{bender05}
-\\
-- Attribute Table
+
+\hl{More explanations about concept lattices, CL construction appears in DiffTrace Components section. What else do we need here?}
+
+
+\subsection{Ranking Suspicious PTs}
+\label{subsec:ranking}
+
+\hl{Explanations about how we rank PTs based on their significant difference with respect to bug-free version}
 
 
 \subsection{diffNLR: Reflecting differences}
 \label{subsec:diffnlr}
--From fig we can see that PT0 and PT1 are in different groups with similarity of XX.
+\hl{From fig we can see that PT0 and PT1 are in different groups with similarity of XX.}
 %
 \\
 Inspired by \texttt{diff} original algorithm\cite{diff-myers} that has bin used in Git and GNU Diff, we visualize the differences of a pair of PT as shown in fig \ref{fig:sampleDiffNLR}.
@@ -201,16 +196,3 @@ In section \ref{sec:experimental} we show how this visualization can help us loc
 \label{fig:sampleDiffNLR}
 \end{figure}
 
-\subsection{Experimental Methodology}
-\label{subsec:exptmet}
-
-- Candidates to look at and observe their diffNLR: $(PT_i, PT_j) = Max | JSM[i][j](buggy) - JSM[i][j](bugfree)| $
-
-- It means the similarity of $(PT_i, PT_j)$ of buggy execution have the highest difference with its corresponding similarity of the bug-free execution.
-
-- Figures are showing two \textit{diffNLR} side by side, one is $diffNLR(i,j)_{buggy}$ and the other one is  $diffNLR(i,j)_{bugfree}$ where $i, j$ obtained from candidate tables.
-
-- Two additional tables that show the LB (loop body) of each detected loop. $L_i$
-
-\subsection{Additional Remarks}
-\label{subsec:addrem}
