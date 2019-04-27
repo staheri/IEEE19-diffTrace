@@ -51,7 +51,7 @@ Table \ref{tab.ilcsTspBugs} describes the bug that I injected to ILCS-TSP
 We have injected a bug (row 1 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong operation in one of the processes ($P_{2}$)(\texttt{MPI\_MAX} instead of \texttt{MPI\_MIN}).
 %
 
-\textbf{::What is the runtime reaction to this bug:: Program}
+\textbf{::What is the runtime reaction to this bug:: Program terminated well without any error, crash, hang or throwing any exception. But the results might be corrupted. This might be a silent bug that diffTrace could reveal}
 
 The last row of table \ref{tab:bug1candidate} is telling us that among all combinations of parameters (filters, attributes, etc.) PT 0 (ParLOT trace that belongs to thread 0 of process 0 got impacted the most after we inject the bug.
 \input{tabs/tabs.bug1candidate.tex}
@@ -64,9 +64,8 @@ The last row of table \ref{tab:bug1candidate} is telling us that among all combi
 \label{fig:bug1-1}
 \end{figure}
 
-
-\textbf{::EXPLANATIONS OF OBSERVATIONS::}
-
+The target MPI\_Allreduce() that we injected the bug to, finds the rank (i.e., process) that has the ``champion'' result among all of ranks using MPI\_MIN operator. Then that champion rank copies its ``champion results'' to a global data-structure and broadcast the ``champion results'' to all other ranks for the next time step.
+However, since we changed the MPI\_MIN to MPI\_MAX in only one of the ranks, the true champion rank would get lost, instead a false champion rank (which turned to be rank 0 or $PT_{0,0}$) would broadcast its results as champion in the first time-step, causing a potential wrong answer. 
 \clearpage
 
 
