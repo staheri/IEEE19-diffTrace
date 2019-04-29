@@ -2,51 +2,51 @@ There are two major phases in any ``Program Understanding'' tool: \textit{data c
 %
 To understand the runtime behavior of applications, an efficient tracing mechanism is required to collect informative data during execution of the application.
 %
-Upon failure or observing unexpected behavior of the program (e.g., wrong answer), studying collected execution data would reveal insight about how program dynamically behaved and what went wrong.
+Upon failure or observing unexpected behavior of the program (e.g., a wrong answer), studying the collected execution data would reveal insight about how the program behaved dynamically and what went wrong.
 %
 In this section, we explain our methodology of data collection and data analysis towards debugging and locating potential root causes of the unexpected behavior.
 %
-The main source of whole-program dynamic behavior is provided by ParLOT, a dynamic binary tracing tool that captures all function calls and returns and compress them on the fly (section \ref{subsec:parlot}), producing a set of highly compact \textit{ParLOT Traces} (PTs).
+The main source of whole-program dynamic behavior is provided by ParLOT, a dynamic binary tracing tool that captures all function calls and returns and compresses them on the fly (section \ref{subsec:parlot}), producing a set of highly compact \textit{ParLOT Traces} (PTs).
 %
-After pre-processing PTs, a loop-detection-based lossless data reduction mechanism applies to each trace to simplify collected data and reflect facts about loop structures (section \ref{subsec:nlr}).
+After pre-processing, a loop-detection-based lossless data reduction mechanism is applied to each PT to simplify the collected data and to reflect facts about loop structures (section \ref{subsec:nlr}).
 %
-Whole-program analysis in HPC applications only makes sense when the analysis includes cross-thread and cross-process as well as analysis of sequential control flow of every single running thread.
+Whole-program analysis in HPC applications only makes sense when the analysis of each thread's control flow is performed across all threads and processes.
 %
-Inspired by many works\cite{weberStructural} \cite{Alqadah2011} \cite{Ignatov17}\cite{latticeForDistConst}, we have used FCA\cite{clbook} to integrate collected data into a single data structure as a whole, and extract valuable information about different aspect of the execution (section \ref{subsec:fca})
+Inspired by other work \cite{weberStructural} \cite{Alqadah2011} \cite{Ignatov17} \cite{latticeForDistConst}, we have used FCA \cite{clbook} to integrate the collected data into a single data structure, from which we extract valuable information about different aspects of the execution (section \ref{subsec:fca}).
 %
-The major advantage of FCA, is that we can extract a full pair-wise similarity score matrix for all traces of a single execution in an efficient and scalable way, based on attributes that we extract from pre-processed traces.
+The major advantage of FCA is that we can extract a full pair-wise similarity score matrix for all traces of a single execution in an efficient and scalable way based on attributes that we extract from the pre-processed traces.
 %
 Relying on similarities of traces, we classify PTs into equivalent-behavior classes.
 %
-This way we reduce the search space from thousands of long PTs to just a few classes of simplified trace representation
-\\
+This way, we reduce the search space from thousands of long PTs to just a few classes of simplified traces without losing important information.
+
 Section \ref{subsec:ranking} \hl{ talk about how we rank PTs based on their comparison with corresponding PTs from bug-free execution and how we pick some PTs for deeper study.}
-\\
-Section \ref{subsec:diffnlr}\hl{ explain why visualizing diffs of a pair of PT is useful and some backgrounds about it.}
+
+Section \ref{subsec:diffnlr}\hl{ explain why visualizing diffs of a pair of PT is useful and some background about it.}
 
 
 % Binary tracing
 \subsection{ParLOT: Efficient Trace Collection}
 \label{subsec:parlot}
 
-The final executable of real HPC applications are often a production of a large code base and a complex build system with numerous dependencies and libraries. Injecting instrumentation code to the source code, as in \hl{traditional tools like [????]}, is not feasible in HPC space. Also recompilation of the application with tools` compile-wrappers, as in TAU\cite{tau} and Score-p\cite{scorep}, may break the build system.
-Also instrumentation and tracing mechanism of existing tools are often dependent to other libraries that are need to be present on the supercomputer for trace collection. \hl{Example: STAT}\cite{stat}\hl{ and AutomaDeD}\cite{automaded-laguna}\hl{ that requires Dyninst}\cite{dyninst}\hl{ for instrumentation and MRNet}\cite{mrnet}\hl{ and TBON }\cite{tbon}.
+The executable of HPC applications is often a combination of a large code base and a complex build system with numerous dependencies and libraries. Injecting instrumentation code to the source code, as in \hl{traditional tools like [????]}, is difficult in the HPC space. Also, recompilation of the application with compiler wrappers, as in TAU \cite{tau} and Score-p \cite{scorep}, may break the build system.
+The instrumentation and tracing mechanism of existing tools are often dependent on other libraries that are need to be present on the target system for trace collection. \hl{Example: STAT} \cite{stat} and \hl{AutomaDeD} \cite{automaded-laguna} that requires \hl{Dyninst} \cite{dyninst} for instrumentation and \hl{MRNet} \cite{mrnet} and \hl{ TBON} \cite{tbon}.
 %
-To overcome the trade-off of comprehensive data collection while adding low time and space overhead, HPC program analysis tools often sacrifice one for the other. However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leave majority of the system bandwidth for the application.
+To enable comprehensive data collection in combination with low time and space overhead, HPC program analysis tools often sacrifice one for the other. However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leaving the majority of the system bandwidth for the application.
 %
-ParLOT collects \textit{whole} program function call traces with the mindset of \textit{paying a little upfront and save resource and time cost of reproducing the bug}.
+ParLOT collects \textit{whole} program function call traces with the mindset of \textit{paying a little upfront and saving resource and time cost of reproducing the bug later}.
 %
-ParLOT instruments the entry and exit point of each function in the binary using Pin\cite{pin} (fig. \ref{fig.parlotOverview}). Each ParLOT Trace contain full sequence of function calls and returns for every single thread that running the application code, reflecting the dynamic control flow and call-stack of the application individually.
+ParLOT instruments the entry and exit point of each function in the binary using Pin \cite{pin} (fig.~\ref{fig.parlotOverview}). Each ParLOT Trace contains full sequence of function calls and returns for every thread of the application code, reflecting the dynamic control flow and call stack.
 %
 Here we define ParLOT Trace, as we refer to it in the paper:
 
 \begin{definition}{ParLOT Trace (PT)}
-A ParLOT Trace $(PT)$ is a sequence of ordered integers $<f_i,...,f_j>$ where $f_0$ is \textit{return} and $f_k$ is the id of \textit{function k} ($k!=0$).
+A ParLOT Trace $(PT)$ is a sequence of ordered integers $<f_i,...,f_j>$ where $f_0$ represents a \textit{return} and $f_k$ is the ID of \textit{function k} ($k \neq 0$).
 \end{definition}
 %
-Note that the $PT$ is the pre-processed (decompressed and filtered) version of immediate ParLOT traces. The fresh output of ParLOT traces are highly compressed byte-codes.
+Note that the $PT$ is the pre-processed (decompressed and filtered) version of the ParLOT traces. The native format of ParLOT traces is highly compressed using a custom algorithm.
 %
-Also Note that $PT_{p.t}$ refers to the $PT$ that belongs to process $p$ and thread $t$ of that process.
+Note that $PT_{p.t}$ refers to the $PT$ that belongs to process $p$ and thread $t$ of that process.
 %
 \begin{figure}[t]
 \caption{ParLOT Overview}
@@ -60,31 +60,31 @@ Also Note that $PT_{p.t}$ refers to the $PT$ that belongs to process $p$ and thr
 \subsection{Loop structure detection}
 \label{subsec:nlr}
 
-HPC applications and resources are in interest of scientists and engineers for simulating \textit{iterative} kernels. Computer simulation of fluid dynamics, partial differential equations, Gauss-Seidel method and finite element methods in form of stencil codes do include a main outer loop that iterates over some elements (i.e., timesteps) and updates elements.
+HPC applications and resources are of great interest to scientists and engineers for simulating \textit{iterative} kernels. Computer simulation of fluid dynamics, partial differential equations, the Gauss-Seidel method, and finite element methods in form of stencil codes, all include a main outer loop that iterates over some elements (i.e., timesteps) and updates the elements.
 %
-This character of typical HPC applications make PT lengths too long (millions) with much smaller number (hundreds) of distinct elements  (i.e., function IDs).
+This character of typical HPC applications makes PTs very long (often millions or billions of entries) with a relatively small number (hundreds to thousands) of distinct elements (i.e., function IDs).
 %
-We propose a representation of PT elements (intra-PT compression) in form of \textit{loop structures}, such that PT = sequence of repetitive patterns (i.e, loops). In other words, each PT is a sequence of \textit{Loop Bodies (LB)} that repeated \textit{Loop Count (LC)} times, consecutively.
+We propose a representation of PT elements (intra-PT compression) in form of \textit{loop structures}, such that PT = sequence of repetitive patterns (i.e., loops). In other words, each PT is a sequence of \textit{Loop Bodies (LB)} that repeated \textit{Loop Count (LC)} times, consecutively.
 %
 
 
 \subsubsection{Loops definition}
 
-According to Makoto Kobayashi\cite{kobayashi-84} definition of loops, an occurrence of a \textit{loop} is defined as \textit{a sequence of elements} in which a particular sequence of \textit{distinct elements} (called the \textit{cycle} of the loop) is successively repeated.
+According to Makoto Kobayashi's \cite{kobayashi-84} definition of loops, an occurrence of a \textit{loop} is defined as \textit{a sequence of elements} in which a particular sequence of \textit{distinct elements} (called the \textit{cycle} of the loop) is successively repeated.
 %
-Later Alain Ketterlin in \cite{Ketterlin-nlr} expanded this definition to numerical values for compressing and predicting memory access addresses and designed Nested Loop Recognition (NLR) algorithm.
+Later, Alain Ketterlin \cite{Ketterlin-nlr} expanded this definition to numerical values for compressing and predicting memory access addresses and designed the Nested Loop Recognition (NLR) algorithm.
 %
-The basic idea behind NLR algorithm is that a linear function model can be extracted from the linear progression in a sequence of numbers and these linear functions form a tree in which depth of each node is the depth of \textit{nested} loop(e.g., most outer loop's function is the root of the tree with depth 0).
+The basic idea behind the NLR algorithm is that a linear function model can be extracted from the linear progression in a sequence of numbers, and these linear functions form a tree in which the depth of each node is the depth of a \textit{nested} loop (the outermost loop's function is the root of the tree with depth 0).
 %
-We have modified NLR algorithm to make it suitable for PTs.
+We have modified the NLR algorithm to make it suitable for PTs.
 %
 Each repetitive pattern and its frequency of consecutive appearances would be compressed to a single \textit{Loop Structure (LS)} entry.
 %
-\begin{definition}{Loop Structure} $LS = LB \; \hat{} \; LC$ where $LB  = <pt_i,...,pt_j>$ ($0<= i < j < len(PT)$) that occur $LC$ times is in a sub-sequence $ <pt_i,...,pt_k>$($k = 3j, k<len(PT)$)
+\begin{definition}{Loop Structure} $LS = LB \; \hat{} \; LC$ where $LB  = <pt_i,...,pt_j>$ ($0 <= i < j < len(PT)$) that occur $LC$ times is in a sub-sequence $<pt_i,...,pt_k>$ ($k = 3j, k < len(PT)$)
 
 \end{definition}
 %
-By converting each PT to a sequence of $LS_i$ , we reduce the length of PT by a factor of $\sum_i len(LB_i) * LC_i$.
+By converting each PT into a sequence of $LS_i$, we reduce the length of PT by a factor of $\sum_i len(LB_i) * LC_i$.
 %
 Later we will explain how this lossless representation of PTs eases the process of diffing between a pair of PTs.
 
@@ -93,19 +93,17 @@ Later we will explain how this lossless representation of PTs eases the process 
 % CLs
 \subsection{Equivalencing behavior via FCA}
 \label{subsec:fca}
-To Reduce the search space from thousands of PTs to just a few groups of equivalent PTs (i.e., inter-PT compression) not only requires a similarity measure based on a call matrix, but also requires a scheme that is efficient even for large process counts.
+Reducing the search space from thousands of PTs to just a few groups of equivalent PTs (i.e., inter-PT compression) not only requires a similarity measure based on a call matrix but also a scheme that is efficient even for large process counts.
 %
-Since a pair-wise comparison of all processes is highly inefficient, we use \textit{concept lattices} that stem from \textit{formal concept analysis}(FCA)\cite{clbook} to store and compute groups of similar PTs.
+Since a pair-wise comparison of all processes is highly inefficient, we use \textit{concept lattices} that stem from \textit{formal concept analysis}(FCA) \cite{clbook} to store and compute groups of similar PTs.
 %
-A concept lattice is based on a \textit{formal context}\cite{clbook}, which is a triple $(O, A, I)$, where $O$ is a set of \textbf{objects}, $A$ a set of \textbf{attributes}, and $I \subseteq O \times A$ an incidence relation. The incidence relation associates each object with a set of attributes.
+A concept lattice is based on a \textit{formal context} \cite{clbook}, which is a triple $(O, A, I)$, where $O$ is a set of \textbf{objects}, $A$ a set of \textbf{attributes}, and $I \subseteq O \times A$ an incidence relation. The incidence relation associates each object with a set of attributes.
 %
-Due to its valuable properties,especially its \textit{partial order}, FCA has been used widely in computer science fields from machine learning and data mining \cite{Ignatov17} to distributed systems \cite{latticeForDistConst}.
+Due to its valuable properties, especially its \textit{partial order}, FCA has been used widely in computer science fields from machine learning and data mining \cite{Ignatov17} to distributed systems \cite{latticeForDistConst}.
 %
-However, since we are only interested in grouping similar PTs in this work, we only take advantage of similarity measures \cite{Alqadah2011} of concept lattices,
+However, since we are only interested in grouping similar PTs in this work, we only take advantage of similarity measures \cite{Alqadah2011} of concept lattices and leave other properties for future work.
 %
-and left rest of its properties for our future work.
-%
-Due to typical HPC application common topologies such as SPMD, master/worker and odd/even where multiple processes/threads behave similarly, our experiments show that large number of PTs can be reduced to just a few groups.
+Due to typical HPC application topologies such as SPMD, master/worker and odd/even where multiple processes/threads behave similarly, our experiments show that large numbers of PTs can be reduced to just a few groups.
 %
 
 \begin{frame}{}
@@ -157,7 +155,7 @@ main(){
 
 \hl{- Some background about Jaccard Similarity Score
 
-- How to obtain full pair-wise Jaccard Similarty Matrix (JSM) from a concept lattice (e.g., LCA approach)
+- How to obtain full pair-wise Jaccard Similarity Matrix (JSM) from a concept lattice (e.g., LCA approach)
 }
 \begin{figure}[t]
 \centering
@@ -195,4 +193,5 @@ In section \ref{sec:experimental} we show how this visualization can help us loc
 \caption{Sample diffNLR}
 \label{fig:sampleDiffNLR}
 \end{figure}
+
 
