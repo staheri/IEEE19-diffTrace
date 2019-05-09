@@ -1,0 +1,95 @@
+
+Hi Ganesh,
+
+Now that I am writing the background section and explaining “why” we
+are going after ideas like concept lattices, loop detection and
+diffing, here are some advantages of these ideas that you might want
+to consider when you write the intro. They might motivate the
+reviewers to see what we have to say:
+
+FCA - Using FCA for clustering giving us the capability of clustering
+trace objects based on the “concept” of each trace object. We can
+characterize the “concept” (i.e., what we want to understand from the
+collected traces) by extracting meaningful “attributes” from
+traces. “Structural Clustering” paper, for example, mines “function
+call edges” (f1 calls f2) and their associative call edges ( if f1
+calls f2 and f2 calls f3 then f1 calls f3). The goal is to cluster
+processes/threads based on their function call structures. In that
+paper, traces are MPI processes, OMP threads and GPU threads, thus FCA
+separates these three groups and within each group, isolates the
+outlier. The idea of ours is similar. We can target different classes
+of bugs, characterize “bug concepts”, create CLs and efficiently
+detect the outlier or malfunctioned pattern.
+
+- Thanks to ParLoT compression mechanism, we are able to efficiently
+  (w.r.t. time and space) collect whole-program function call and
+  return traces. However, post-mortem analysis of the collected traces
+  from thousands of threads requires decompression of traces, and
+  consequently, analysis of large amount of data. Before jumping into
+  a huge haystack (decompressed ParLoT traces from thousands of
+  threads) to find a tiny needle (bug, bug manifestation or root cause
+  of the failure), a middle ground data manipulation is required to
+  simplify and organize the haystack. FCA can efficiently split the
+  large haystack into a few hay(semi)stacks with “conceptually"
+  similar hays in each. This way conceptually isolated traces (i.e.,
+  outliers) which are the potential bug manifestation or root cause
+  would be detected. If no outlier detected, we only have a few
+  distinct group of traces to dig, instead of thousands of large
+  traces. With a wider perspective, these are other benefits of FCA
+  for HPC debugging:
+
+    * FCA is scalable and efficient. It can be built incrementally and
+      different kind of information such as full Jaccard Similarity
+      Matrix (JSM) can be generated in linear time due to CL
+      properties.
+
+    * Clustering is only one advantage of creating concept lattices
+      from ParLoT traces. CLs can integrate all traces from an
+      execution to a single entity as signature/model of good or bad
+      execution for further analysis (e.g., prediction). PRODOMETER
+      and AutomaDeD use Markov Models for execution
+      representation. However, the Markov Models are per-task and
+      combining them to a single model of execution requires
+      abstraction and more computation.
+
+    * Due to the partial order of nodes within CLs, valuable
+      information can be retrieved from CLs like Happens-Before
+      relation (Vijay Garg’s book explains all applications of FCA in
+      computer science applications)
+
+
+NLR - AutomaDeD does not have any loop detection mechanism. PRODOMETER
+is the loop-aware mechanism on top of AutomaDeD. Similar to STAT-TO
+(LOV - Loop Order Variables) and PRODOMETER (PDG - Progress Dependency
+Graph), diffTrace is also trying to “measure progress” of each
+process/threads and detect the cause of failure or deadlock. However,
+LOV in STAT is determined statically from the source code. Below is a
+paragraph from PRODOMETER paper: “To identify the LP tasks, users
+simply select the first task in the temporal-ordering list. The
+temporal-ordering feature of STAT, called STAT-TO, builds def-use
+chains to identify Loop Order Variables (LOV) and uses them to
+determine relative progress among tasks in different iterations of the
+same loop. However, there are constraints on when an LOV can be
+identified by STAT-TO. For example, they must be explicitly assigned
+in each iteration and must increase or decrease monotonically; thus, a
+simple while loop that iterates over a pointer-based linked list may
+not have an LOV. Even in the cases where an LOV can be identified, the
+overhead of static analysis needed for their identification is
+prohibitive for complex loops as an interactive tool."
+
+- NLR loop detection is dynamic (offline analysis of dynamically
+  collected function call traces). So however the code behaves in
+  runtime, NLR can detect any repetitive patterns of function calls.
+
+- NLR detects nested loops (with any depth) as well. So if a loop
+  structure within the main outer loop breaks during execution because
+  of a bug, NLR can reflect it. In other words, NLR is a way of
+  “measuring progress” per tilmestep (i.e., main outer loop). It also
+  can be used for performance analysis where “latency” matters.
+
+- In addition to measuring progress, NLRs can be used as lossless data
+  reduction or compression, make each trace easy-to-read for human.
+
+Hope these help you with writing the intro.
+
+Thanks a lot, Saeed
