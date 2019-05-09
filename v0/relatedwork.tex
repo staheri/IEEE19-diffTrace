@@ -1,0 +1,97 @@
+
+
+
+\subsection{Program Understanding }
+
+
+
+\begin{itemize}
+\item Score-P \cite{scorep}
+\item TAU \cite{tau}
+\item ScalaTrace: Scalable compression and replay of communication traces for HPC  \cite{scalatrace}
+\item Barrier Matching for Programs with Textually unaligned barriers \cite{zhang07}
+\item Pivot Tracing: Dynamic causal monitoring for distributed systems - Johnathan mace \cite{pivot}
+\item Automated Charecterization of parallel application communication patterns \cite{roth-15}
+\item Problem Diagnosis in Large Scale Computing environments \cite{miller06}
+\item Probablistic diagnosis of performance faults in large-scale parallel applications \cite{laguna-12}
+\item detecting patterns in MPI communication traces - robert preissl \cite{preissl-08}
+\item D4: Fast concurrency debugging with parallel differntial analysis - bozhen liu \cite{liu-18}
+\item Marmot: An MPI analysis and checking tool - bettina krammer \cite{marmot}
+\item MPI-checker - Static Analysis for MPI - Alexandrer droste \cite{mpi-checker}
+\item STAT: stack trace analysis for large scale debugging - Dorian Arnold \cite{stat}
+\item DMTracker: Finding bugs in large-scale parallel programs by detecting anomaly in data movements \cite{dmtracker}
+\item SyncChecker: Detecting synchronization errors between MPI applications and libraries - \cite{syncChecker}
+\item Model Based fault localization in large-scale computing systems - Naoya Maruyama \cite{satoshi-08}
+\item Synoptic: Studying logged behavior with inferred models - ivan beschastnikh \cite{beschastnikh-synoptic}
+\item Mining temporal invariants from partially ordered logs -  ivan beschastnikh \cite{beschastnikh-pologs}
+\item Scalable Temporal Order Analysis for Large Scale Debugging - Dong Ahn \cite{Ahn:2009}
+\item Inferring and asserting distributed system invariants -  ivan beschastnikh - stewart grant \cite{grant18}
+\item PRODOMETER: Accurate application progress analysis for large-scale parallel debugging - subatra mitra \cite{prodometer}
+\item Automaded : Automata-based debugging for dissimilar parallel tasks - greg \cite{automaded-GBron}
+\item Automaded : large scale debugging of parallel tasks with Automaded - ignacio \cite{automaded-laguna}
+
+\item Inferring models of concurrent systems from logs of their behavior with CSight - ivan \cite{beschastnikh-csight}
+\end{itemize}
+
+
+
+
+\subsection{Trace Analysis}
+
+
+\begin{itemize}
+\item Trace File Comparison with a hierarchical Sequence Alignment algorithm \cite{weber-seqAlign}
+\item structural clustering : matthias weber \cite{weberStructural}
+\item building a better backtrace: techniques for postmortem program analysis - ben liblit \cite{liblit02}
+\item automatically charecterizing large scale program behavior - timothy sherwood \cite{sherwood02}
+\end{itemize}
+
+
+\subsection{Visualizations}
+
+
+\begin{itemize}
+\item Combing the communication hairball: Visualizing large-scale parallel execution traces using logical time - katherine e isaacs \cite{ravel}
+\item recovering logical structure from charm++ event traces \cite{charmVis}
+\item ShiViz - Debugging distributed systems - \cite{shiviz}
+\end{itemize}
+
+
+
+\subsection{Concept Lattice and LCA}
+
+
+\begin{itemize}
+\item Vijay Garg - Applications of lattice theory in distributed systems
+
+\item Dimitry Ignatov \cite{ignatov} - Concept Lattice Applications in Information Retrieval
+
+\item \cite{clbook} \cite{clconst} \cite{bender05} \cite{latticeForDistConst} \cite{diff-myers}
+\end{itemize}
+
+\subsection{Repetitive Patterns}
+
+
+\begin{itemize}
+\item \cite{kmruse} \cite{kmr} \cite{nakamura_fast_2013} \cite{crochemore_jewels_2002} \cite{Crochemore:1994:TA:199269}
+\end{itemize}
+
+
+\subsection{STAT}
+
+Parallel debugger STAT\cite{stat}
+\begin{itemize}
+\item STAT gathers stack traces from all processes
+\item Merge them into prefix tree
+\item Groups processes that exhibit similar behavior into equivalent classes
+\item A single representative of each equivalence can then be examined with a full-featured debugger like TotalView or DDT
+\end{itemize}
+
+What STAT does not have?
+
+\begin{itemize}
+\item FP debugging
+\item Portability (too many dependencies)
+\item Domain-specific
+\item Loop structures and detection
+\end{itemize}

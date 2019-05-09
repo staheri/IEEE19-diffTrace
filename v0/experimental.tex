@@ -1,0 +1,173 @@
+\subsection{Experimental Methodology}
+So far, we are able to collect whole-program execution traces, preprocess them (decompress, filter, detect loops, extract attributes) and inject each $PT$ to concept lattice data structure.
+%
+Concept lattices help us having a single model for the execution of HPC application with thousands of processes/threads.
+%
+Concept lattices also classify PTs based on their Jaccard distance.
+%
+Full pair-wise Jaccard distance matrix can be extracted from the concept lattice in linear time and reduces the search space from thousands of PTs to just a few equivalent classes of PTs.
+%
+Studying JSM by itself helps the user to understand the program behavior as a whole, and how each process/thread behaving.
+%
+However, comparing the JSM of the bug-free version of the application versus the buggy version would reveal insights about how the bug impacted the behavior of the application.
+%
+In particular, we are interested to see how the bug changes the formation of equivalent classes of PTs.
+%
+Inspired by a method for comparing two different clustering \cite{fowlkes83}, we count the number of objects (PTs) in each cluster and see which PT(s) fall into different clusters once the bug is introduced.
+%
+A set of candidate PTs then would be reported to the user for more in-depth study.
+%
+Here is where we take advantage of diffNLR to see how does the bug changes the control flow of a candidate PT comparing to its corresponding PT of native run.
+%
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=6in]{graphics/parametersTable.png}
+\caption{Filters, Attributes and other Parameters used to pre-process ParLOT Traces (PTs)}
+\label{tab:parameters}
+\end{figure*}
+
+Table \ref{tab:parameters} shows different parameters that we can pre-process PTs with. Each combination of these parameters would result in a different concept lattice, thus different JSM and different clusterings. 
+%
+A table similar to \ref{tab:bug1candidate} is created for each injected bug.
+%
+Each row of the table is showing the set of parameters used to create JSMs.
+%
+Then by calculating $ |JSM(buggy) - JSM(bugfree)| $ we are interested to see which PT changes the most after the bug injected and falls into a single cluster.
+%
+The object(s) in the cluster with the fewest members (below a threshold) are potential candidates of \textit{threads that are manifesting the bug} and the diff(buggy,bug-free) is in our interest to see how does the bug changes its control flow.
+
+\subsection{Case Study: ILCS-TSP}
+Here is the ILCS framework pseudo-code. User needs to write \texttt{CPU\_Init()},\texttt{CPU\_Exec()} and \texttt{CPU\_Output()}.
+% ILCS Code for later references
+\input{ilcsPseudoCode.tex}
+
+Table \ref{tab.ilcsTspBugs} describes the bug that I injected to ILCS-TSP
+\input{tabs/tabs.ilcsTspBugs.tex}
+
+\clearpage
+
+\subsubsection{Bug1: Wrong Operation in MPI AllReduce()}
+We have injected a bug (row 1 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong operation in one of the processes ($P_{2}$)(\texttt{MPI\_MAX} instead of \texttt{MPI\_MIN}).
+%
+
+\textbf{::What is the runtime reaction to this bug:: Program terminated well without any error, crash, hang or throwing any exception. But the results might be corrupted. This might be a silent bug that diffTrace could reveal}
+
+The last row of table \ref{tab:bug1candidate} is telling us that among all combinations of parameters (filters, attributes, etc.) PT 0 (ParLOT trace that belongs to thread 0 of process 0 got impacted the most after we inject the bug.
+\input{tabs/tabs.bug1candidate.tex}
+
+\begin{figure}[t]
+\centering
+\scalebox{0.5}{
+\includegraphics[width=6in]{figs/diffNLR/{bug1-1}.pdf}}
+\caption{Bug1: diffNLR $PT_{0,0}$ - buggy vs. native}
+\label{fig:bug1-1}
+\end{figure}
+
+The target MPI\_Allreduce() that we injected the bug to, finds the rank (i.e., process) that has the ``champion'' result among all of ranks using MPI\_MIN operator. Then that champion rank copies its ``champion results'' to a global data-structure and broadcast the ``champion results'' to all other ranks for the next time step.
+However, since we changed the MPI\_MIN to MPI\_MAX in only one of the ranks, the true champion rank would get lost, instead a false champion rank (which turned to be rank 0 or $PT_{0,0}$) would broadcast its results as champion in the first time-step, causing a potential wrong answer. 
+\clearpage
+
+
+\subsubsection{Bug2: Wrong Size in MPI AllReduce() (one process)}
+We have injected a bug (row 2 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong size. \textbf{::MORE EXPLANATIONS ABOUT WHAT THE BUG IS::}
+%
+
+%\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI\_Bcast: Invalid root}
+
+Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to check $PT_{1,0}$ and $PT_{3,0}$. Note that the bug injected to only one process ($P_3$) to have the wrong size.)
+
+\begin{figure}[t]
+\centering
+\scalebox{0.5}{
+\includegraphics[width=6in]{figs/diffNLR/{bug2-1}.pdf}}
+\caption{Bug2: diffNLR $PT_{3,0}$ - buggy vs. native}
+\label{fig:bug2-1}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\scalebox{0.5}{
+\includegraphics[width=6in]{figs/diffNLR/{bug2-2}.pdf}}
+\caption{Bug2: diffNLR $PT_{1,0}$ - buggy vs. native}
+\label{fig:bug2-2}
+\end{figure}
+
+
+\textbf{::EXPLANATIONS OF OBSERVATIONS::}
+
+\clearpage
+
+
+\subsubsection{Bug3: Wrong Size in MPI AllReduce() (all processes)}
+We have injected a bug (row 3 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong size. \textbf{::MORE EXPLANATIONS ABOUT WHAT THE BUG IS::}
+%
+
+\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI\_Bcast: Invalid root}
+
+Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to check $PT_{1,0}$ and $PT_{3,0}$. Note that the bug injected to only one process ($P_3$) to have the wrong size.)
+
+\begin{figure}[t]
+\centering
+\scalebox{0.5}{
+\includegraphics[width=6in]{figs/diffNLR/{bug2-1}.pdf}}
+\caption{Bug2: diffNLR $PT_{3,0}$ - buggy vs. native}
+\label{fig:bug2-1}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\scalebox{0.5}{
+\includegraphics[width=6in]{figs/diffNLR/{bug2-2}.pdf}}
+%\caption{Bug2: diffNLR $PT_{1,0}$ - buggy vs. native}
+\label{fig:bug2-2}
+\end{figure}
+
+
+\textbf{::EXPLANATIONS OF OBSERVATIONS::}
+
+\clearpage
+
+\subsubsection{Bug4: Wrong Op in MPI AllReduce(): no effect!,program terminates fine}
+
+maybe all images show some reflection
+
+\subsubsection{Bug5: Wrong Size in next MPI AllReduce()(one process)::no effect, program terminates fine}
+
+maybe all images show some reflection
+
+\subsubsection{Bug6: Wrong Size in next MPI AllReduce()(all processes)::no effect,program terminates fine}
+
+maybe all images show some reflection
+
+\subsubsection{Bug7: Wrong Size in MPI Bcast()(one process)::}
+
+maybe all images show some reflection
+
+\subsubsection{Bug8: Wrong Size in next MPI Bcast()(all processes)::no effect,program terminates fine}
+
+maybe all images show some reflection
+
+\subsubsection{3: Missing Critical Section one thread in on process}
+
+I planted the bug (missing critical section) in process 2
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=6in]{figs/{miscrit-1-1-ranking}.png}
+\caption{Part of ranking table for MisCrit 1-1}
+\label{miscrit-1-1-rank}
+\end{figure*}
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=5.9in]{figs/{miscrit-1-1-1.3_2.3}.pdf}
+\caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
+\label{bug2.2}
+\end{figure*}
+
+
