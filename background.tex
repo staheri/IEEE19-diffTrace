@@ -1,80 +1,101 @@
+Like any program analysis tool, a mechanism is required to collect data about the program behavior.
 
-There are two major phases in any ``Program Understanding'' tool: \textit{data collection} and \textit{data analysis}.
+\begin{itemize}
+\item \hl{Static vs. Dynamic}
+\item \hl{Sampling and hardware counters like TAU and Score-p vs Whole program analysis}
+\item \hl{pros and cons of each, a small fraction of related work on tracing}
+\end{itemize}
+
+We have used ParLOT \cite{parlot} to collect our data.
+%
+ParLOT is an efficient tracing tool that captures all function calls and returns at different levels via dynamic binary instrumentation \cite{pin}.
+%
+ParLOT incrementally compresses the captured function calls and returns on-the-fly, resulting in highly compressed trace files that occupy only a few kilobytes on the disk and leave the majority of bandwidth for the network and system.
+%
+Upon termination of the application execution, either a ``successful’’ termination or ``failure’’ of the application due to crash, deadlock (T/O) or corrupted result, a Compressed ParLOT Trace (CPT) for each executing thread would be generated. Each $CPT_i$ then be \textit{pre-processed} (e.g., decompressed, filtered, etc. more in section \ref{subsec:nlr}) and form  $PT_i$ where $i$ is the index of process/thread.
+%
+Our strategy is to perform a post mortem analysis on PTs to study different aspects of application dynamic behavior.
+%
+Our main focus is the comparison between a successful run and failed run.
+%
+Such an approach has proven to be useful in works such as delta debugging \cite{choi-concurentDelta} where an application used to work fine yesterday but failed today due to various factors such as a change in the source code, an API library update, use of a different compiler or porting to a new system.
+
+\subsection{Odd/Even Sort Example}
+
+For a better explanation of our idea, we explain our approaches on a simple parallel (MPI) implementation of odd/even sort \hl{[cite the git url]}.
+
+Odd/Even sort is a variant of the bubble-sort operates in two alternate phases: \textit{Phase-even} where even processes exchange (compare and swap) values with right neighbors and \textit{Phase-odd} where odd processes exchange values with right neighbors. Figure \ref{fig.oddEven} shows the simplified MPI implementation of the odd/even sort algorithm.
+
+
+The for loop in line 4 of \texttt{oddEvenSort()} iterates over phases of the algorithm and based on the phase, the appropriate partner for each rank is getting discovered by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and a set of sort, merge and copy operations would be performed on received data by each rank (which are replaced by \texttt{...} in line 15 for simplicity).
+
+\begin{figure}[]
+\centering
+\caption{Simplified MPI implementation of Odd/Even Sort}
+\includegraphics[width=0.45\textwidth]{figs/oddEven.png}
+\label{fig.oddEven}
+\end{figure}
+
+
+Execution of odd/even sort application with four processes (\texttt{mpirun -np 4}) while ParLOT trace collection is enabled on top of the application, would result in 4 PTs (table \ref{tab:oddEvenPT}). This execution terminates successfully with expected results and the set of generated PTs clearly reflects the expected behavior (control flow) of odd and even processes.
+%
+\\
+Now let's swap the the order of MPI\_Recv and MPI\_Send in lines 11 and 12 (figure \ref{fig.oddEvenDL}). According to MPI Standard  \hl{[cite MPI-forum or openMPI url]}, MPI\_Send is a \textit{blocking send} used the \textit{standard} communication mode. In this mode,  MPI may buffer outgoing messages and the send call may complete before a matching receive is invoked. On the other hand, buffer space may be unavailable, or MPI may choose not to buffer outgoing messages, for performance reasons. In this case, the send call will not complete until a matching receive has been posted, and the data has been moved to the receiver. This shows that, based on the MPI implementation, the \texttt{oddEvenSort\_DL()} might end up causing a deadlock.
+
+\input{tabs/oddEvenPT.tex}
+
+\begin{figure}[]
+\centering
+\caption{A line change in oddEvenSort (left) that might cause a deadlock in oddEvenSort\_DL (right)}
+\includegraphics[width=0.45\textwidth]{figs/oddEvenDL.png}
+\label{fig.oddEvenDL}
+\end{figure}
+
+
+HPC applications often execute on supercomputers with multiple levels of parallelism from distributed systems (MPI) to shared memory (OpenMP) and accelerators (GPU). Finding flaws like the one in figure \ref{fig.oddEvenDL} in such an environment is the problem of \textit{finding the needle in the haystack}.
 %
 \begin{itemize}
-	\item \textit{data collection:} To understand the runtime behavior of applications, an efficient tracing mechanism is required to collect informative data during execution of the application.
-	\item \textit{data analysis:} Upon failure or observing unexpected behavior of the program (e.g., a wrong answer), studying the collected execution data would reveal insight about how the program behaved dynamically and what went wrong.
+\item Trade-off between collecting sufficient information and adding reasonable overhead to the native execution is solved with ParLOT
+\item However, generated PTs by ParLOT are difficult to analyze (thousands of long sequences of function calls and returns)
+\item Solution:
+	\begin{itemize}
+	\item intra-PT compression (decompress, filter and NLR: section \ref{subsec:nlr})
+	\item inter-PT compression (Concept Lattices: section \ref{subsec:fca})
+	\item Locating suspicious PTs that might suffer from a flaw: section \ref{subsec:ranking} and delta comparison (diffNLR section: \ref{subsec:diffnlr})
+	\end{itemize}
 \end{itemize}
 
 
-
-In this section, we provide some background that explains our methodology for data collection and data analysis towards debugging and locating potential root causes of the unexpected behavior. 
-%
-
-% Binary tracing
-\subsection{ParLOT: Efficient Trace Collection}
-\label{subsec:parlot}
-
-The executable of HPC applications is often a combination of a large code base and a complex build system with numerous dependencies and libraries.
-%
-Injecting instrumentation code to the source code is difficult in the HPC space.
-%
-Also, recompilation of the application with compiler wrappers, as in TAU \cite{tau} and Score-p \cite{scorep}, may break the build system.
-%
-The instrumentation and tracing mechanism of existing tools are often dependent on other libraries that are need to be present on the target system for trace collection.
-%
-For example STAT \cite{stat} and AutomaDeD \cite{automaded-laguna} require Dyninst \cite{dyninst} for instrumentation, and MRNet\cite{mrnet} and  TBON\cite{tbon} for providing a distributed communication of tracing mechanism.
-%
-To enable comprehensive data collection in combination with low time and space overhead, HPC program analysis tools often sacrifice one for the other.
-%
-However, ParLOT collects whole-program function call traces at as low as library level, while incrementally compressing traces on-the-fly and leaving the majority of the system bandwidth for the application.
-%
-ParLOT collects \textit{whole} program function call traces with the mindset of \textit{paying a little upfront and saving resource and time cost of reproducing the bug later}.
-%
-ParLOT instruments the entry and exit point of each function in the binary using Pin \cite{pin} (fig.~\ref{fig.parlotOverview}). 
-%
-A unique id is assigned to each distinct function at runtime and every time the  function is called (returned), its id is pushed (popped) from the compressed stack.
-%
-In this fashion, each ParLOT trace contains highly compressed sequence of function calls and returns for every thread of the application code, reflecting the dynamic control flow and call stack.
-%
-Formally, a ParLOT Trace \textbf{$(PT)$} is a sequence of ordered integers $<f_i,...,f_j>$ where $f_0$ represents a \textit{return} and $f_k$ is the ID of \textit{function k} ($k \neq 0$).
-%
-Note that $PT_{p.t}$ refers to the $PT$ that belongs to process $p$ and thread $t$ of that process.
-%
-Enabling ParLOT on top of execution of HPC applications would generate $PT$s for every running thread, enabling analyzers to dig into dynamic behavior of application.
-\begin{figure}[t]
-\caption{ParLOT Overview}
-\includegraphics[width=0.45\textwidth]{figs/parlotOverview.jpg}
-\label{fig.parlotOverview}
-\end{figure}
+\clearpage
 
 % NLRs
-\subsection{Loop structure detection}
+\subsection{Pre-Processing CPTs}
 \label{subsec:nlr}
 
-HPC applications and resources are of great interest to scientists and engineers for simulating \textit{iterative} kernels. Computer simulation of fluid dynamics, partial differential equations, the Gauss-Seidel method, and finite element methods in form of stencil codes, all include a main outer loop that iterates over some elements (i.e., timesteps) and updates the elements.
-%
-This character of typical HPC applications makes PTs very long (often millions or billions of entries) with a relatively small number (hundreds to thousands) of distinct elements (i.e., function IDs).
-%
-We propose a representation of PT elements (intra-PT compression) in form of \textit{loop structures}, such that PT = sequence of repetitive patterns (i.e., loops). In other words, each PT is a sequence of \textit{Loop Bodies (LB)} that repeated \textit{Loop Count (LC)} times, consecutively.
-%
+\begin{itemize}
+	\item Decompress and Filters
+	\begin{itemize}
+		\item ParLOT leaves Compressed Traces (CPTs)
+		\item CPTs need to be decompressed and decoded to PTs 
+		\item Each PT contains a full sequence of ordered function calls. Not all of the functions are in our interest - Hierarchy of filters: Table \ref{tab:filters}.  
+	\end{itemize}
+	\item Loops in source codes would be reflected in PTs as sequences of repetitive patterns.
+	\item HPC applications and resources are of great interest to scientists and engineers for simulating \textit{iterative} kernels. Computer simulation of fluid dynamics, partial differential equations, the Gauss-Seidel method, and finite element methods in form of stencil codes, all include a main outer loop that iterates over some elements (i.e., timesteps) and updates the elements.
+	\item Mining loops advantages:
+	\begin{itemize}
+		\item Lossless compression (intra-PT), making long PTs easier to analyze and read
+		\item broken loop structures due to a fault would be revealed
+		\item Others have done the same (STAT, AutomaDeD, PRODOMETER) 
+	\end{itemize}
+	\item We have adopted ideas from Kobayashi \cite{kobayashi-84} (definition of loops) and \cite{Ketterlin-nlr} (NLR algorithm)
+	\item We have slightly changed the NLR algorithm to make it suitable for PT contents.
+	 
+	\item explanations on loop structures, loop bodies and loop counts, example \ref{fig.NLRexample}
+	\item NLR algorithm and complexity
+\end{itemize}
 
-According to Makoto Kobayashi's \cite{kobayashi-84} definition of loops, an occurrence of a \textit{loop} is defined as \textit{a sequence of elements} in which a particular sequence of \textit{distinct elements} (called the \textit{cycle} of the loop) is successively repeated.
-%
-Later, Alain Ketterlin \cite{Ketterlin-nlr} expanded this definition to numerical values for compressing and predicting memory access addresses and designed the Nested Loop Recognition (NLR) algorithm.
-%
-The basic idea behind the NLR algorithm is that a linear function model can be extracted from the linear progression in a sequence of numbers, and these linear functions form a tree in which the depth of each node is the depth of a \textit{nested} loop (the outermost loop's function is the root of the tree with depth 0).
-%
-We have modified the NLR algorithm to make it suitable for PTs.
-%
-Each repetitive pattern and its frequency of consecutive appearances would be compressed to a single \textit{Loop Structure (LS)} entry.
-%
-\begin{definition}{Loop Structure} $LS = LB \; \hat{} \; LC$ where $LB  = <pt_i,...,pt_j>$ ($0 <= i < j < len(PT)$) that occur $LC$ times is in a sub-sequence $<pt_i,...,pt_k>$ ($k = 3j, k < len(PT)$)
+\input{tabs/filters.tex}
 
-\end{definition}
-%
-By converting each PT into a sequence of $LS_i$, we reduce the length of PT by a factor of $\sum_i len(LB_i) * LC_i$. 
-%
 
 \begin{figure}[]
 \caption{Sample NLR}
@@ -82,19 +103,11 @@ By converting each PT into a sequence of $LS_i$, we reduce the length of PT by a
 \label{fig.NLRexample}
 \end{figure}
 
-As an example, figure \ref{fig.NLRexample} shows how the sample PT with length 23 can be reduced to 5 after detecting its loop structures.
-%
-In addition to reducing the size of easy-to-read PTs, NLR can also help with detecting broken loop structures due to a bug. 
-%
-For example, when a node fails to send or receive messages in a supercomputer after some number of iterations, the PTs that belong to that node would show loop structures with loop counts lower than what was expected. 
-%
-In other word, NLR is enabling us to ``measure progress'' of each PT and detecting the cause of divergence in the control flow that leads to failure.
-%
-Later we will explain how this lossless representation of PTs eases the process of diffing between a pair of PTs.
+\clearpage
 
-% CLs
 \subsection{Equivalencing behavior via FCA}
 \label{subsec:fca}
+
 Thanks to ParLoT compression mechanism, we are able to efficiently (w.r.t. time and space) collect whole-program function call and return traces (PTs). However, post-mortem analysis of the PTs from thousands of threads requires decompression of traces, and consequently, analysis of large amount of data. Before jumping into \textit{the huge haystack} of PTs to find \textit{the tiny needle} (bug, bug manifestation or root cause of the failure), a middle ground data manipulation is required to simplify and organize the haystack. 
 
 Reducing the search space from thousands of PTs to just a few groups of equivalent PTs (i.e., inter-PT compression) not only requires a similarity measure based on a call matrix but also a scheme that is efficient even for large process counts.
@@ -125,28 +138,10 @@ Due to typical HPC application topologies such as SPMD, master/worker and odd/ev
 
 \subsubsection{FCA example}
 
-Executing the sample code below would result in PTs with the context in table \ref{tab:sampleContext}.
-
-\begin{frame}{}
-  \lstset{language=C}
- \begin{lstlisting}
-main(){
- int rank;
- int src;
- MPI_Init()
- MPI_Comm_size(MPI_COMM_WORLD)
- MPI_Comm_rank(MPI_COMM_WORLD,&rank)
- if (rank != 0) {
-  MPI_Send(0) // Send to rank 0
- } else{ /* rank = 0
-  MPI_Recv(1) // Receive from rank 1
-  MPI_Recv(2) // Receive from rank 2
-  MPI_Recv(3) // Receive from rank 3
- }
- MPI_Finalize()
-}
-\end{lstlisting}
-\end{frame}
+\begin{itemize}
+	\item Construct the context table from example in figure \ref{fig.oddEven}
+	\item Construct the Actual Concept Lattice from example in figure \ref{fig.oddEven}
+\end{itemize}
 
 
 \input{tabs/tabs.sampleContext.tex}
@@ -195,6 +190,8 @@ main(){
 %\item Attributes
 %\item 
 %\end{itemize}
+
+
 
 \subsection{diffNLR: Reflecting differences}
 \label{subsec:diffnlr}

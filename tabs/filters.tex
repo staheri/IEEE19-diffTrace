@@ -1,0 +1,27 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[]
+\centering
+\caption{Applicable filters to PT contents based on regular expressions}
+\label{tab:filters}
+\scalebox{0.75}{
+\begin{tabular}{|c|c|l|}
+\hline
+\textbf{Category} & \textbf{Sub-Category} & \multicolumn{1}{c|}{\textbf{Description}} \\ \hline
+\multirow{2}{*}{Primary} & Returns & Filter out all returns \\ \cline{2-3} 
+ & PLT & \begin{tabular}[c]{@{}l@{}}Filter out the ".plt" function calls for external functions/procedures that \\ their address needs to be resolved dynamically from Procedure Linkage \\ Table (PLT)\end{tabular} \\ \hline
+\multirow{4}{*}{MPI} & MPI All & Only keep functions that start with "MPI\_" \\ \cline{2-3} 
+ & MPI Collectives & Only keep MPI collective calls (MPI\_Barrier, MPI\_Allreduce, etc) \\ \cline{2-3} 
+ & MPI Send/Recv & Only keep MPI\_Send, MPI\_Isend, MPI\_Recv, MPI\_Irecv and MPI\_Wait \\ \cline{2-3} 
+ & MPI Internal Library & Keep all inner MPI library calls \\ \hline
+\multirow{3}{*}{OMP} & OMP All & Only keep OMP calls (starting with GOMP\_) \\ \cline{2-3} 
+ & OMP Critical & Only keep OMP\_CRITICAL\_START and OMP\_CRITICAL\_END \\ \cline{2-3} 
+ & OMP Mutex & Only keep OMP\_Mutex calls \\ \hline
+\multirow{4}{*}{System} & Memory & Keep any memory related functions (memcpy, memchk, alloc, malloc, etc) \\ \cline{2-3} 
+ & Network & Keep any network related functions (network, tcp, sched, etc) \\ \cline{2-3} 
+ & Poll & Keep any poll related functions (poll, yield, sched, etc) \\ \cline{2-3} 
+ & String & Keep any string related functions (strlen, strcpy, etc) \\ \hline
+\multirow{2}{*}{Advanced} & Custom & Any regular expression can be captured \\ \cline{2-3} 
+ & Everything & Does not filter anything \\ \hline
+\end{tabular}}
+\end{table}
