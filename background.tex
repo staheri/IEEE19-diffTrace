@@ -1,48 +1,55 @@
-Like any program analysis tool, a mechanism is required to collect data about the program behavior.
-
-\begin{itemize}
-\item \hl{Static vs. Dynamic}
-\item \hl{Sampling and hardware counters like TAU and Score-p vs Whole program analysis}
-\item \hl{pros and cons of each, a small fraction of related work on tracing}
-\end{itemize}
-
-We have used ParLOT \cite{parlot} to collect our data.
+The general idea is to utilize ParLOT \cite{ parlot} traces for studying HPC application behaviors towards fault detection and localization.
 %
-ParLOT is an efficient tracing tool that captures all function calls and returns at different levels via dynamic binary instrumentation \cite{pin}.
+%ParLOT
+ParLOT collects whole-program function calls and returns at different levels via dynamic binary instrumentation \cite{pin}, and incrementally compresses them on-the-fly.
 %
-ParLOT incrementally compresses the captured function calls and returns on-the-fly, resulting in highly compressed trace files that occupy only a few kilobytes on the disk and leave the majority of bandwidth for the network and system.
+Upon termination of the application, ParLOT flushes out per-thread trace files containing compressed sequence of executed function IDs.
 %
-Upon termination of the application execution, either a ``successful’’ termination or ``failure’’ of the application due to crash, deadlock (T/O) or corrupted result, a Compressed ParLOT Trace (CPT) for each executing thread would be generated. Each $CPT_i$ then be \textit{pre-processed} (e.g., decompressed, filtered, etc. more in section \ref{subsec:nlr}) and form  $PT_i$ where $i$ is the index of process/thread.
+The compression mechanism of ParLOT significantly reduces the time, memory and disk overhead, leaves the majority of the system bandwidth for the application. 
 %
-Our strategy is to perform a post mortem analysis on PTs to study different aspects of application dynamic behavior.
+With the mindset of ``\textit{pay a little upfront to dramatically reduce the number of overall debug iterations}'', ParLOT well overcomes the challenge of whole-program \textit{trace collection} and leaves the \textit{trace analysis} for offline post-mortem analysis, saving HPC resources.
 %
-Our main focus is the comparison between a successful run and failed run.
+
+% Paragraph about DiffTrace, why we need it and what is our approach?
+In this paper, we introduce DiffTrace, a tool-chain that provides an infrastructure for iterative and configurable search space reduction of the HPC whole-program function-call traces, and detection of the most impacted trace(s) and/or region of trace(s).
 %
-Such an approach has proven to be useful in works such as delta debugging \cite{choi-concurentDelta} where an application used to work fine yesterday but failed today due to various factors such as a change in the source code, an API library update, use of a different compiler or porting to a new system.
-
-\subsection{Odd/Even Sort Example}
-
-For a better explanation of our idea, we explain our approaches on a simple parallel (MPI) implementation of odd/even sort \hl{[cite the git url]}.
-
-Odd/Even sort is a variant of the bubble-sort operates in two alternate phases: \textit{Phase-even} where even processes exchange (compare and swap) values with right neighbors and \textit{Phase-odd} where odd processes exchange values with right neighbors. Figure \ref{fig.oddEven} shows the simplified MPI implementation of the odd/even sort algorithm.
-
-
-The for loop in line 4 of \texttt{oddEvenSort()} iterates over phases of the algorithm and based on the phase, the appropriate partner for each rank is getting discovered by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and a set of sort, merge and copy operations would be performed on received data by each rank (which are replaced by \texttt{...} in line 15 for simplicity).
-
+Considering a ``successful’’ termination of the application as \textit{normal behavior}, DiffTrace takes steps towards \textit{abnormal behavior} detection when an application crashes, time outs or produces a corrupted answer.
+%
+Each abnormal behavior is a potential fault cause or a manifestation of the fault.
+%
+However, faults in HPC applications may occur or influence the program behavior at different locations and granularities, due to high and hybrid level of parallelism.
+%
+Also typical HPC applications spend most of their execution time in a main loop until a convergence or over timesteps, and a fault may get  triggered or causing problems after some iteration.
+%
+Thus accurate automatic fault localization is the problem of finding the needle in a haystack.
+%
+Due to numerous and comprehensive whole-program function traces, a light-weight single pass of analysis has low chance to reveal interesting facts. A comprehensive heavy analysis also is often not feasible and unpractical.
+%
+DiffTrace gives the HPC developers the capability of going through the pipeline of trace processing multiple times, each time putting a flash-light on various aspects of the applications' dynamic behavior, gradually collecting evidence about what has happened during execution.
+%
 \begin{figure}[]
 \centering
 \caption{Simplified MPI implementation of Odd/Even Sort}
 \includegraphics[width=0.45\textwidth]{figs/oddEven.png}
 \label{fig.oddEven}
 \end{figure}
-
-
-Execution of odd/even sort application with four processes (\texttt{mpirun -np 4}) while ParLOT trace collection is enabled on top of the application, would result in 4 PTs (table \ref{tab:oddEvenPT}). This execution terminates successfully with expected results and the set of generated PTs clearly reflects the expected behavior (control flow) of odd and even processes.
 %
-\\
-Now let's swap the the order of MPI\_Recv and MPI\_Send in lines 11 and 12 (figure \ref{fig.oddEvenDL}). According to MPI Standard  \hl{[cite MPI-forum or openMPI url]}, MPI\_Send is a \textit{blocking send} used the \textit{standard} communication mode. In this mode,  MPI may buffer outgoing messages and the send call may complete before a matching receive is invoked. On the other hand, buffer space may be unavailable, or MPI may choose not to buffer outgoing messages, for performance reasons. In this case, the send call will not complete until a matching receive has been posted, and the data has been moved to the receiver. This shows that, based on the MPI implementation, the \texttt{oddEvenSort\_DL()} might end up causing a deadlock.
+The journey starts from decompressing ParLOT traces and pruning out uninteresting functions from traces. 
+%
+Loops in source codes reflect themselves as a sequence of \textit{repetitive patterns}, resulting in often-long but redundant traces. A ``nested loop  recognition'' mechanism then mines loops from traces as ``\textit{a measure of progress}'' per thread, and also a loss-less abstraction to ease the rest of trace analysis.
+%
+The control flow of events in parallel architectures often follow a \textit{regular pattern} such as SPMD, odd-even and master/slave. This characteristic often makes all traces of a single execution tend to fall into just \textit{a few} ``conceptually/behaviorally equivalent classes''.
+%
+Adopted from the work by Webber et al \cite{weberStructural}, we have applied \textit{formal concept analysis} (FCA)\cite{clbook} techniques to reduce the trace search space into a few classes of traces, and also using the \textit{concept lattice} (CL) data structure as the \textit{model} of execution for further analysis.
+%
+By comparison of the CL-based models of execution, a ''suspicious candidate table'' is generated for each set of parameters, pointing at traces that have ``changed'' the most after a fault is introduced. 
+%
+What has changed after a bug is encountered, is visualized by \textit{gdiff}, a graphical representation of differences of a pair of sequences.
 
-\input{tabs/oddEvenPT.tex}
+
+
+Section \ref{sec:components} explains details of DiffTrace components, but before that, we support our ideas over a simple example. 
+
 
 \begin{figure}[]
 \centering
@@ -51,162 +58,65 @@ Now let's swap the the order of MPI\_Recv and MPI\_Send in lines 11 and 12 (figu
 \label{fig.oddEvenDL}
 \end{figure}
 
+\subsection{Introducing \textbf{gdiff}: Observing pair-wise differences}
+``Diff'' algorithm by Meyers \cite{diff-myers} takes two sequences $S_A$ and $S_B$ and computes the minimal \textit{edit} to convert $S_A$ to $S_B$. This algorithm has been used in GNU \texttt{diff} to compare two text files and in git for efficiently keeping track of file changes.
+Since ParLOT preserves the order of function calls in the binary, each per thread trace $T_i$ is totally ordered, thus \textit{diff} can reflect the differences of a pair of $T$s. \textit{gdiff} is the graphical visualization of diff, aligning common and different blocks of a pair of sequences horizontally and vertically, making it easier for analyst to see the differences of a pair of sequences in a glance.  
+For simplicity, our implementation of \textit{gdiff} only takes one argument $x$ as \textit{the suspicious trace}
 
-HPC applications often execute on supercomputers with multiple levels of parallelism from distributed systems (MPI) to shared memory (OpenMP) and accelerators (GPU). Finding flaws like the one in figure \ref{fig.oddEvenDL} in such an environment is the problem of \textit{finding the needle in the haystack}.
+\textit{gdiff}$(x) \equiv $ \textit{gdiff}$(T_x,T_x^\prime)$
+
+where $T_x$ is the trace of thread/process $x$ of a normal/successful execution and $T^\prime_x$ is the corresponding trace of faulty execution.
+
+
+\subsubsection{gidff via example}
+Odd/Even sort is a variant of the bubble-sort operates in two alternate phases: \textit{Phase-even} where even processes exchange (compare and swap) values with right neighbors and \textit{Phase-odd} where odd processes exchange values with right neighbors. Figure \ref{fig.oddEven} shows the simplified MPI implementation of the odd/even sort algorithm.
+
+
+
+The for loop in line 4 of \texttt{oddEvenSort()} iterates over phases of the algorithm and based on the phase, the appropriate partner for each rank is getting discovered by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and a set of sort, merge and copy operations would be performed on received data by each rank (which are replaced by \texttt{...} in line 15 for simplicity).
+\\
+
+Execution of odd/even sort application with four processes (\texttt{mpirun -np 4}) while ParLOT trace collection is enabled on top of the application, would result in $T_0$, $T_1$, $T_2$ and $T_3$ (table \ref{tab:oddEvenPT}). This execution terminates successfully with expected results and the set of generated traces clearly reflects the expected behavior (control flow) of odd and even processes.
 %
-\begin{itemize}
-\item Trade-off between collecting sufficient information and adding reasonable overhead to the native execution is solved with ParLOT
-\item However, generated PTs by ParLOT are difficult to analyze (thousands of long sequences of function calls and returns)
-\item Solution:
-	\begin{itemize}
-	\item intra-PT compression (decompress, filter and NLR: section \ref{subsec:nlr})
-	\item inter-PT compression (Concept Lattices: section \ref{subsec:fca})
-	\item Locating suspicious PTs that might suffer from a flaw: section \ref{subsec:ranking} and delta comparison (diffNLR section: \ref{subsec:diffnlr})
-	\end{itemize}
-\end{itemize}
+
+\input{tabs/oddEvenPT.tex}
+
+According to MPI Standard  \hl{[cite MPI-forum or openMPI url]}, MPI\_Send is a \textit{blocking send} used the \textit{standard} communication mode. In this mode,  MPI may buffer outgoing messages and the send call may complete before a matching receive is invoked. On the other hand, buffer space may be unavailable, or MPI may choose not to buffer outgoing messages, for performance reasons. In this case, the send call will not complete until a matching receive has been posted, and the data has been moved to the receiver. This shows that, based on the MPI implementation, the \texttt{oddEvenSort\_DL()} (figure \ref{fig.oddEvenDL}) might end up causing a deadlock, because of the order swap of MPI\_Recv and MPI\_Send in lines 11-12. 
+%
 
 
-\clearpage
-
-% NLRs
-\subsection{Pre-Processing CPTs}
-\label{subsec:nlr}
-
-\begin{itemize}
-	\item Decompress and Filters
-	\begin{itemize}
-		\item ParLOT leaves Compressed Traces (CPTs)
-		\item CPTs need to be decompressed and decoded to PTs 
-		\item Each PT contains a full sequence of ordered function calls. Not all of the functions are in our interest - Hierarchy of filters: Table \ref{tab:filters}.  
-	\end{itemize}
-	\item Loops in source codes would be reflected in PTs as sequences of repetitive patterns.
-	\item HPC applications and resources are of great interest to scientists and engineers for simulating \textit{iterative} kernels. Computer simulation of fluid dynamics, partial differential equations, the Gauss-Seidel method, and finite element methods in form of stencil codes, all include a main outer loop that iterates over some elements (i.e., timesteps) and updates the elements.
-	\item Mining loops advantages:
-	\begin{itemize}
-		\item Lossless compression (intra-PT), making long PTs easier to analyze and read
-		\item broken loop structures due to a fault would be revealed
-		\item Others have done the same (STAT, AutomaDeD, PRODOMETER) 
-	\end{itemize}
-	\item We have adopted ideas from Kobayashi \cite{kobayashi-84} (definition of loops) and \cite{Ketterlin-nlr} (NLR algorithm)
-	\item We have slightly changed the NLR algorithm to make it suitable for PT contents.
-	 
-	\item explanations on loop structures, loop bodies and loop counts, example \ref{fig.NLRexample}
-	\item NLR algorithm and complexity
-\end{itemize}
-
-\input{tabs/filters.tex}
 
 
 \begin{figure}[]
-\caption{Sample NLR}
-\includegraphics[width=0.45\textwidth]{figs/NLRexample.png}
-\label{fig.NLRexample}
-\end{figure}
-
-\clearpage
-
-\subsection{Equivalencing behavior via FCA}
-\label{subsec:fca}
-
-Thanks to ParLoT compression mechanism, we are able to efficiently (w.r.t. time and space) collect whole-program function call and return traces (PTs). However, post-mortem analysis of the PTs from thousands of threads requires decompression of traces, and consequently, analysis of large amount of data. Before jumping into \textit{the huge haystack} of PTs to find \textit{the tiny needle} (bug, bug manifestation or root cause of the failure), a middle ground data manipulation is required to simplify and organize the haystack. 
-
-Reducing the search space from thousands of PTs to just a few groups of equivalent PTs (i.e., inter-PT compression) not only requires a similarity measure based on a call matrix but also a scheme that is efficient even for large process counts.
-%
-Since a pair-wise comparison of all processes is highly inefficient, we use \textit{concept lattices} that stem from \textit{formal concept analysis} (FCA) \cite{clbook} to store and compute groups of similar PTs.
-%
-FCA can efficiently split the large haystack into a few hay(semi)stacks with ``conceptually'' similar hays in each. This way conceptually isolated PTs (i.e., outliers) which are the potential bug manifestation or root cause would be detected. If no outlier detected, we only have a few distinct group of PTs to dig in, instead of thousands of large traces. With a wider perspective, here are other benefits of FCA for HPC debugging:
-\begin{itemize}
-\item FCA is scalable and efficient. It can be built incrementally and different kind of information such as full Jaccard Similarity Matrix (JSM) can be generated in linear time due to CL properties.
-\item Clustering is only one advantage of creating concept lattices from ParLoT traces. CLs can integrate all traces from an execution to a single entity as signature/model of good or bad execution for further analysis (e.g., prediction) 
-\item Due to the \textit{partial order} of nodes within CLs, valuable information can be retrieved from CLs like Happens-Before relation (Vijay Garg’s book explains all applications of FCA in computer science applications)\cite{latticeForDistConst} and machine learning and data mining \cite{Ignatov17})
-\end{itemize}
-
-A concept lattice is based on a \textit{formal context} \cite{clbook}, which is a triple $(O, A, I)$, where $O$ is a set of \textbf{objects}, $A$ a set of \textbf{attributes}, and $I \subseteq O \times A$ an incidence relation. The incidence relation associates each object with a set of attributes (e.g., table \ref{tab:sampleContext}).
-%
-Using FCA for clustering giving us the capability of clustering trace objects based on the ``concept'' of each trace object. We can characterize the ``concept'' (i.e., what we want to understand from the collected traces) by extracting meaningful ``attributes'' from traces. 
-%
-However, since we are only interested in grouping similar PTs in this work, we only take advantage of similarity measures \cite{Alqadah2011} of concept lattices and leave other properties for future work.
-%
-Due to typical HPC application topologies such as SPMD, master/worker and odd/even where multiple processes/threads behave similarly, our experiments show that large numbers of PTs can be reduced to just a few groups.
-%
-
-\subsubsection{Concept Lattice Construction}
-\begin{itemize}
-\item Batch vs. Incremental \cite{clconst}
-\item Complexity: $O(2^{2K}||E||)$ where $K$ is an upper bound for number of attributes (e.g., distinct function calls in the whole execution) and $||E||$ is the number of objects (e.g., number of PTs).
-\end{itemize}
-
-\subsubsection{FCA example}
-
-\begin{itemize}
-	\item Construct the context table from example in figure \ref{fig.oddEven}
-	\item Construct the Actual Concept Lattice from example in figure \ref{fig.oddEven}
-\end{itemize}
-
-
-\input{tabs/tabs.sampleContext.tex}
-
-
-\begin{figure}[t]
 \centering
-\scalebox{0.5}{
-\includegraphics[width=3.4in]{figs/{sample}.pdf}}
-\caption{Sample Concept Lattice from Obj-Atr Context in table\ref{tab:sampleContext}}
-\label{fig:sampleCL}
+\caption{(a) The legend of \textit{gdiff} and the list of loop structures (b) \textit{gdiff(5)} of \textit{swapBug} (c) \textit{gdiff(5)} of \textit{dlBug}}
+\includegraphics[width=0.45\textwidth]{figs/sampleGdiff.png}
+\label{fig.gdiffs}
 \end{figure}
 
-\begin{figure}[t]
-\centering
-\scalebox{0.5}{
-\includegraphics[width=3.4in]{figs/{sample-reduced}.pdf}}
-\caption{Concept Lattice with reduced labels}
-\label{fig:sampleCL}
-\end{figure}
+%
+We have planted two artificial bugs (\textit{swapBug} and \textit{dlBug}) in the code in figure \ref{fig.oddEven} and launched the code with 16 processes.
+%
+\textit{swapBug} swaps the order of MPI\_Send and MPI\_Recv in rank 5 after 7th iteration (of the loop in line 3 of \texttt{oddEvenSort}) simulating a potential deadlock and \textit{dlBug} simulates an actual deadlock (e.g., infinite loop) in the same location (rank 5 after 7th iteration).
+%
+Upon collection of ParLOT traces from execution above buggy versions, DiffTrace first decompresses traces and filters out all non-MPI functions.
+Then two major loops are detected, \textbf{L0} and \textbf{L1}  (figure \ref{fig.gdiffs}-(a)) that are supposed to occur 16 times in even and odd ranks, respectively.
+After analysis of CL models of execution, $x=5$ has been suggested as the most affected trace by the artificial bugs.
+Figure \ref{fig.gdiffs}-(b) shows the 
+\textit{gdiff}$(5)$ of \textit{swapBug} where $T_5$ iterates over the loop [MPI\_Recv - MPI\_Send] for 16 times (L1\^{}16) after the MPI initilization while the order swap has well reflected in $T_x^\prime$ (L1\^{}7 - L0\^{}9). Both processes seem to be terminated fine by executing MPI\_Finalize(). 
+However, \textit{gdiff}$(5)$ of \textit{dlBug} (figure \ref{fig.gdiffs}-(c)) shows that while $T_5$ have executed MPI\_Finalize and terminated well, $T_5^\prime$ got stuck after executing L1 seven times and have never reached MPI\_Finalize.
+
+This example shows that our approach can locate the impacted part of each execution by a fault. Having a pre-understanding of \textit{how the application should behave normally} would reduce the number of iterations by picking the right set of parameters on each pass. Relying on the knowledge of HPC developers, as the potential future users of DiffTrace, we believe our approach can post-mortem analyze of a ``dead'' execution and provides insight about "why the code died''.
 
 
 
 
 
-\subsubsection{Jaccard Similarity Scores}
 
-\begin{itemize}
-\item Some background about Jaccard Similarity Score
-\item How to obtain full pair-wise Jaccard Similarity Matrix (JSM) from a concept lattice (e.g., LCA approach)
-\end{itemize}
-
-\begin{figure}[]
-\centering
-\scalebox{0.8}{
-\includegraphics[width=3.4in]{figs/{fancy1}.pdf}}
-\caption{Pair-wise Jaccard Similarity Matrix (JSM) of MPI processes in Sample code}
-\label{fig:jsm}
-\end{figure}
-
-
-%\subsection{Ranking Suspicious PTs}
-%\label{subsec:ranking}
+%
+%In the remainder of this section, we describe a chain of techniques that we apply to collected traces with having three main goals in mind:
 %\begin{itemize}
-%\item Filters
-%\item Attributes
-%\item 
+%\item selectively pre-processing of traces to prune out uninteresting trace entries when we want to study a certain aspect of the dynamic behavior of the application. 
+%\item reducing the search space by forming ``equivalent classes of traces'' and locating the trace or set of traces that got impacted the most by the fault.
+%\item visualizing and reflecting the impact of fault to the potential faulty trace with respect to its corresponding fault-free trace.  
 %\end{itemize}
-
-
-
-\subsection{diffNLR: Reflecting differences}
-\label{subsec:diffnlr}
-\begin{itemize}
-\item Inspired by \texttt{diff} original algorithm\cite{diff-myers} that has bin used in Git and GNU Diff, we visualize the differences of a pair of PT as shown in fig \ref{fig:sampleDiffNLR}.
-\item This visualization reflects of the differences of \textbf{occurrences} of PT elements and their \textbf{orders}.
-\item In section \ref{sec:experimental} we show how this visualization can help us locating the points of divergence in PTs, and potential bug manifestation and root cause.
-\end{itemize}
-
-\begin{figure}[]
-\centering
-\scalebox{0.5}{
-\includegraphics[width=3.4in]{figs/{sampleDiffNLR}.png}}
-\caption{Sample diffNLR}
-\label{fig:sampleDiffNLR}
-\end{figure}
-
-

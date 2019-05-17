@@ -1,0 +1,105 @@
+﻿When a new version of an HPC software system is created, logical errors often get introduced.
+%
+To maintain productivity, designers need effective and efficient methods to locate these errors.
+%
+Given the increasing use of hybrid (MPI + X) codes and library functions, errors may be introduced through a usage contract violation at multiple interfaces.
+%
+Therefore, tools that can record activities at all involved APIs are necessary.
+%
+Designers find most of these bugs manually, and the efficacy of a debugging tool is
+often measured by how well it can highlight the salient differences between the
+executions of two versions of software.
+%
+Given the huge number of things that could be different -- individual iterative
+patterns of function calls, groups of functions calls, or even specific instruction
+types (e.g., non-vectorized versus vectorized floating-point dot vector loops) -- designers
+cannot afford to rerun the application many times to collect each facet
+of behavior separately.
+%
+These issues are well summarized in many recent studies \cite{hpcdoe}
+
+
+One of the major challenges of HPC debugging is the huge diversity of applications, which encompass domains such as computational chemistry, molecular dynamics, and climate simulation.
+%
+In addition, there are many types of possible “bugs” or, more precisely, errors. An \textbf{error} may be a deadlock or a resource leak. These errors may be caused by different \textbf{faults}: an unexpected message reordering rule (for a deadlock) or a forgotten free statement (for a resource leak).
+%
+There exists a collection of scenarios in which a bug can be introduced: when developing a brand-new application, optimizing an existing application, upscaling an application, porting to a new platform, changing the compiler, or even changing compiler flags.
+%
+Unlike traditional software, there are hardly any bug-repositories, collection of trace data or debugging-purpose benchmarks in the HPC community.
+%
+The heterogeneous nature of HPC bugs makes developers come up with their own solutions to resolve specific classes of bugs on specific architectures or platforms that are not usable elsewhere \cite{hpcdoe}.
+
+% Why we need always on tracing
+When a failure occurs (e.g., a deadlock or crash) or the application outputs an unexpected result, it is not economic to rerun the application and consume resources to reproduce the failure. Moreover, HPC bugs might not be reproducible due to non-deterministic behavior, which is common in HPC applications. Also, the failure might be caused by a bug present at different APIs, system levels or the network, thus multiple reruns might be needed to locate the bug.
+
+%ParLOT introduction
+In previous work \cite{parlot}, we have introduced ParLOT, a tool that efficiently collects whole program function-call traces using dynamic binary instrumentation.
+%
+ParLOT captures function calls and returns at different levels (e.g., application and library code) and incrementally compress them on-the-fly, resulting in low runtime overhead and low tracing bandwidth, preserving the whole-program dynamic behavior for offline analysis.
+%
+
+% Post-mortem analysis to obtain understanding about different aspects of the dynamic behavior
+In the current work, we introduce DiffTrace, a tool-chain for the post-mortem analysis of \textit{ParLOT Traces} (PTs) that supplies developers with information about dynamic behavior of HPC applications at different levels with different granularities towards debugging. 
+%
+The topology of HPC tasks on both distributed and shared memory often follows a ``symmetric'' flow of control such as SPMD, master/slave, or odd/even where multiple tasks contain \textit{similar} events in their control flow.
+%
+HPC bugs often manifest themselves as divergence in the control flow of processes compared to what was expected.
+%
+In other words, HPC bugs violate the rule of ``symmetric'' and ``similar'' control flow of one or more threads/processes in typical HPC applications based on the original topology of the application.
+%
+We believe that finding the dissimilarities among traces is the essential initial step towards locating the bug and identifying the root cause.
+
+Large-scale HPC application execution would result in thousands of PTs due to the execution of thousands of processes and threads.
+%
+Since HPC applications spend most of their time in an outer main loop, every single PT also may contain sequences of millions of trace entries (i.e., function calls and returns).
+%
+Finding the bug manifestation (i.e., dissimilarities caused by the bug) among a large number of long PTs is the problem of finding the needle in the haystack.
+
+%
+Decompressing PTs collected from long-running large-scale HPC applications for offline analysis produces an overwhelming amount of data. However, missing any piece of collected data may result in losing key information about the application behavior.
+%
+We propose a variation of the NLR (Nested Loop Recognition) algorithm \cite{Ketterlin-nlr} that takes a sequence of trace entries as input and, by recursively detecting repetitive patterns, re-compresses traces into ``iterative sets'' in a lossless fashion (intra-PT compression).  
+%
+
+Analyzing the application execution as a whole (inter-PT compression) is another goal that we are pursuing in this work. 
+%
+By extracting \textit{attributes} from pre-processed traces, we inject them into a concept hierarchy data structure called Concept Lattice \cite{clbook}.  
+%
+Concept lattices give us the capability to reduce the search space from thousands of instances to just a few \textit{equivalence classes of traces} by measuring the similarity of traces \cite{Alqadah2011}, making the process of finding the needle in the haystack more feasible.
+%
+Comparison of the bug-free concept lattice and its equivalent classes with the buggy version of the same application reveals insights about the dynamic behavior of the program and how the bug changed the classes and their members.
+%
+
+Fowlkes et al.~\cite{fowlkes83} proposed a method for comparing two hierarchical clusterings by counting the objects that fall into the same or different clusters.
+%
+Inspired by Fowlkes's approach, we believe that the PTs that fall into different classes before and after the bug are the potential PTs that manifest the bug impact and/or reflect the bug's root cause.
+%
+These candidate PTs then require deeper \textit{observing} and \textit{diffing} with their corresponding bug-free PTs to see what has been changed when the bug was introduced.
+%
+\\
+Our results show 
+\hl{**   TODO: Highlights of results obtained as a result of the above thinking should be here. This typically comes before ROADMAP of paper.}
+
+In summary, this paper makes the following main contributions:
+\begin{itemize}
+\item A tunable tracing and trace-analysis tool-chain for HPC application program understanding and debugging
+\item A variation of the NLR algorithm to compress traces in lossless fashion for easier analysis and detecting (broken) loop structures
+\item An FCA-based clustering approach to efficiently classify traces with similar behavior
+\item A tunable ranking mechanism to highlight suspicious trace instances for deeper study
+\item A visualization framework that reflects the points of differences or divergence in a pair of sequences.
+\end{itemize}
+
+%
+\hl{
+The rest of the paper is as follows:
+
+- Sec 2: Background
+
+- Sec 3: Experimental Methodology
+
+- Sec 4: Case Studies
+
+- Sec 5: Related Work
+
+- Sec 6: Discussion, Limitations, Conclusion, Future Work
+}
