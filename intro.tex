@@ -1,3 +1,234 @@
+
+\noindent{\bf BEGIN Ganesh}
+
+Debugging high performance computing code
+remains a challenge at all levels of scale.
+%
+Conventional HPC debuggers~\cite{allinea-ddt,roguewave,others}
+excel at many tasks such as examining the execution
+state of a complex simulation at a detailed
+level and allowing the developer to re-execute
+the program close to the point of failure.
+%
+However, they do not provide a good understanding
+of why a program version that worked earlier
+failed upon upgrade or feature addition.
+%
+Innovative solutions are needed to highlight the
+salient differences between two executions in a manner
+that makes debugging easier as well as more systematic.
+%
+A recent study conducted under the auspices of the
+DOE~\cite{DBLP:journals/corr/GopalakrishnanH17}
+provides a comprehensive survey
+of existing debugging tools.
+%
+It classifies them under
+{\em four} software organizations (serial, multithreaded,
+multi-process, and hybrid), {\em six}
+method types (formal methods, static analysis, dynamic
+analysis, nondeterminism control, anomaly detection,
+and parallel debugging), and lists a total of 30 specific
+tools.
+%
+Despite this abundance of tools and approaches, many
+significant problems remain to be solved before debugging
+{\em can be approached by the HPC community as a collaborative
+activity} so that HPC developers can share their solutions
+and extend a common framework
+
+
+In this paper, we provide our fundamentally fresh look
+at debugging.
+%
+We point out three significant problems that
+we have addressed in our work, and provide our preliminary
+solutions backed up by case studies.
+%
+While our work has not (yet) addressed the situations in
+which millions of threads and thousands of processes run
+for days and produce an error,
+we strongly believe that we can get there only through
+a series of {\em rigorous} approaches
+that overcome key limitations found in conventional
+debugging approaches in a step-by-step manner, accompanied
+by careful measurements of the merits of the new approach.
+%
+The main contribution of this paper is the first such
+critical measurements of our proposed approach.
+
+
+\paragraph{Problem-1: Need to Generalize Approaches for Outlier Detection:\/}
+%
+Almost all debugging approaches seek to find outliers (``unexpected
+executions'') amongst thousands of running processes and threads.
+%
+The approach taken by most existing tools is to
+look for symptoms in a specific bug-class that they
+cover.
+%
+Unfortunately,
+this approach calls for a programmer having a good guess of what
+the underlying problem might be,
+and to then pick the right set of tools to deploy.
+%
+If the guess is wrong, the programmer has no choice but to
+refine their guess
+and look for bugs in another class,
+re-executing the application and hoping for
+better luck with another tool.
+%
+This iterative loop of re-execution followed by applying a
+best-guess tool for the suspected bug class can potentially consume
+large amounts of execution cycles and also waste an
+expert developer's time.
+
+
+\noindent{\em Solution to Problem-1: Whole Program Tracing for Debugging:\/}
+In this setting, our first contribution is
+a debugging approach in which the application is not merely
+run with a single symptom-specific tool attached as described earlier.
+%
+Instead, we collect {\em whole program traces} of function calls
+and returns, using a PIN-based function call tracing facility called
+ParLoT that we have developed and previously reported~\cite{parlot-paper}.
+%
+We store these traces for potential examination by multiple tools
+and approaches.
+%
+The advantage of whole program binary tracing supported
+in ParLoT is that we can
+collect function calls at {\em any desired level of abstraction}.
+%
+For instance, if the programmer wants to cover activities at the
+MPI level, the OpenMP level and perhaps even lower levels (e.g., the
+MPI library or the OpenMP runtime), they can do so using ParLoT.
+
+
+Clearly, the more APIs at which function calls are recorded, the
+more burdensome trace collection becomes.
+%
+However, the advantage is that correspondingly
+more tools can then be applied to
+the collected traces.
+%
+There is always a sweet-spot in this trade-off space,
+depending on the particular debugging situation.
+%
+However, our fundamental insight is that {\em given the
+inevitability of heterogeneous programming} (the use of multiple
+concurrency models), it is important to
+be collecting traces from a few related APIs at a time, so that
+one can study bugs in one of the concurrency models or a bug
+resulting from a bad cross-model interaction
+from a {\em single run of the program}.
+
+
+In our research, we have thus far demonstrated the advantage of
+ParLoT with respect to collecting both MPI and OpenMP traces
+from a {\em single run of a hybrid MPI/OpenMP program}.
+%
+We demonstrate that from this single type of traces, it is possible
+to pick out MPI-level bugs or OpenMP-level bugs.
+%
+While we have not covered all these combinations in our work
+so far, the main contribution claimed is the ability to
+cover multiple APIs while debugging, and without re-executions or
+guess-work.
+
+
+While this approach to whole-program tracing
+may sound extremely computation intensive, we employ
+novel on-the-fly compression techniques within ParLoT.
+%
+In our previous study~\cite{parlot-paper}, we report compression
+efficiencies exceeding 16,000.
+%
+This allows us to bring out the function call traces without
+significantly burdening the memory subsystem or I/O networks in the HPC cluster.
+
+
+\paragraph{Problem-2: Need to Generalize Approaches for Outlier Detection:\/}
+Given that outlier detection is central to debugging,
+it is important to be employing efficient representations of the traces
+collected from threads and processes so that one can compute
+{\em distances} between these traces more systematically, without
+involving human reasoning in the loop.
+%
+The representation must also be versatile enough to
+be able to ``Diff'' the traces\footnote{Hence the name of our tool, {\bf DiffTrace}.}
+with respect to {\em an extensible number of vantage points}.
+%
+These vantage points could be diffing with respect to process level activities,
+diffing with respect to thread-level activities, a combination thereof,
+or even finite sequences of process/thread calls (say, to locate {\em changes}
+in caller/callee relationships).
+
+
+\noindent{\em Solution to Problem-2: Use of Concept Lattices in Debugging:\/}
+In DiffTrace, we employ {\em concept lattices} to amalgamate the collected traces.
+%
+Concept lattices have previously been employed in HPC to perform structural
+clustering of process behaviors~\cite{weber-cl} to present performance data more
+meaningfully to users.
+%
+The authors of that paper employ the notion of {\em Jaccard distances}
+to cluster performance results that are closely related to process structures
+(determined based on caller/callee relationships).
+
+
+In DiffTrace, we employ incremental algorithms for building and maintaining
+concept lattices from the ParLoT-collected traces.
+%
+In addition to Jaccard distances, in our work we also perform hierarchical
+clustering of traces and provide a tunable threshold for outlier detection.
+%
+We believe that these uses of concept lattices and more refinement approaches
+for outlier detection are new in HPC debugging.
+
+
+\paragraph{Problem-3: Loop Detection:\/}
+Most programs spend most of their time in loops.
+%
+Therefore it is important to employ state-of-the-art algorithms for
+loop extraction from execution traces.
+%
+It is also important
+to be able to diff two executions with respect to changes in their looping behaviors.
+
+\noindent{\em Solution to Problem-3: Rigorous Approaches to Loop Analysis:\/}
+In DiffTrace, we employ the notion of NLRs (what does it stand for?) for
+extracting loops.
+%
+Each repetitive loop structure is given an identifier, and nested loops are
+expressed as repetitions of this identifier exponentiated (as with regular
+expressions).
+%
+This approach to summarizing loops can help manifest
+bugs where the program does not hang or crash, but nevertheless
+run differently in a manner that informs the developer engaged in debugging.
+
+
+\noindent To summarize, the key contributions of this paper are the following [[fix the section numbers
+later]]:
+
+\begin{itemize}
+\item A method to organize function call traces collected from processes and
+      threads into concept lattices, and a method to
+      detect loops from dynamic traces (Section~\ref{sec3}).
+
+\item Details of the algorithms employed in DiffTrace (Section~\ref{sec4}).
+
+\item Experimental studies on a heterogeneous program called
+      Iterated Local Champion Search (ILCS, Section~\ref{sec5}).
+
+\item Strengths and limitations of DiffTrace, plans for future work (Section~\ref{sec6}).
+\end{itemize}
+
+
+
+\noindent{\bf END Ganesh}
+
 \hl{[[Ganesh and Saeed have written some text before for the intro which is available in v0/intro.tex (also available but commented in current file). Current version is based on our discussion on May 8th]]}
 
 \begin{itemize}
