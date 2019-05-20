@@ -1,7 +1,17 @@
+\begin{figure*}[]
+\caption{DiffTrace Overview}
+\includegraphics[width=0.95\textwidth]{figs/overview.png}
+%\includegraphics[]{figs/overview.png}
+%\includegraphics[]{figs/overv}
+\label{fig.diffTraceOverview}
+\end{figure*}
+
 The general idea is to utilize ParLOT \cite{ parlot} traces for studying HPC application behaviors towards fault detection and localization.
 %
 %ParLOT
-ParLOT collects whole-program function calls and returns at different levels via dynamic binary instrumentation \cite{pin}, and incrementally compresses them on-the-fly.
+ParLOT collects whole-program function calls and returns via dynamic binary instrumentation \cite{pin}, and incrementally compresses them on-the-fly.
+%
+ParLOT instruments and encodes functions within the binary to unique integers at two major levels: \textit{main image} only contains functions from the source-code and included APIs and \textit{all images} that cover system and library functions as well.
 %
 Upon termination of the application, ParLOT flushes out per-thread trace files containing compressed sequence of executed function IDs.
 %
@@ -11,35 +21,16 @@ With the mindset of ``\textit{pay a little upfront to dramatically reduce the nu
 %
 
 % Paragraph about DiffTrace, why we need it and what is our approach?
-In this paper, we introduce DiffTrace, a tool-chain that provides an infrastructure for iterative and configurable search space reduction of the HPC whole-program function-call traces, to ease the process of detection of the most impacted trace(s) and/or region of trace(s).
+In this paper, we introduce DiffTrace, a tool-chain (figure \ref{fig.diffTraceOverview} that provides an infrastructure for \textit{iterative and configurable search space reduction} of HPC traces.
 %
-Considering a ``successful’’ termination of the application as \textit{normal behavior}, DiffTrace takes steps towards \textit{abnormal behavior} detection when an application crashes, time outs or produces a corrupted answer.
+Considering a ``successful’’ termination of the application as \textit{normal behavior}, DiffTrace systematically reduces the search space to detect a \textit{abnormal behavior} when an application crashes, time outs or produces a corrupted answer.
 %
-Each abnormal behavior is a potential fault cause or a manifestation of the fault.
+Each abnormal behavior is a potential \em{error} cause or a manifestation of a \em{fault}.
 %
 However, faults in HPC applications may occur or influence the program behavior at different locations and granularities, due to high and hybrid level of parallelism.
 %
 Also typical HPC applications spend most of their execution time in a main loop until a convergence or over timesteps, and a fault may get  triggered or causing problems after some iteration.
 %
-DiffTrace gives the HPC developers the capability of going through the pipeline of trace processing multiple times, each time putting a flash-light on various aspects of the applications' dynamic behavior, gradually collecting evidence about what has happened during execution.
-%
-
-
-
-\begin{itemize}
-	\item \textbf{Initial Step:} Pre-processing (decompression and filter) - removing
-uninteresting trace entries
-	\item \textbf{Detecting loops:} Loops in source codes reflect themselves as a sequence of \textit{repetitive patterns}, resulting in often-long but redundant traces. A ``nested loop  recognition'' mechanism then mines loops from traces as ``\textit{a measure of progress}'' per thread, and also a loss-less abstraction to ease the rest of trace analysis.
-%
-	\item \textbf{FCA:} The control flow of events in parallel architectures often follow a \textit{regular pattern} such as SPMD, odd-even and master/slave. This characteristic often makes all traces of a single execution tend to fall into just \textit{a few} ``conceptually/behaviorally equivalent classes''. Adopted from the work by Webber et al \cite{weberStructural}, we have applied \textit{formal concept analysis} (FCA)\cite{clbook} techniques to reduce the trace search space into a few classes of traces, and also using the \textit{concept lattice} (CL) data structure as the \textit{model} of execution for further analysis.
-	\item \textbf{Diffing/Ranking Suspicious Traces/Outlier detection} Measuring Buggy vs. bugFree clustering under various combination of parameters - find out which traces changed the most and rank parameters based on B-score.
-	\item \textit{\textbf{gdiff:}} bolds the actual points of differences
-in the outlier trace w.r.t. its corresponding normal trace - What has changed after a \textit{bug} is encountered
-\end{itemize}
-
-Odd/Even sort is a variant of the bubble-sort operates in two alternate phases: \textit{Phase-even} where even processes exchange (compare and swap) values with right neighbors and \textit{Phase-odd} where odd processes exchange values with right neighbors. Figure \ref{fig.oddEven} shows the simplified MPI implementation of the odd/even sort algorithm. We are using this example to explain our ideas and methodologies through out this section.
-
-
 
 \begin{figure}[]
 \centering
@@ -48,40 +39,50 @@ Odd/Even sort is a variant of the bubble-sort operates in two alternate phases: 
 \label{fig.oddEven}
 \end{figure}
 
+DiffTrace gives the HPC developers the capability of going through the pipeline of trace processing multiple times, each time putting a flash-light on various aspects of the applications' dynamic behavior, gradually collecting evidence about what went wrong that made the program fails.
+%
+The work-flow of DiffTrace starts with \textit{pre-processing} traces. ParLOT traces are highly compressed and often contain functions that might no be interesting from a certain point of analysis. DiffTrace decompresses and prunes traces (systemically), providing cleaner traces for later phases.  
+%
+Loops in source codes reflect themselves as a sequence of \textit{repetitive patterns}, resulting in often-long but redundant traces. A ``nested loop  recognition'' mechanism then mines loops from traces as ``\textit{a measure of progress}'' per thread, and also a loss-less abstraction to ease the rest of trace analysis.
+%
+The control flow of events in parallel architectures often follow a \textit{regular pattern} such as SPMD, odd-even and master/slave. This characteristic often makes all traces of a single execution tend to fall into just \textit{a few} ``conceptually/behaviorally equivalent classes''. Adapted from the work by Webber et al \cite{weberStructural}, we have applied \textit{formal concept analysis} (FCA)\cite{clbook} techniques to reduce the trace search space into a few classes of traces, and also using the \textit{concept lattice} (CL) data structure as the \textit{model} of execution for further analysis.
+%
+To reveal the impact of the fault, DiffTrace then measures the similarity between the equivalent classes of faulty traces against the corresponding bug-free traces.
+%
+The basic idea is to find out which traces (and consequently processes/threads) are falling into a different class (i.e., cluster) when the fault is introduced.
+%
+Based on the observed similarity of two clusterings, DiffTrace suggests top suspicious traces that are suffering the most the fault for further analysis, and clearly reflects the actual points of differences of the suspicious trace versus its corresponding normal trace.
+%
+During the rest of this section, we explain each component of diffTrace in details on collected traces (ParLOT-main) of execution of a MPI implementation of odd/even sort (figure \ref{fig.oddEven}) with 4, 8 and 16 processes. 
+Odd/Even sort is a variant of the bubble-sort operates in two alternate phases: \textit{Phase-even} where even processes exchange (compare and swap) values with right neighbors and \textit{Phase-odd} where odd processes exchange values with right neighbors. The for loop in line 4 of \texttt{oddEvenSort()} iterates over phases of the algorithm and based on the phase, the appropriate partner for each rank is getting discovered by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and a set of sort, merge and copy operations would be performed on received data by each rank (which are replaced by \texttt{...} in line 15 for simplicity).
 
-\begin{figure*}[]
-\caption{DiffTrace Overview}
-\includegraphics[width=0.8\textwidth]{figs/diffTraceOverview.jpg}
-%\includegraphics[]{figs/diffTraceOverview.jpg}
-\label{fig.diffTraceOverview}
-\end{figure*}
+According to MPI Standard , MPI\_Send is a \textit{blocking send} used the \textit{standard} communication mode in which MPI \textit{may} buffer outgoing messages and the send call may complete before a matching receive is invoked. On the other hand, buffer space may be unavailable, or MPI may choose not to buffer outgoing messages, for performance reasons. In this case, the send call will not complete until a matching receive has been posted, and the data has been moved to the receiver. So based on the MPI implementation, a swap of order in line 11-12 of figure \ref{fig.oddEvenDL} code might end up causing a deadlock. This section ends with showing that DiffTrace can extract evidences from traces to justify and locate the cause of such deadlocks and other faults.
 
 
 \subsection{Pre-processing}
-
-\begin{itemize}
-	\item Decompressing traces and throw away function IDs that
-their function name does not match the regex of filters
-	\item \textbf{filters:} There are some pre-defined filters but based on
-the application semantics, one can apply any filter with
-regex format.
-	\item table \ref{tab:filters} shows pre-defined filters.
-\end{itemize}
-
 \input{tabs/filters.tex}
+Using ParLOT decoder, each trace needs to get decompressed for further analysis.
+Supporting the iterative approach of DiffTrace which is exploring different aspects of traces one at a time, corresponding function names of each function ID in traces are checked with some pre-defined (table \ref{tab:filters}) or custom regular expressions (i.e., \textit{filters}). In case of a match, DiffTrace would keep that function ID for later phases, otherwise that function ID would not be stored in the current iteration of DiffTrace.
+
+Table \ref{tab:oddEvenPT} shows pre-processed traces ($T_i$) of odd/even sort execution with 4 processes. $T_i$ is the trace that stores dynamic function calls of process $i$.
+\input{tabs/oddEvenPT.tex}
 
 
 \subsection{Nested Loop Representation}
+HPC applications often spend most of their times in \textit{loops}. Function calls within each loop body reflect themselves as \textit{repetitive patterns} in ParLOT traces, leaving often long traces of redundant entries. 
+Inspired by ideas from detection of repetitive patterns in strings \cite{nakamura_fast_2013} and other data structures\cite{kmr}, we have adapted the Nested Loop Recognition (NLR) algorithm from Ketterlin et al\cite{Ketterlin-nlr} to detect repetitive patterns in ParLOT traces (details of NLR algorithm are in section XX). Detecting such patterns ``measures progress'' per trace and reflects the delayed or unfinished/broken loops, potentially caused by a fault.
 
-\begin{itemize}
-	\item Summarizing repetitive patterns of traces in form of NLR
-(Nested Loop Representation).
-	\item Adopting NLR algorithm from Philip Clauss paper (explaining
-the algorithm)
-	\item Example on odd/even traces.
-\end{itemize}
+For example, the loop in line 3 of \texttt{oddEvenSort()} (figure \ref{fig.oddEven}) iterates 4 times in execution with 4 processes. Thus each $T_i$ contains 4 consecutive occurrence of either \texttt{MPI\_Send() - MPI\_Recv()} (even $T$s) or \texttt{MPI\_Recv() - MPI\_Send()} (odd $T$s). By keeping only MPI functions and converting each $T_i$ to its equivalent NLR (Nested Loop Representation), table \ref{tab:oddEvenPT} can be reduced to figure \ref{tab:oddEvenPT-r}. \textbf{L0} (pair of MPI\_Send - MPI\_Recv) and \textbf{L1} (pair of MPI\_Recv - MPI\_Send) are two main body loops that have been detected among pre-processed filters. Note that, since first and last processes have only one-way communication with their neighbors, $T_0$ and $T_3$ iterates over the loop half of other processes.
 
-\clearpage
+\hl{connect this section to next}
+
+\begin{figure}[]
+\centering
+\caption{Trace NLRs}
+\includegraphics[width=0.45\textwidth]{figs/oddEvenPT-r.png}
+\label{tab:oddEvenPT-r}
+\end{figure}
+
 
 \subsection{Hierarchical Clustering via FCA}
 \begin{itemize}
@@ -94,7 +95,7 @@ the algorithm)
 	\item Hierarchical Clustering based on the obtained JSM provides insight about general behavior of the execution 
 \end{itemize}
 
-\input{tabs/oddEvenPT.tex}
+
 
 \input{tabs/tabs.sampleContext.tex}
 
@@ -102,16 +103,8 @@ the algorithm)
 \begin{figure}[t]
 \centering
 \scalebox{0.5}{
-\includegraphics[width=3.4in]{figs/{sample}.pdf}}
+\includegraphics[width=3.4in]{figs/sampleCL.png}}
 \caption{Sample Concept Lattice from Obj-Atr Context in table\ref{tab:sampleContext}}
-\label{fig:sampleCL}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\scalebox{0.5}{
-\includegraphics[width=3.4in]{figs/{sample-reduced}.pdf}}
-\caption{Concept Lattice with reduced labels}
 \label{fig:sampleCL}
 \end{figure}
 
@@ -119,11 +112,18 @@ the algorithm)
 \begin{figure}[]
 \centering
 \scalebox{0.8}{
-\includegraphics[width=3.4in]{figs/{fancy1}.pdf}}
+\includegraphics[width=3.4in]{figs/oddEvenJSM.pdf}}
 \caption{Pair-wise Jaccard Similarity Matrix (JSM) of MPI processes in Sample code}
 \label{fig:jsm}
 \end{figure}
 
+\begin{figure}[]
+\centering
+\scalebox{0.8}{
+\includegraphics[width=3.4in]{figs/oddEvenJSM2.pdf}}
+\caption{Pair-wise Jaccard Similarity Matrix (JSM) of MPI processes in Sample code}
+\label{fig:jsm}
+\end{figure}
 
 \clearpage
 
@@ -136,7 +136,7 @@ the algorithm)
 \label{fig.oddEvenDL}
 \end{figure}
 
-
+To clearly see what has changed in the actual (suspicious) trace of a faulty execution with its corresponding trace from the normal run, we have implemented a visualized version of 
 
 \begin{itemize}
 	\item Comparison of JSMs (i.e., hierarchical clusterings) would give insight about how a change (bug, library update, porting to new system) has changed the behavior of the program.
@@ -184,7 +184,7 @@ Execution of odd/even sort application with four processes (\texttt{mpirun -np 4
 %
 
 
-According to MPI Standard  \hl{[cite MPI-forum or openMPI url]}, MPI\_Send is a \textit{blocking send} used the \textit{standard} communication mode. In this mode,  MPI may buffer outgoing messages and the send call may complete before a matching receive is invoked. On the other hand, buffer space may be unavailable, or MPI may choose not to buffer outgoing messages, for performance reasons. In this case, the send call will not complete until a matching receive has been posted, and the data has been moved to the receiver. This shows that, based on the MPI implementation, the \texttt{oddEvenSort\_DL()} (figure \ref{fig.oddEvenDL}) might end up causing a deadlock, because of the order swap of MPI\_Recv and MPI\_Send in lines 11-12. 
+ 
 %
 
 
