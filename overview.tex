@@ -9,9 +9,9 @@
 The general idea is to utilize ParLOT \cite{ parlot} traces for studying HPC application behaviors towards fault detection and localization.
 %
 %ParLOT
-ParLOT collects whole-program function calls and returns via dynamic binary instrumentation \cite{pin}, and incrementally compresses them on-the-fly.
+ParLOT collects whole-program function calls and returns using Pin dynamic binary instrumentation \cite{pin}, and incrementally compresses them on-the-fly.
 %
-ParLOT instruments and encodes functions within the binary to unique integers at two major levels: \textit{main image} only contains functions from the source-code and included APIs and \textit{all images} that cover system and library functions as well.
+ParLOT instruments and encodes functions within the binary to unique integers at two major levels: \textit{main image} only contains source-code and included/linked APIs functions and \textit{all images} that cover system and library functions additionally.
 %
 Upon termination of the application, ParLOT flushes out per-thread trace files each contains compressed sequence of executed function IDs.
 %
@@ -69,7 +69,7 @@ Based on the observed similarity of two clusterings, DiffTrace suggests top susp
 The rest of this section illustrates DiffTrace components on sets of ParLOT traces collected from MPI odd/even sort example(figure \ref{fig.oddEven}).
 Odd/Even sort is a variant of the bubble-sort operates in two alternate phases: \textit{Phase-even} where even processes exchange (compare and swap) values with right neighbors and \textit{Phase-odd} where odd processes exchange values with right neighbors. The for loop in line 4 of \texttt{oddEvenSort()} iterates over phases of the algorithm and based on the phase, the appropriate partner for each rank is getting discovered by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and a set of sort, merge and copy operations would be performed on received data by each rank (which are replaced by \texttt{...} in line 15 for simplicity).
 
-According to MPI Standard , MPI\_Send is a \textit{blocking send} used the \textit{standard} communication mode in which MPI \textit{may} buffer outgoing messages and the send call may complete before a matching receive is invoked. On the other hand, buffer space may be unavailable, or MPI may choose not to buffer outgoing messages, for performance reasons. In this case, the send call will not complete until a matching receive has been posted, and the data has been moved to the receiver. So based on the MPI implementation, a swap of order in line 11-12 of figure \ref{fig.oddEvenDL} code might end up causing a deadlock. This section ends with showing that DiffTrace can extract evidences from traces to justify and locate the cause of such deadlocks and other faults. Later in the paper, we evaluate Difftrace on a real world hybrid MPI+OpenMP example.
+According to MPI Standard , \texttt{MPI\_Send} is a \textit{blocking send} used the \textit{standard} communication mode in which MPI \textit{may} buffer outgoing messages and the send call may complete before a matching receive is invoked. On the other hand, buffer space may be unavailable, or MPI may choose not to buffer outgoing messages, for performance reasons. In this case, the send call will not complete until a matching receive has been posted, and the data has been moved to the receiver. So based on the MPI implementation, a swap of order in line 11-12 of figure \ref{fig.oddEvenDL} code might end up causing a deadlock. This section ends with showing that DiffTrace can extract evidences from traces to justify and locate the cause of such deadlocks and other faults. Later in the paper, we evaluate Difftrace on a real world hybrid MPI+OpenMP example.
 
 \subsection{Pre-processing}
 \input{tabs/filters.tex}
@@ -81,18 +81,14 @@ Table \ref{tab:oddEvenPT} shows pre-processed traces ($T_i$) of odd/even sort ex
 
 
 \subsection{Nested Loop Representation}
-HPC applications often spend most of their times in \textit{loops}. Function calls within each loop body reflect themselves as \textit{repetitive patterns} in ParLOT traces. Inspired by ideas from detection of repetitive patterns in strings \cite{nakamura_fast_2013} and other data structures\cite{kmr}, we have adapted the Nested Loop Recognition (NLR) algorithm from Ketterlin et al\cite{Ketterlin-nlr} to detect repetitive patterns in ParLOT traces (more details in section \ref{subsec:algo-nlr}). Detecting such patterns ``measures progress'' per trace and reflects the delayed or unfinished/broken loops that potentially caused by a fault.
 
-For example, the loop in line 3 of \texttt{oddEvenSort()} (figure \ref{fig.oddEven}) iterates 4 times in execution with 4 processes. Thus each $T_i$ contains 4 consecutive occurrence of either \texttt{MPI\_Send() - MPI\_Recv()} (even $T$s) or \texttt{MPI\_Recv() - MPI\_Send()} (odd $T$s). By keeping only MPI functions and converting each $T_i$ to its equivalent NLR (Nested Loop Representation), table \ref{tab:oddEvenPT} can be reduced to figure \ref{tab:oddEvenPT-r}. \textbf{L0} (pair of MPI\_Send - MPI\_Recv) and \textbf{L1} (pair of MPI\_Recv - MPI\_Send) are two main body loops that have been detected among pre-processed filters. Note that, since first and last processes have only one-way communication with their neighbors, $T_0$ and $T_3$ iterates over the loop half of other processes.
+\input{tabs/oddEvenPT-NLR.tex}
+
+HPC applications often spend most of their times in \textit{loops}. Function calls within each loop body reflect themselves as \textit{repetitive patterns} in ParLOT traces. Inspired by ideas from detection of repetitive patterns in strings \cite{nakamura_fast_2013} and other data structures\cite{kmr}, we have adapted the Nested Loop Recognition (NLR) algorithm from Ketterlin et al \cite{Ketterlin-nlr} to detect repetitive patterns in ParLOT traces (more details in section \ref{subsec:algo-nlr}). Detecting such patterns ``measures progress'' per trace and reflects the delayed or unfinished/broken loops that potentially caused by a fault.
+
+For example, the loop in line 3 of \texttt{oddEvenSort()} (figure \ref{fig.oddEven}) iterates 4 times in execution with 4 processes. Thus each $T_i$ contains 4 occurrence of either [\texttt{MPI\_Send}-\texttt{MPI\_Recv}] (even $i$) or [\texttt{MPI\_Recv}-\texttt{MPI\_Send}] (odd $i$). By keeping only MPI functions and converting each $T_i$ to its equivalent NLR (Nested Loop Representation), table \ref{tab:oddEvenPT} can be reduced to table \ref{tab:oddEvenPT-NLR} where \textbf{L0} and \textbf{L1} are representing \textit{loop body} [\texttt{MPI\_Send}-\texttt{MPI\_Recv}] and [\texttt{MPI\_Recv}-\texttt{MPI\_Send}], respectively. The integer after \^{} in NLR, represent the \textit{loop count} (i.e., the frequency of the loop body execution). Note that, since first and last processes have only one-way communication with their neighbors, $T_0$ and $T_3$ iterates over the loop half of other processes.
 
 \hl{connect this section to next}
-
-\begin{figure}[]
-\centering
-\caption{Trace NLRs}
-\includegraphics[width=0.45\textwidth]{figs/oddEvenPT-r.png}
-\label{tab:oddEvenPT-r}
-\end{figure}
 
 
 \subsection{Hierarchical Clustering via FCA}
@@ -100,17 +96,17 @@ Underlying parallel software architecture of HPC applications often follow a \te
 %
 Considering this characteristic, per-thread individual function call traces can be classified into \textit{a few equivalent groups} based on the \textit{conceptual structure of trace contents}(i.e., sequence of functions).
 % 
-Such classification would distinguish naturally different threads (e.g., MPI processes from OpenMP threads in hybrid MPI+OpenMP applications), reduce the search space into just a few representative classes of traces and ease the process of detecting outlier traces.
+Such classification would distinguish structurally different threads from each other (e.g., MPI processes from OpenMP threads in hybrid MPI+OpenMP applications) and reduce the search space into just a few representative classes of traces
 %
 In addition, the set of per-thread traces should be studied as ``a whole'' since there is a strong conceptual and causal relation among threads/processes.
 %
 In order to integrate all collected traces into a \textit{single model of execution} and forming ``equivalent classes of traces'', we have adapted the idea of \textit{Structural Clustering}  \cite{weberStructural} by applying \textit{formal concept analysis} (FCA)\cite{clbook} techniques to ParLOT traces.
 %
 
-A \textit{formal context} is a triple $K = (G, M, I)$, where $G$ is a set of \textbf{objects}, $M$ is a set of \textbf{attributes}, and $I \subseteq G \times M$ is an incidence relation that expresses \textit{which objects have which attributes}. Table \ref{tab:sampleContext}) shows the formal context of odd/even sort pre-processed traces. 
+A \textit{formal context} is a triple $K = (G, M, I)$, where $G$ is a set of \textbf{objects}, $M$ is a set of \textbf{attributes}, and $I \subseteq G \times M$ is an incidence relation that expresses \textit{which objects have which attributes}. Table \ref{tab:sampleContext} shows the formal context of odd/even sort pre-processed traces. 
 
 %
-In this context, attributes are trace entries (function calls or detected loop bodies) without involving their frequency (e.g., loop counts). However, any set of attributes can be extracted from traces (table YY).
+In this context, attributes are trace entries (function calls or detected loop bodies) without involving their frequency (e.g., loop counts). However, any set of attributes can be extracted from traces (table YY). The context shows that all traces have the functions MPI\_Init(), MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize(). Even traces have the loop \textit{L0} and odd traces have the loop \textit{L1}.
 %
 \hl{Definition of formal concept (needed?) figure }\ref{fig:formalConceptDefinition} :
 
@@ -121,36 +117,30 @@ In this context, attributes are trace entries (function calls or detected loop b
 \label{fig:formalConceptDefinition}
 \end{figure}
 
-A \textit{concept lattice} can be derived from a \textit{formal context} by specifying \textit{formal concepts} (figure \ref{fig:formalConceptDefinition}) and a \textit{partial order} on them. Concept lattices are represented as a directed acyclic graph where concepts are nodes and the order on them determines the edges.
+A \textit{concept lattice} can be derived  from a \textit{formal context} by specifying \textit{formal concepts} (figure \ref{fig:formalConceptDefinition}) and a \textit{partial order} on them. Concept lattices are represented as a directed acyclic graph where concepts are nodes and the order on them determines the edges.
 %
-Figure \ref{fig:sampleCL} shows the concept lattice of the formal context in 
-%
-The formal context in table \ref{tab:sampleContext} shows that all traces has the functions MPI\_Init(), MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize(). Even traces have the loop \textit{L0} and odd traces have the loop \textit{L1}. The resulting concept lattice from this context is shown in figure \ref{fig:sampleCL} and reads as:
+Figure \ref{fig:sampleCL} shows the concept lattice derived from the formal context in \ref{tab:sampleContext} and reads as:
 
 \begin{itemize}
 	\item The top node indicates that all traces share MPI\_Init(), MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize().
 	\item The bottom node signifies that none of the traces share all attributes. 
-	\item The middle nodes show that $T_0$ and $T_2$ are different from  $T_1$ and $T_3$
+	\item The middle nodes show that $T_0$ and $T_2$ are different from  $T_1$ and $T_3$.
 \end{itemize}
 
-We have used concept lattices to obtain pair-wise \textit{similarity scores} among traces. The similarity metric that we have used is \textit{Jaccard Index}, also known as \textit{Intersection over Union}. For any pair of $(T_i,T_j)$, number of attributes in the Lowest Common Ancestor (LCA) node of $T_i$ and $T_j$ is the number of attributes that $T_i$ and $T_j$ have in common (intersection). The sum of the number of attributes of nodes in the path from each $T_i$ and $T_j$ to their LCA is the union. 
-%
-Figure \ref{fig:jsm2} shows the heatmap of full pair-wise Jaccard Similarity Matrix (JSM) obtained from the concept lattice in figure \ref{fig:sampleCL}.
-%
-DiffTrace uses obtained JSMs as \textit{linkage} function to form equivalent classes of traces by hierarchical clustering.
-%
-In the next phase of DiffTrace, we show how the differences of two hierarchical clustering from two executions (faulty vs. normal) can reveal which traces has been changed the most by the fault.
-
-
-
 \input{tabs/tabs.sampleContext.tex}
+
+
+Once the redundant labels removed from the lattice, each object (trace) and attribute appears in the lattice exactly once. Consequently, the nodes of the lattice form the desired grouping, since it is guaranteed that each trace belongs to exactly one group. However, the concept lattice itself does not provide similarity values for the distinct groups of traces. \textit{Jaccard Index}, also known as \textit{Intersection over Union}, is the \textit{distance} between set $A$ and $B$ that is the ratio of the \textit{intersection} size of $A$ and $B$ over the size of their \textit{union}.  The full pair-wise Jaccard Similarity Matrix (JSM) can get computed from the concept lattice.
+%
+
+
 
 
 \begin{figure}[t]
 \centering
 \scalebox{0.5}{
 \includegraphics[width=3.4in]{figs/sampleCL.png}}
-\caption{Sample Concept Lattice from Obj-Atr Context in table\ref{tab:sampleContext}}
+\caption{Sample Concept Lattice from Obj-Atr Context in table \ref{tab:sampleContext}}
 \label{fig:sampleCL}
 \end{figure}
 
@@ -171,13 +161,28 @@ In the next phase of DiffTrace, we show how the differences of two hierarchical 
 \label{fig:jsm2}
 \end{figure}
 
+For any pair of $(T_i,T_j)$, number of attributes in the Lowest Common Ancestor (LCA) node of $T_i$ and $T_j$ in the lattice is the number of attributes that $T_i$ and $T_j$ have in common (intersection). The sum of the number of attributes of nodes in the path from each $T_i$ and $T_j$ to their LCA is the union. This property was one of our motivations for using concept lattices as the classifier since there is no need to count union and intersection sets. 
+%
+In addition, there exist algorithms for extracting concepts from contexts and constructing the concept lattice, but require the whole context to be present in the memory. 
+%
+For large scale executions with thousands of traces, it is not feasible to fit the whole context in the memory.
+%
+Through an incremental concept lattice construction approach, DiffTrace extract attributes (\hl{table that shows attributes}) from NLR traces and inject them into a concept lattice, one trace at a time (more details in section \ref{subsec:algo-cl}).
+%
+Figure \ref{fig:jsm2} shows the heatmap of the JSM obtained from the concept lattice in figure \ref{fig:sampleCL}.
+%
+DiffTrace uses obtained JSMs as \textit{linkage} function to form equivalent classes of traces by hierarchical clustering.
+%
+In the next phase of DiffTrace, we show how the differences of two hierarchical clustering from two executions (faulty vs. normal) can reveal that which traces has been changed the most by the fault.
+
+
 
 \subsection{Detecting Suspicious Traces via DiffJSM}
 Up to this point, DiffTrace can narrow down the search space from numerous long traces to their equivalent JSM (i.e., clusters).
 %
 As the original intention of DiffTrace implies, we are interested in detecting what has changed the most when a fault is introduced with respect to the ``natural asymmetry'' of the application.
 %
-In other words, DiffTrace abstracts function call traces into JSMs which are reflections of asymmetry among traces. Now the hierarchical clustering based on the \textit{DiffJSM}, the subtraction of the faulty JSM from its corresponding normal JSM, would put the trace(s) that changed the most in a separate cluster from the others (i.e., outlier).
+In other words, DiffTrace abstracts function call traces into JSMs which are reflections of asymmetry among traces. The hierarchical clustering based on the \textit{DiffJSM}, the subtraction of the faulty JSM from its corresponding normal JSM, would put the trace(s) that changed the most in a separate, often singleton, cluster from the other traces (i.e., outlier detection).
 % 
 The obtained outlier traces are candidates of the potential cause of the change in the program behavior, thus a potential fault root cause or fault manifestation.
 %
@@ -185,7 +190,7 @@ However, a single iteration of DiffTrace (with a single set of parameters shown 
 %
 Also different set of parameters might produce inaccurate suggestions (false positives).
 %
-To improve the accuracy of suggested suspicious traces (ranking table), we have sorted the suggestion table based on the \textit{B-score} similarity metric of two hierarchical clustering \cite{fowlkes83}. (more in section 3.B-score).
+To improve the accuracy of suggested suspicious traces (ranking table), we have sorted the suggestion table based on the \textit{B-score} similarity metric of two hierarchical clustering \cite{fowlkes83}. (more in section \ref{subsec:algo-bscore}).
 
 To evaluate the effectiveness of DiffJSM idea on suggesting suspicious traces, we have planted two artificial bugs (\textit{swapBug} and \textit{dlBug}) in the code in figure \ref{fig.oddEven} and launched the code with 16 processes. 
 %
@@ -193,7 +198,8 @@ To evaluate the effectiveness of DiffJSM idea on suggesting suspicious traces, w
 %
 Upon collection of ParLOT traces from execution above buggy versions, DiffTrace first decompresses traces and filters out all non-MPI functions.
 Then two major loops are detected, \textbf{L0} and \textbf{L1}  (figure \ref{fig.gdiffs}-(a)) that are supposed to occur 16 times in even and odd traces, respectively (except for first and last trace which is 8 times).
-After constructing concept lattices and their corresponding JSMs, $T\prime=5$ has been suggested as the most probable trace that got affected by the artificial bugs.
+
+After constructing concept lattices and their corresponding JSMs, trace 5 has been suggested as the most probable trace that got affected by the artificial bugs. It means that the pair-wise similarity score of $T_5$ from normal execution with other $T$s from the same set has changed the most when a the bug is planted. 
 
 \subsubsection{introducing diffNLR}
 To show the actual points of differences in suspicious traces with their corresponding normal trace, DiffTrace visualizes the common and different blocks of a pair of pre-processed trace via \textit{diffNLR}, a graphical visualization of \texttt{diff} algorithm \cite{diff-myers}.
@@ -202,7 +208,7 @@ To show the actual points of differences in suspicious traces with their corresp
 Since ParLOT preserves the order of function calls in the binary, each per thread trace $T_i$ is totally ordered, thus \textit{diff} can reflect the differences of a pair of $T$s. \textit{diffNLR} aligns common and different blocks of a pair of sequences (e.g., traces) horizontally and vertically, making it easier for analyst to see the differences of a pair of sequences in a glance.  
 For simplicity, our implementation of \textit{gdiff} only takes one argument $x$ as \textit{the suspicious trace}
 
-\textit{gdiff}$(x) \equiv $ \textit{gdiff}$(T_x,T_x^\prime)$
+diffNLR$(x) \equiv $ diffNKR$(T_x,T_x^\prime)$
 
 where $T_x$ is the trace of thread/process $x$ of a normal/successful execution and $T^\prime_x$ is the corresponding trace of faulty execution.
 
@@ -212,29 +218,19 @@ However, $diffNLR(5)$ of \textit{dlBug} (figure \ref{fig.gdiffs}-(c)) shows that
 This example shows that our approach can locate the impacted part of each execution by a fault. Having a pre-understanding of \textit{how the application should behave normally} would reduce the number of iterations by picking the right set of parameters on each pass. 
 
 
-\begin{figure}[]
-\centering
-\caption{A line change in oddEvenSort (left) that might cause a deadlock in oddEvenSort\_DL (right)}
-\includegraphics[width=0.45\textwidth]{figs/oddEvenDL.png}
-\label{fig.oddEvenDL}
-\end{figure}
+%\begin{figure}[]
+%\centering
+%\caption{A line change in oddEvenSort (left) that might cause a deadlock in oddEvenSort\_DL (right)}
+%\includegraphics[width=0.45\textwidth]{figs/oddEvenDL.png}
+%\label{fig.oddEvenDL}
+%\end{figure}
 
 
 \begin{figure}[]
 \centering
-\caption{(a) The legend of \textit{gdiff} and the list of loop structures (b) \textit{gdiff(5)} of \textit{swapBug} (c) \textit{gdiff(5)} of \textit{dlBug}}
+\caption{(a) The legend of \textit{diffNLR} and the list of loop structures (b) \textit{diffNLR(5)} of \textit{swapBug} (c) \textit{diffNLR(5)} of \textit{dlBug}}
 \includegraphics[width=0.45\textwidth]{figs/sampleGdiff.png}
 \label{fig.gdiffs}
 \end{figure}
 
 
-
-
-
-%
-%In the remainder of this section, we describe a chain of techniques that we apply to collected traces with having three main goals in mind:
-%\begin{itemize}
-%\item selectively pre-processing of traces to prune out uninteresting trace entries when we want to study a certain aspect of the dynamic behavior of the application. 
-%\item reducing the search space by forming ``equivalent classes of traces'' and locating the trace or set of traces that got impacted the most by the fault.
-%\item visualizing and reflecting the impact of fault to the potential faulty trace with respect to its corresponding fault-free trace.  
-%\end{itemize}
