@@ -1,0 +1,54 @@
+
+\subsection{NLR}
+\label{subsec:algo-nlr}
+To recognize loop structures in traces, we have adopted ideas from Kobayashi \cite{kobayashi-84} paper where he defines loops in a sequence of instructions as ``a string of instruction executions in which a particular sequence of distinct instructions (called the \textit{cycle} of the loop) is successively repeated''.
+%
+This idea have been later expanded by Ketterline et al in \cite{Ketterlin-nlr} where they have introduced Nested Loop Recognition (NLR) algorithm for compressing data access addresses and predicting next accessing addresses.
+%
+NLR is a memory-bounded algorithm that 
+
+start reading from the beginning of the sequence
+
+store them in the stack
+
+upon each push to stack
+
+	checks for top 3 equal size sub-sequence for isomorphism (equal length and equal corresponding elements)
+	
+	checks if top n elements of the stack matches with any previous detected loops. if yes, increment the loop count and pop n elements from the stack
+	
+the above procedure would be repeated any time a change happens in the stack. 
+
+There is a pre-defined size for Max Stack. If stack reaches that point, a fixed number of elements would be popped from the bottom of the stack to free the space for rest of elements.
+
+figure \ref{fig.NLRexample} shows the final product
+
+complexity is $\Theta(K^2N)$ where $K$ is a fixed priori and $N$ is the size of the input. 
+%
+
+
+
+\subsection{Concept Lattice Construction}
+\label{subsec:algo-cl}
+
+\begin{itemize}
+	\item \hl{1 paragraph background on FCA}
+	\item \hl{1-2 paragraphs on advantages of FCA and what we would gain from FCA? Answer: Full pair-wise Jaccard Similarity Matrix (JSM)}
+	\item \hl{1 paragraph how JSMs are going to help us (referring to the major figure at the beginning of this section)}
+	\begin{itemize}
+		\item Some background about Jaccard Similarity Score
+		\item How to obtain full pair-wise Jaccard Similarity Matrix (JSM) from a concept lattice (e.g., LCA approach)
+	\end{itemize}
+	\item \hl{1-2 paragraphs on CL generation (related work and our approach)}
+	\begin{itemize}
+		\item Batch vs. Incremental \cite{clconst}
+		\item Complexity: $O(2^{2K}||E||)$ where $K$ is an upper bound for number of attributes (e.g., distinct function calls in the whole execution) and $||E||$ is the number of objects (e.g., number of PTs).
+	\end{itemize}
+	\item \hl{1-2 paragraphs (+ 1-2 figures) explaining the FCA ideas on odd/even sort example.}
+\end{itemize}
+
+
+\subsection{Hierarchical Clustering, Construction and Comparison}
+ \label{subsec:algo-bscore}
+JSMs and Linkage functions from Scipy 
+B-score to compare clusterings
