@@ -50,12 +50,29 @@ Each loop structure \textbf{LS} is a tuple of (loop body \textbf{LB}, loop count
 \subsection{Concept Lattice Construction}
 \label{subsec:algo-cl}
 
+There exist algorithms that extract concepts and their partial order from a formal context, each has their own pros and cons.
+%
+Given the density/sparsness of the formal context, the efficiency of algorithms vary \cite{clgenperform}.
+%
+The basic Ganter's \textit{Next Closure} algorithm \cite{clbook} construct the lattice from the \textit{batch} of context and requires the whole context to be present in the main memory.
+%
+For large scale HPC traces, such an approach is inefficient.
+%
+We have implemented Godin's \textit{incremental} algorithm \cite{clconst} to extract concepts from traces and inject them to an initially empty  lattice.
+%
+Every time a new concept is added to the lattice, an \textit{update} procedure minimally modifies/adds/deletes edges and nodes to the lattice. 
+%
+This update procedure is guaranteed to preserve the validity of the concept lattice properties.
+%
+The complexity of Godin's algorithm is $O(2^{2K}|G|)$ where $K$ is an upper bound for number of attributes (e.g., distinct function calls in the whole execution) and $|G|$ is the number of objects (e.g., number of traces).
 
-There are algorithms that can extract concepts and their partial order from a formal context as a batch or incrementally. For large scale executions 
+%In DiffTrace, the upper bound for number of attribute is usually small, since traces are pre-processed and summarized in form of NLRs. Thus Godin's algorithm would perform near
 
-Other kinds of similarity indexes can be extracted from concept lattices \cite{Alqadah2011}, in addition to many applications of concept lattices  properties have been exploited in many computer science fields have been e different similarity metrics can be derived from the
+
 
 \subsection{Hierarchical Clustering, Construction and Comparison}
  \label{subsec:algo-bscore}
-JSMs and Linkage functions from Scipy 
-B-score to compare clusterings
+We have used 
+
+cite scipy 
+used scipy library to construct hierarchical clustering (linkage) (table) for generating the ranking table. 
