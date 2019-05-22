@@ -24,24 +24,64 @@ provides a comprehensive survey
 of existing debugging tools.
 %
 It classifies them under
-{\em four} software organizations (serial, multithreaded,
-multi-process, and hybrid), {\em six}
+four software organizations (serial, multithreaded,
+multi-process, and hybrid), six
 method types (formal methods, static analysis, dynamic
 analysis, nondeterminism control, anomaly detection,
 and parallel debugging), and lists a total of 30 specific
 tools.
-%
-Despite this abundance of tools and approaches, many
+
+
+Despite this abundance of activity and tools, many
 significant problems remain to be solved before debugging
 {\em can be approached by the HPC community as a collaborative
 activity} so that HPC developers can share their solutions
-and extend a common framework
+and extend a common framework.
 %
-{\bf Need more build-up; will do later.}
+Almost all debugging approaches seek to find outliers (``unexpected
+executions'') amongst thousands of running processes and threads.
+%
+The approach taken by most existing tools is to
+look for symptoms in a specific bug-class that they cover.
+%
+Unfortunately,
+this approach calls for a programmer having a good guess of what
+the underlying problem might be,
+and to then pick the right set of tools to deploy.
+%
+If the guess is wrong, the programmer has no choice but to
+refine their guess
+and look for bugs in another class,
+re-executing the application and hoping for
+better luck with another tool.
+%
+This iterative loop of re-execution followed by applying a
+best-guess tool for the suspected bug class can potentially consume
+large amounts of execution cycles and also waste an
+expert developer's time.
+%
+More glaring is the fact that these tools must recreate the
+execution traces yet again: they do not have means to hand-off
+these traces to another tool, or cooperate in symbiotic ways.
 
+
+
+It is clear that we cannot collect everything that must be
+collected to detect all possible bug classes in HPC ranging
+across resource leak bugs,  deadlocks, and data races.
+%
+Each such bug requires its own attributes to be kept.
+%
+Also, it is clear that debugging is not fully automatable (it is
+an undecidable problem in general).
+%
+
+...how far we can go via fn call ercording .. calling context pairs... shine light..other tool attach!..XSXg
 
 In this paper, we provide our fundamentally fresh look
 at debugging.
+
+
 %
 We point out three significant problems that
 we have addressed in our work, and provide our preliminary
@@ -62,28 +102,6 @@ critical measurements of our proposed approach.
 
 \paragraph{Problem-1: Need to Generalize Approaches for Outlier Detection:\/}
 %
-Almost all debugging approaches seek to find outliers (``unexpected
-executions'') amongst thousands of running processes and threads.
-%
-The approach taken by most existing tools is to
-look for symptoms in a specific bug-class that they
-cover.
-%
-Unfortunately,
-this approach calls for a programmer having a good guess of what
-the underlying problem might be,
-and to then pick the right set of tools to deploy.
-%
-If the guess is wrong, the programmer has no choice but to
-refine their guess
-and look for bugs in another class,
-re-executing the application and hoping for
-better luck with another tool.
-%
-This iterative loop of re-execution followed by applying a
-best-guess tool for the suspected bug class can potentially consume
-large amounts of execution cycles and also waste an
-expert developer's time.
 
 
 \noindent{\em Solution to Problem-1: Whole Program Tracing for Debugging:\/}
