@@ -218,26 +218,36 @@ This approach to summarizing loops can help manifest
 bugs where the program does not hang or crash, but nevertheless
 run differently in a manner that informs the developer engaged in debugging.
 
-{sec:overview}
+\noindent{\bf Contributions, Organization:\/}
+All our contributions are first
+illustrated on a simple example (\S\ref{sec:overview}).
+%
+We then present the algorithms underlying DiffTrace (\S\ref{sec:algo}).
+%
+A medium-sized case study involving MPI and OpenMP is next shown (\S\ref{sec:ilcs-case-study}).
+%
+This is followed by experimental methodology (\S\ref{sec:experimental})
+and preliminary studies on LULESH~\cite{lulesh}, 
+a DOE common mini app.
+%
+Selected related works are summarized in \S\ref{sec:related}, with
+discussions and conclusions following (\S\ref{sec:discussion}).
 
-{sec:algo}
-
-{sec:ilcs-case-study}
-
-\noindent To summarize, the key contributions of this paper are the following
-\begin{itemize}
-\item A method to organize function call traces collected from processes and
-      threads into concept lattices, and a method to
-      detect loops from dynamic traces (Section~\ref{sec3}).
-
-\item Details of the algorithms employed in DiffTrace (Section~\ref{sec4}).
-
-\item Experimental studies on a heterogeneous program called
-      Iterated Local Champion Search (ILCS, Section~\ref{sec5}).
-
-\item Strengths and limitations of DiffTrace, plans for future work (Section~\ref{sec6}).
-\end{itemize}
-
+% 
+% \Noindent To summarize, the key contributions of this paper are the following
+% \begin{itemize}
+% \item A method to organize function call traces collected from processes and
+%       threads into concept lattices, and a method to
+%       detect loops from dynamic traces (Section~\ref{sec3}).
+% 
+% \item Details of the algorithms employed in DiffTrace (Section~\ref{sec4}).
+% 
+% \item Experimental studies on a heterogeneous program called
+%       Iterated Local Champion Search (ILCS, Section~\ref{sec5}).
+% 
+% \item Strengths and limitations of DiffTrace, plans for future work (Section~\ref{sec6}).
+% \end{itemize}
+% 
 
 
 % 
