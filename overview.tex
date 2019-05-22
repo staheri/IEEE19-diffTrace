@@ -1,3 +1,5 @@
+\subsection{High Level Overview}
+
 \begin{figure*}[]
 \caption{DiffTrace Overview}
 \includegraphics[width=0.95\textwidth]{figs/overview.png}
@@ -31,9 +33,87 @@ debug iterations because it allows us to repeatedly analyze the
 traces offline with different filters.
 
 
-The DiffTrace tool-chain (Figure \ref{fig.diffTraceOverview}) provides
+Figure \ref{fig.diffTraceOverview} provides an overview
+of the DiffTrace tool-chain
+in terms of the blue flows (fault-free) and red flows
+(faulty).
+%
+In a broad sense,
+code-level faults in HPC applications (e.g.,
+the use of wrong subscripts) turn into observable code-level
+misbehaviors
+(e.g., unexpected number of loop iterations), many of which
+turn into application-level issues.
+%
+In our study of DiffTrace, we evaluate
+our success merely in terms of the efficacy of observing
+these misbehaviors in response to injected code-level
+faults (we rely on a rudimentary fault injection framework
+complemented by manual fault injection).
+%
+The preprocessing stage removes calls/returns at the ignored APIs.
+%
+The nested loop recognition (NLR)
+mechanism then extracts loops from traces.
+The resulting information not only
+serves as a lossless abstraction to
+ease the rest of the trace analysis but also
+serves as a {\em per-thread measure of progress}.
+%
+The FCA stage conducts {\em formal concept analysis}, which
+is a systematic way to arrange objects (in our case threads)
+and attributes (we support a rich collection of attributes
+including the set of function calls a thread makes, the
+set of {\em pairs} of function calls made---this reflects calling
+context---etc.).
+%
+Weber et al's work~\cite{weberStructural,clbook} employs FCA exactly in
+this manner (including the use of pairs of calls),
+but for grouping performance information.
+%
+Our contribution is to realize that FCA eminently suits many
+of the requirements of debugging as well.
 
-A fault may get triggered at some point in the code and be immediately visible, or it may only manifest itself some time later.
+
+While faults induce asymmetries (``aberrations'') in program behaviors,
+one cannot locate faults merely by locating the asymmetries in
+an overall collection of process traces.
+%
+The reason is that even in a collection of MPI processes or threads within
+these processes, some processes/threads may serve as a master while others
+serve as workers~\cite{patterns-for-par-prog-mattson}.
+%
+Thus, we must have a base level of similarities computed even for normal
+behaviors, and then compute how {\em this similarity relation changes} when
+faults are introduced.
+%
+This is highlighted by
+the blue and red rectangular patches in
+Figure~\ref{fig.diffTraceOverview} that, respectively,
+iconify the {\em Jaccard similarity
+  matrices} computed for the Normal behavior (above) and
+the erroneous behavior (below).
+%
+This is shown as
+the ``diff Jaccard similarity matrix'' in grey scale at the
+juncture of JSM$_{Normal}$  and JSM$_{faulty}$ .
+
+
+After the JSM$_{D}$ matrix is computed, we 
+invoke a hierarchical clustering algorithm that computes the ``B-score''
+and helps rank suspicious traces/processes.
+%
+The diffNLR representation is then extracted.
+%
+Intuitively, this is a diff of the loop structures of the normal and abnormal
+threads/processes.
+%
+This diagram shows (as with git diff and text diff) a {\em main stem} comprised of green rectangles
+(``common looping structure'') and red/blue {\em diff rectangles} showing how the loop structures of
+the normal and erroneous threads differ with respect to the main stem.
+%
+We show that this presentation often helps the debugging engineer
+locate the faults.
 
 
 
@@ -44,62 +124,111 @@ A fault may get triggered at some point in the code and be immediately visible, 
 \label{fig.oddEven}
 \end{figure}
 
-DiffTrace starts by \textit{pre-processing} the traces. ParLOT traces are highly compressed and typically contain functions that are not of interest to the current analysis. Thus, DiffTrace first decompresses and prunes the traces.
-%
-Loops appear as \textit{repetitive patterns}, resulting in often long but redundant trace information. A ``nested loop recognition'' mechanism then extracts the loops from the traces. The resulting information not only serves as a lossless abstraction to ease the rest of the trace analysis but also as a per-thread ``\textit{measure of progress}''.
-%
-The control flow in parallel programs often follows a \textit{specific pattern} such as SPMD, odd-even, or master/slave \cite{?}. As a consequence, the traces of a single execution tend to fall into just \textit{a few} ``equivalence classes''. 
-%
-%Adapted from the work by Webber et al \cite{weberStructural}, we have applied \textit{formal concept analysis} (FCA)\cite{clbook} techniques to reduce the trace search space into a few classes of traces, and also using the \textit{concept lattice} (CL) data structure as the \textit{model} of execution for further analysis.
-%
-\hl{definition of ``fault'' maybe? a software bug, node failure, a library version update or porting to a new system that causes failure to a working software }
-To study the impact of a fault on the execution, DiffTrace classifies the collected traces and measures the \textit{similarity} between the equivalence classes from the faulty and the fault-free execution.
-%
-The basic idea is to find out which traces (and, consequently, processes/threads) are falling into a different class (i.e., cluster) when the fault is introduced.
-%
-Based on the observed similarity among the two clusterings, DiffTrace suggests the topmost suspicious traces, i.e., the traces that suffer the most from the fault, for deeper analysis.
-%
 
-The rest of this section illustrates the DiffTrace components on sets of ParLOT traces from the aforementioned MPI odd/even sort example (Figure \ref{fig.oddEven}).
-Odd/even sort is a parallel version of bubble sort and operates in two alternating phases: in the \textit{even phase}, the even processes exchange (conditionally swap) values with their right neighbors, and in the \textit{odd phase}, the odd processes exchange values with their right neighbors. The for loop in line 4 of \texttt{oddEvenSort()} iterates over the phases of the algorithm. Based on the phase, the appropriate partner for each rank is computed by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and sort, merge, and copy operations are performed on the received data (denoted by \texttt{...} in line 15 for simplicity).
+\subsection{Example Walk-through}
 
-According to the MPI standard, \texttt{MPI\_Send} may \textit{block}, meaning MPI may buffer the outgoing message, in which case the send call completes before a matching receive is invoked, or it may choose not to buffer the message. In the latter case, the send call will not complete until a matching receive has been posted and the data has been transferred to the receiver. So, based on the dynamic behavior, swapping the statements on lines 11 and 12 of Figure \ref{fig.oddEvenDL} might end up causing a deadlock. DiffTrace can extract evidence from the traces to locate the cause of such deadlocks and other faults.
+We now employ
+Figure~\ref{fig.oddEven}---a textbook MPI odd/even sorting example---to
+illustrate DiffTrace.
+%
+Odd/even sorting is a parallel variant
+of bubble sort,
+and operates in two alternating phases:
+in the \textit{even phase}, the even processes exchange (conditionally swapping)
+values with their right neighbors, and in the \textit{odd phase},
+the odd processes exchange values with their right neighbors.\footnote{The
+  details of this algorithm are unimportant for this paper, but may be
+  found in standard MPI textbooks such as by Pacheco~\cite{pacheco}.}
+%
+%The for loop in line 4 of \texttt{oddEvenSort()} iterates over the phases of the algorithm. Based on the phase, the appropriate partner for each rank is computed by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and sort, merge, and copy operations are performed on the received data (denoted by \texttt{...} in line 15 for simplicity).
+
+A waiting trap in this example is this:
+the \texttt{MPI\_Send} call may need to \textit{block} if there aren't
+system buffers (EAGER limit is set low).
+%
+Thus, in low-buffer situations, the statements on lines 11 and 12 of
+this figure can end up in a deadlock.
+%
+We will now show how DiffTrace helps picks out this root-cause.
 
 \subsection{Pre-processing}
 \input{tabs/filters.tex}
 Using ParLOT's decoder, each trace is first decompressed.
-Next, the desired functions are extracted based on predefined (Table \ref{tab:filters}) or custom regular expressions (i.e., \textit{filters}) and kept for later phases. All other trace information is discarded.
-
-Table \ref{tab:oddEvenPT} shows the pre-processed traces ($T_i$) of odd/even sort with four processes. $T_i$ is the trace that stores the function calls of process $i$.
+Next, the desired functions are extracted based on predefined
+(Table \ref{tab:filters}) or custom regular expressions
+(i.e., \textit{filters}) and kept for later phases.
+%All other trace information is discarded.
+%
+Table \ref{tab:oddEvenPT} shows the pre-processed traces ($T_i$) of odd/even sort with four processes.
+$T_i$ is the trace that stores the function calls of process $i$.
 \input{tabs/oddEvenPT.tex}
-
 
 \subsection{Nested Loop Representation}
 
 \input{tabs/oddEvenPT-NLR.tex}
 
-Most programs, and HPC applications in particular, spend most of their runtime in \textit{loops}. Function calls within a loop body yield \textit{repetitive patterns} in ParLOT traces. Inspired by ideas for the detection of repetitive patterns in strings \cite{nakamura_fast_2013} and other data structures \cite{kmr}, we have adapted the Nested Loop Recognition (NLR) algorithm by Ketterlin et al.~\cite{Ketterlin-nlr} to detect repetitive patterns in ParLOT traces (cf.~Section \ref{subsec:algo-nlr}). Detecting such patterns can be used to measure the progress of each thread, revealing unfinished or broken loops that may be the consequence of a fault.
+Virtually all dynamic statements are found within loops.
+%
+Function calls within a loop body yield \textit{repetitive patterns}
+in ParLOT traces.
+%
+Inspired by ideas for the detection of repetitive patterns in strings \cite{nakamura_fast_2013}
+and other data structures \cite{kmr},
+we have adapted the Nested Loop Recognition (NLR) algorithm by Ketterlin et al.~\cite{Ketterlin-nlr}
+to detect repetitive patterns in ParLOT traces (cf.~Section \ref{subsec:algo-nlr}).
+Detecting such patterns can be used to measure the progress of each thread,
+revealing unfinished or broken loops that may be the consequence of a fault.
 
-For example, the loop in line 3 of \texttt{oddEvenSort()} (Figure \ref{fig.oddEven}) iterates four times when run with four processes. Thus each $T_i$ contains four occurrences of either [\texttt{MPI\_Send}-\texttt{MPI\_Recv}] (even $i$) or [\texttt{MPI\_Recv}-\texttt{MPI\_Send}] (odd $i$). By keeping only MPI functions and converting each $T_i$ into its equivalent NLR (Nested Loop Representation), Table \ref{tab:oddEvenPT} can be reduced to Table \ref{tab:oddEvenPT-NLR} where \textbf{L0} and \textbf{L1} represent the \textit{loop body} [\texttt{MPI\_Send}-\texttt{MPI\_Recv}] and [\texttt{MPI\_Recv}-\texttt{MPI\_Send}], respectively. The integer after the \^{} symbol in NLR represents the \textit{loop iteration count}. Note that, since the first and last processes only have one-way communication with their neighbors, $T_0$ and $T_3$ perform only half as many iterations.
+For example, the loop in line 3 of \texttt{oddEvenSort()} (Figure \ref{fig.oddEven}) iterates
+four times when run with four processes.
+Thus each $T_i$ contains four occurrences of either [\texttt{MPI\_Send}-\texttt{MPI\_Recv}] (even $i$)
+or [\texttt{MPI\_Recv}-\texttt{MPI\_Send}] (odd $i$).
+By keeping only MPI functions and converting each $T_i$ into its equivalent NLR (Nested Loop Representation),
+Table \ref{tab:oddEvenPT} can be reduced to Table \ref{tab:oddEvenPT-NLR} where \textbf{L0} and \textbf{L1}
+represent the \textit{loop body} [\texttt{MPI\_Send}-\texttt{MPI\_Recv}] and
+[\texttt{MPI\_Recv}-\texttt{MPI\_Send}], respectively.
+The integer after the \^{} symbol in NLR represents the \textit{loop iteration count}.
+Note that, since the first and last processes only have one-way communication with their neighbors,
+$T_0$ and $T_3$ perform only half as many iterations.
 
 \hl{connect this section to next}
 
-
 \subsection{Hierarchical Clustering via FCA}
-HPC applications often follow a \textit{regular pattern} of executed functions.
+Processes in HPC applications are known to fall into predictable equivalence classes.
 %
-Due to this characteristic, per-thread function-call traces can generally be classified into \textit{a few equivalence groups} based on their content.
+The widely used and highly successful STAT tool~\cite{stat} in fact owes most of its
+success to being able to efficiently collect stack traces (nested sequences of function
+calls), organize them as prefix-trees, and equivalence the processes into teams that
+evolve in different ways.
 %
-Such a classification would distinguish structurally different threads from each other (e.g., MPI processes from OpenMP threads in hybrid MPI+OpenMP applications) and reduce the search space into just a few representative classes of traces.
+Coalesced stack trace graphs (CSTG, \cite{cstg-journal-paper}) have proven effective in
+locating bugs within Uintah~\cite{uintah}, and perform stat-like equivalence class formation,
+albeit with the added detail of maintaining calling-contexts.
 %
-In addition, the set of per-thread traces should be studied as ``a whole'' since there is a strong conceptual and causal relation among threads/processes.
+Inspired by these ideas, FCA-based clustering provides the next logical level of refinement
+in the sense that (1)~we can pick any of the multiple attributes one can mine from traces (e.g.,
+pairs of function calls, memory regions accessed by processes, locks held by threads, etc), and
+form this equivalencing relation, (2)~compute the Jaccard distance between processes/threads
+quite naturally.
 %
-To integrate the collected traces into a \textit{single model of execution} and forming ``equivalence classes of traces'', we have adapted the idea of \textit{Structural Clustering} \cite{weberStructural} by applying \textit{formal concept analysis} (FCA) \cite{clbook} techniques to our traces.
-%
+In general,
+such a classification is powerful enough to
+distinguish structurally different threads from one another
+(e.g., MPI processes from OpenMP threads in hybrid MPI+OpenMP applications)
+and reduce the search space for bug location to a few representative classes of traces that
+are distinctly dissimilar.\footnote{As emphasized earlier, we perform ``sky subtraction'' as
+  in astronomy to locate comets; in our case, we diff the diffs, which is
+  captured in JSM$_{D}$.}
 
-A \textit{formal context} is a triple $K = (G, M, I)$, where $G$ is a set of \textbf{objects}, $M$ is a set of \textbf{attributes}, and $I \subseteq G \times M$ is an incidence relation that expresses \textit{which objects have which attributes}. Table \ref{tab:sampleContext} shows the formal context of the preprocessed odd/even sort traces.
+More formally,
+a \textit{formal context} is a triple $K = (G, M, I)$
+where $G$ is a set of \textbf{objects},
+$M$ is a set of \textbf{attributes},
+and $I \subseteq G \times M$ is an incidence relation that expresses
+\textit{which objects have which attributes}.
+Table \ref{tab:sampleContext} shows the formal context of the preprocessed odd/even sort traces.
 
-%
+
 In this context, attributes are trace entries (function calls or detected loop bodies) without their frequency (e.g., iteration counts). Table (\hl{the table that shows attributes in the next section}) shows the attributes that we have extracted from the traces. The context shows that all traces include the functions MPI\_Init(), MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize(). The even traces contain the loop \textit{L0} and the odd traces the loop \textit{L1}.
 %
 \hl{Definition of formal concept (needed?) figure }\ref{fig:formalConceptDefinition} :
