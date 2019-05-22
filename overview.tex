@@ -227,33 +227,47 @@ $M$ is a set of \textbf{attributes},
 and $I \subseteq G \times M$ is an incidence relation that expresses
 \textit{which objects have which attributes}.
 Table \ref{tab:sampleContext} shows the formal context of the preprocessed odd/even sort traces.
-
-
-In this context, attributes are trace entries (function calls or detected loop bodies) without their frequency (e.g., iteration counts). Table (\hl{the table that shows attributes in the next section}) shows the attributes that we have extracted from the traces. The context shows that all traces include the functions MPI\_Init(), MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize(). The even traces contain the loop \textit{L0} and the odd traces the loop \textit{L1}.
 %
-\hl{Definition of formal concept (needed?) figure }\ref{fig:formalConceptDefinition} :
-
-\begin{figure}[]
-\centering
-\caption{Formal Concept Definition}
-\includegraphics[width=0.45\textwidth]{figs/formalConceptDefinition.png}
-\label{fig:formalConceptDefinition}
-\end{figure}
-
-A \textit{concept lattice} can be derived from a \textit{formal context} by specifying \textit{formal concepts} (Figure \ref{fig:formalConceptDefinition}) and a \textit{partial order} on them. Concept lattices are represented as a directed acyclic graph where concepts are nodes and the order on them determines the edges.
+We can employ as attributes either the function calls themselves or the detected loop bodies
+(each detected loop is assigned a unique ID, and one can diff with respect to these IDs).
 %
-Figure \ref{fig:sampleCL} shows the concept lattice derived from the formal context in Table \ref{tab:sampleContext} and is interpreted as follows:
+Table (\hl{the table that shows attributes in the next section})
+shows the attributes that we have extracted from the traces.
+The context shows that all traces include the functions MPI\_Init(),
+MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize().
+The even traces contain the loop \textit{L0} and the odd traces the loop \textit{L1}.
+%
 
-\begin{itemize}
-    \item The top node indicates that all traces share MPI\_Init(), MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize().
+% \hl{Definition of formal concept (needed?) figure }\ref{fig:formalConceptDefinition} :
+% 
+% \begin{figure}[]
+% \centering
+% \caption{Formal Concept Definition}
+% \includegraphics[width=0.45\textwidth]{figs/formalConceptDefinition.png}
+% \label{fig:formalConceptDefinition}
+% \end{figure}
+
+%A \textit{concept lattice} can be derived from a \textit{formal context} by specifying \textit{formal concepts}
+%(Figure \ref{fig:formalConceptDefinition})
+%and a \textit{partial order} on them.
+%Concept lattices are represented as a directed acyclic graph where concepts are nodes and the
+%order on them determines the edges.
+%
+Figure \ref{fig:sampleCL} shows the concept lattice derived from the formal context in
+Table~\ref{tab:sampleContext} and is interpreted as follows:
+
+\begin{compactitem}
+\item The top node indicates that all traces share MPI\_Init(),
+  MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize().
     \item The bottom node signifies that none of the traces share all attributes. 
     \item The middle nodes show that $T_0$ and $T_2$ are different from  $T_1$ and $T_3$.
-\end{itemize}
+\end{compactitem}
 
 \input{tabs/tabs.sampleContext.tex}
 
+% Once the redundant labels are removed from the lattice, each object (trace) and attribute appears in the lattice exactly once. Consequently, the nodes of the lattice form the desired grouping, since it is guaranteed that each trace belongs to exactly one group. However, the concept lattice itself does not provide similarity values for the distinct groups of traces. The \textit{Jaccard Index}, also known as \textit{Intersection over Union}, measures the \textit{distance} between sets $A$ and $B$ in terms of the ratio of the \textit{intersection} size of $A$ and $B$ over the size of their \textit{union}.
+% 
 
-Once the redundant labels are removed from the lattice, each object (trace) and attribute appears in the lattice exactly once. Consequently, the nodes of the lattice form the desired grouping, since it is guaranteed that each trace belongs to exactly one group. However, the concept lattice itself does not provide similarity values for the distinct groups of traces. The \textit{Jaccard Index}, also known as \textit{Intersection over Union}, measures the \textit{distance} between sets $A$ and $B$ in terms of the ratio of the \textit{intersection} size of $A$ and $B$ over the size of their \textit{union}.  The complete pairwise Jaccard Similarity Matrix (JSM) can easily be computed from the concept lattice.
 %
 
 
@@ -282,53 +296,102 @@ Once the redundant labels are removed from the lattice, each object (trace) and 
 \label{fig:jsm2}
 \end{figure}
 
-For any pair of $(T_i, T_j)$, the number of attributes in the Lowest Common Ancestor (LCA) node of $T_i$ and $T_j$ in the lattice is the number of attributes that $T_i$ and $T_j$ have in common (intersection). The sum of the number of attributes of the nodes on the path from each $T_i$ and $T_j$ to their LCA is the union. This property is one of the motivations for using concept lattices as classifier since it makes computing the union and intersection easy and fast.
+% For any pair of $(T_i, T_j)$, the number of attributes in the Lowest Common Ancestor (LCA) node of $T_i$ and $T_j$ in the lattice is the number of attributes that $T_i$ and $T_j$ have in common (intersection). The sum of the number of attributes of the nodes on the path from each $T_i$ and $T_j$ to their LCA is the union. This property is one of the motivations for using concept lattices as classifier since it makes computing the union and intersection easy and fast.
+% 
+% Some algorithms for extracting concepts from contexts and constructing the concept lattice require the whole context to be present in the memory.
+%
 
-Some algorithms for extracting concepts from contexts and constructing the concept lattice require the whole context to be present in the memory.
+The complete pairwise Jaccard Similarity Matrix (JSM) can easily be computed from concept lattices.
 %
-For large-scale executions with thousands of threads, this is not feasible.
+For large-scale executions with thousands of threads, it is imperative
+to employ incremental algorithms to
+construct concept lattices (detailed in Section \ref{subsec:algo-cl}).
+.
 %
-Through an incremental concept-lattice-construction approach, DiffTrace extracts attributes (\hl{table that shows attributes}) from NLR traces and injects them into a concept lattice one trace at a time (cf. Section \ref{subsec:algo-cl}).
+% Through an incremental concept-lattice-construction approach,
+% DiffTrace extracts attributes (\hl{table that shows attributes})
+% from NLR traces and injects them into a concept lattice one trace at a time 
 %
-Figure \ref{fig:jsm2} shows the heatmap (explain this) of the JSM obtained from the concept lattice in Figure \ref{fig:sampleCL}.
+Figure \ref{fig:jsm2}
+shows the heatmap
+% (explain this)
+of the JSM obtained from the concept lattice in Figure \ref{fig:sampleCL}.
 %
 DiffTrace uses the JSM to form equivalence classes of traces by hierarchical clustering.
 %
-Next, we show how the differences between two hierarchical clusterings from two executions (faulty vs.~normal) reveal which traces have been affected the most by the fault.
+Next, we show how the differences between two hierarchical clusterings from two executions
+(faulty vs.~normal) reveal which traces have been affected the most by the fault.
 
 
 \subsection{Detecting Suspicious Traces via DiffJSM}
-So far, we have explained how DiffTrace can narrow down the search space from numerous long traces to just a few equivalent JSMs (i.e., clusters).
-%
+% So far,
+% we have explained how DiffTrace can narrow down the search space from numerous long traces to just a few equivalent JSMs (i.e., clusters).
+% %
 $JSM_{normal}[i][j]$ ($JSM_{faulty}[i][j]$) shows the Jaccard similarity score of $T_i$ and $T_j$ from the normal trace ($T_i^\prime$ and $T_j^\prime$).
-
-However, we are interested in detecting what changed the most due to the fault.
+% 
+% However, we are interested in detecting what changed the most due to the fault.
 % with respect to the ``natural asymmetry'' of the application.
 %
 %In other words, DiffTrace abstracts function call traces into JSMs, which are reflections of asymmetry among traces.
-The hierarchical clustering based on \textit{DiffJSM}, followed by the subtraction of the faulty JSM from its corresponding normal JSM, typically puts the trace(s) that changed the most in a separate, often singleton, cluster and thus detects the outlier.
-
-$DiffJSM = |JSM_{faulty} - JSM_{normal}|$
-
-% 
-The resulting outlier traces are candidates for the potential cause of the change in the program behavior and thus a potential fault root cause or fault manifestation.
+As explained earlier, we compute
+JSM$_{D}$ to detect outlier executions.
 %
-However, a single iteration of DiffTrace (with a single set of parameters shown as a dashed box in Figure \ref{fig.diffTraceOverview}) may not detect the problem. 
+The construction
+of JSM$_{D}$ 
+involves obtaining the hierarchical clustering based on \textit{DiffJSM},
+followed by the subtraction of the faulty JSM from its corresponding normal JSM.
+$DiffJSM = |JSM_{faulty} - JSM_{normal}|$
+%
+We sort the suggestion table based on the \textit{B-score}
+similarity metric of two hierarchical clusterings \cite{fowlkes83} (cf.~Section \ref{subsec:algo-bscore}).
+%
+A single iteration through the
+DiffTrace loop
+(with a single set of parameters shown as a dashed box in Figure \ref{fig.diffTraceOverview})
+may still not detect the root-cause of a bug.
+%
+The user can then (1)~alter the linkage method employed in computing the hierarchical clustering
+(reorder the dendrograms built to achieve the clustering),
+(2)~alter the FCA attributes, (3)~adjust the NLR constants (loops are extracted with
+realistic complexity by observing repetitive patterns inside a preallocated buffer),
+and/or (4)~the front-end filters.
+%
+This is shown in the iterative loop shown in
+Figure \ref{fig.diffTraceOverview}.
+
+\subsection{Evaluation}
+
+%The resulting outlier traces are candidates for the potential cause of the change in the program behavior and thus a potential fault root cause or fault manifestation.
+%
+
 %
 %Also, a different set of parameters might produce inaccurate suggestions (false positives).
 %
-To improve the accuracy, we have sorted the suggestion table based on the \textit{B-score} similarity metric of two hierarchical clusterings \cite{fowlkes83} (cf.~Section \ref{subsec:algo-bscore}).
 
-To evaluate the effectiveness of DiffJSM, we planted two artificial bugs (\textit{swapBug} and \textit{dlBug}) in the code from Figure \ref{fig.oddEven} and ran it with 16 processes.
-%
-\textit{swapBug} swaps the order of MPI\_Send and MPI\_Recv in rank 5 after the seventh iteration of the loop in line 3 of \texttt{oddEvenSort}, simulating a potential deadlock. \textit{dlBug} simulates an actual deadlock in the same location (rank 5 after the seventh iteration).
-%
-Upon collection of ParLOT traces from the execution of the buggy code versions, DiffTrace first decompresses them and filters out all non-MPI functions.
-Then two major loops are detected, \textbf{L0} and \textbf{L1} (Figure \ref{fig.gdiffs}-(a)), that are supposed to loop 16 times in the even and odd traces, respectively (except for the first and last traces, which loop just eight times).
 
-After constructing concept lattices and their corresponding JSMs, trace 5 appears as the trace that got affected the most by the bugs because row 5 (showing the similarity score of $T_5$ relative to all other traces) ($JSM_{normal}[5][i]$ for $i \in [0,16)$) changed the most after the bug was introduced. %Consequently, it means that $T^\prime_5$ affected the asymmetry of all $T_i$s.
+To evaluate the effectiveness of DiffJSM, we planted two artificial bugs (\textit{swapBug}
+and \textit{dlBug}) in the code from Figure \ref{fig.oddEven} and ran it with 16 processes.
+%
+\textit{swapBug} swaps the order of MPI\_Send and MPI\_Recv in rank 5
+after the seventh iteration of the loop in line 3 of \texttt{oddEvenSort},
+simulating a potential deadlock. \textit{dlBug} simulates an actual deadlock in the same location
+(rank 5 after the seventh iteration).
+%
+Upon collection of ParLOT traces from the execution of the buggy code versions,
+DiffTrace first decompresses them and filters out all non-MPI functions.
+Then two major loops are detected, \textbf{L0} and \textbf{L1} (Figure \ref{fig.gdiffs}-(a)),
+that are supposed to loop 16 times in the even and odd traces,
+respectively (except for the first and last traces, which loop just eight times).
+
+After constructing concept lattices and their corresponding JSMs, trace 5 appears as the trace that got
+affected the most by the bugs because row 5 (showing the similarity score of $T_5$ relative to all other traces)
+($JSM_{normal}[5][i]$ for $i \in [0,16)$)
+  changed the most after the bug was introduced.
+  %Consequently, it means that $T^\prime_5$ affected the asymmetry of all $T_i$s.
 *
-The differences between the suggested suspicious trace ($T^\prime_s$) and its corresponding normal trace ($T_s$) is visualized by \textit{diffNLR}.
+The differences between the suggested suspicious trace ($T^\prime_s$)
+and its corresponding normal trace ($T_s$) is visualized by \textit{diffNLR}.
+
 
 \subsubsection{diffNLR}
 To highlight the differences in an easy-to-understand manner, DiffTrace visually separates the common and different blocks of a pair of pre-processed traces via \textit{diffNLR}, a graphical visualization of the \texttt{diff} algorithm \cite{diff-myers}.
