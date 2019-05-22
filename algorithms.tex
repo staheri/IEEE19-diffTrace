@@ -1,51 +1,54 @@
 
 \subsection{NLR}
 \label{subsec:algo-nlr}
-To recognize loop structures in traces, we have adopted ideas from Kobayashi \cite{kobayashi-84} paper where he defines loops in a sequence of instructions as ``a string of instruction executions in which a particular sequence of distinct instructions (called the \textit{cycle} of the loop) is successively repeated''.
-%
-This idea have been later expanded by Ketterline et al in \cite{Ketterlin-nlr} where they have introduced Nested Loop Recognition (NLR) algorithm for compressing data access addresses and predicting next accessing addresses.
-%
-NLR is a memory-bounded algorithm that 
+Nested Loop Recognition (NLR) algorithm \cite{Ketterlin-nlr} is originally designed for prediction and compression of data access traces (memory addresses) through detecting the ``linear progression function'' in the sequence of addresses. Two main operations of NLR algorithm are 1) recognizing the start of a loop and forming its initial syntactic structure and 2) recognizing if what follows a loop is just another iteration and extend the upper bound. These operations are performed incrementally and recursively to recognize loops at different depths (linear function of loop index $i$ and depth $d$) until the input sequence is completely consumed and no more loop is detected.
 
-start reading from the beginning of the sequence
+Previous to NLR, Kobayashi \cite{kobayashi-84} proposed a similar bottom-up strategy to build loop nests from a trace (sequence of string instructions) where each recognized loop is replaced with a new symbol, which is remembered so that identical loops at different locations can be identified. This process is restarted once the whole trace has been analyzed for depth-2 loops, and so on until some replacement is performed.
 
-store them in the stack
+Inspired by Kobayashi approach, we have re-implemented the NLR algorithm (DiffTrace-NLR) for detecting repetitive patterns in a sequence of function calls (trace) and summarizing the trace to NLR representation. DiffTrace-NLR works by incrementally pushing trace entries (function IDs) into a stack of \textit{elements} (i.e., function IDs and already detected loop structures). Whenever an element is pushed to the stack, the upper elements of the stack are recursively examined for potential loop detection or loop extensions (Procedure \ref{proc:NLR}). 
 
-upon each push to stack
 
-	checks for top 3 equal size sub-sequence for isomorphism (equal length and equal corresponding elements)
-	
-	checks if top n elements of the stack matches with any previous detected loops. if yes, increment the loop count and pop n elements from the stack
-	
-the above procedure would be repeated any time a change happens in the stack. 
 
-There is a pre-defined size for Max Stack. If stack reaches that point, a fixed number of elements would be popped from the bottom of the stack to free the space for rest of elements.
+\begin{algorithm}[]
+ \DontPrintSemicolon
+ \SetKwFunction{KwReduce}{Reduce}
+% \SetKwInOut{Input}{Input} \SetKwInOut{Output}{Output}\SetKwInOut{Local}{Local}
+  %\SetKw{KwEach}{each}
+ %\Input{Stack of elements $S$, $S[1]$ is top}
+ %\Output{$NLR(T)$}
+ \KwReduce{$S$}:{\\
+ \Indp
+ 	\For{$ i:1$ ... $3K$}{
+ 		$b$ = $i/3$\;
+ 		\If{Top 3 $b$-long elements of $S$ are \textit{isomorphic}}{
+ 			pop $i$ elements from $S$\;
+ 			$LB=S[b:1]$
+ 			$LC=3$\;
+ 			$LS=(LB,LC)$\;
+ 			push $LS$ to $S$\;
+ 			add $LB$ to Loop Table\;
+ 			\KwReduce{$S$}\;
+ 		}
+ 		\If{ $S[i]$ is a loop ($LS$) and $S[i-1:1]$ isomorphic to its loop body$LB$}{
+ 			$LC=LC+1$\;
+ 			pop $i-1$ elements from $S$\;
+ 			\KwReduce{$S$}\;
+ 		}
+ 	}
+ }
 
-figure \ref{fig.NLRexample} shows the final product
+ \caption{\texttt{Reduce} Procedure Adapted From the NLR algorithm }
+ \label{proc:NLR}
+\end{algorithm}
 
-complexity is $\Theta(K^2N)$ where $K$ is a fixed priori and $N$ is the size of the input. 
+Each loop structure \textbf{LS} is a tuple of (loop body \textbf{LB}, loop count \textbf{LC}) where LB is a sequence of \textit{elements} and LC is an integer showing the frequency of consecutive occurrence of LB. To avoid coincidental regularity, the algorithm needs at least three consecutive terms to form a LS. The \texttt{Reduce} procedure checks to see if any three consecutive sub-sequences on top of the stack are \textit{isomorphic}. In our context, subsequences are isomorphic if they have equal lengths and all correspoding elements of each subsequence are identical. Then the three subsequences are popped from the stack and the LS=(LB,3) is pushed to stack (LB is either of subsequences). We store all distinct LBs into a hash-table, assigning each a unique ID which can be applied as heuristic to detect loops in other traces and compact representation of traces (NLR). 
+ The maximum length of subsequences to examin is decided by a fixed priori $K$.  The complexity of NLR algorithm is $\Theta(K^2N)$ where $N$ is the size of the input. 
 %
 
 
 
 \subsection{Concept Lattice Construction}
 \label{subsec:algo-cl}
-
-\begin{itemize}
-	\item \hl{1 paragraph background on FCA}
-	\item \hl{1-2 paragraphs on advantages of FCA and what we would gain from FCA? Answer: Full pair-wise Jaccard Similarity Matrix (JSM)}
-	\item \hl{1 paragraph how JSMs are going to help us (referring to the major figure at the beginning of this section)}
-	\begin{itemize}
-		\item Some background about Jaccard Similarity Score
-		\item How to obtain full pair-wise Jaccard Similarity Matrix (JSM) from a concept lattice (e.g., LCA approach)
-	\end{itemize}
-	\item \hl{1-2 paragraphs on CL generation (related work and our approach)}
-	\begin{itemize}
-		\item Batch vs. Incremental \cite{clconst}
-		\item Complexity: $O(2^{2K}||E||)$ where $K$ is an upper bound for number of attributes (e.g., distinct function calls in the whole execution) and $||E||$ is the number of objects (e.g., number of PTs).
-	\end{itemize}
-	\item \hl{1-2 paragraphs (+ 1-2 figures) explaining the FCA ideas on odd/even sort example.}
-\end{itemize}
 
 
 There are algorithms that can extract concepts and their partial order from a formal context as a batch or incrementally. For large scale executions 
