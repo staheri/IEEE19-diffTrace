@@ -35,6 +35,7 @@ $(TARGET): Makefile $(DEPFILES)
 .PHONY: clean
 clean:
 	rm -f $(GARBAGE)
+	rm -f $(TARGET)
 
 .PHONY: veryclean
 veryclean: clean
