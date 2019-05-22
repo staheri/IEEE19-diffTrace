@@ -1,11 +1,25 @@
 
 \subsection{NLR}
 \label{subsec:algo-nlr}
-Nested Loop Recognition (NLR) algorithm \cite{Ketterlin-nlr} is originally designed for prediction and compression of data access traces (memory addresses) through detecting the ``linear progression function'' in the sequence of addresses. Two main operations of NLR algorithm are 1) recognizing the start of a loop and forming its initial syntactic structure and 2) recognizing if what follows a loop is just another iteration and extend the upper bound. These operations are performed incrementally and recursively to recognize loops at different depths (linear function of loop index $i$ and depth $d$) until the input sequence is completely consumed and no more loop is detected.
+Nested Loop Recognition (NLR) algorithm \cite{Ketterlin-nlr} is originally designed for prediction and compression of data access traces (memory addresses) through detecting the ``linear progression function'' in the sequence of addresses.
+%
+Two main operations of NLR algorithm are 1) recognizing the start of a loop and forming its initial syntactic structure and 2) recognizing if what follows a loop is just another iteration and extend the upper bound. 
+%
+These operations are performed incrementally and recursively to recognize loops at different depths (i.e., a linear function of the loop index and depth) until the input sequence is completely consumed and no more loop is detected.
+%
 
-Previous to NLR, Kobayashi \cite{kobayashi-84} proposed a similar bottom-up strategy to build loop nests from a trace (sequence of string instructions) where each recognized loop is replaced with a new symbol, which is remembered so that identical loops at different locations can be identified. This process is restarted once the whole trace has been analyzed for depth-2 loops, and so on until some replacement is performed.
+Previous to NLR, Kobayashi \cite{kobayashi-84} proposed a similar bottom-up strategy to build loop nests from a trace (sequence of string instructions) where each recognized loop is replaced with a new symbol.
+%
+Identical loops at different locations can be identified by remembering the new symbol.
+%
+This process is restarted once the whole trace has been analyzed for depth-2 loops, and so on until some replacement is performed.
+%
 
-Inspired by Kobayashi approach, we have re-implemented the NLR algorithm (DiffTrace-NLR) for detecting repetitive patterns in a sequence of function calls (trace) and summarizing the trace to NLR representation. DiffTrace-NLR works by incrementally pushing trace entries (function IDs) into a stack of \textit{elements} (i.e., function IDs and already detected loop structures). Whenever an element is pushed to the stack, the upper elements of the stack are recursively examined for potential loop detection or loop extensions (Procedure \ref{proc:NLR}). 
+Inspired by Kobayashi approach, we have re-implemented the NLR algorithm (DiffTrace-NLR) for detecting repetitive patterns in a sequence of function calls (trace) and summarizing the trace to NLR representation.
+%
+DiffTrace-NLR works by incrementally pushing trace entries (function IDs) into a stack of \textit{elements} (i.e., function IDs and already detected loop structures).
+%
+Whenever an element is pushed to the stack $S$, the upper elements of the stack are recursively examined for potential loop detection or loop extensions (Procedure \ref{proc:NLR}). 
 
 
 
@@ -18,61 +32,106 @@ Inspired by Kobayashi approach, we have re-implemented the NLR algorithm (DiffTr
  %\Output{$NLR(T)$}
  \KwReduce{$S$}:{\\
  \Indp
- 	\For{$ i:1$ ... $3K$}{
- 		$b$ = $i/3$\;
- 		\If{Top 3 $b$-long elements of $S$ are \textit{isomorphic}}{
- 			pop $i$ elements from $S$\;
- 			$LB=S[b:1]$
- 			$LC=3$\;
- 			$LS=(LB,LC)$\;
- 			push $LS$ to $S$\;
- 			add $LB$ to Loop Table\;
- 			\KwReduce{$S$}\;
- 		}
- 		\If{ $S[i]$ is a loop ($LS$) and $S[i-1:1]$ isomorphic to its loop body$LB$}{
- 			$LC=LC+1$\;
- 			pop $i-1$ elements from $S$\;
- 			\KwReduce{$S$}\;
- 		}
- 	}
+     \For{$ i:1$ ... $3K$}{
+         $b$ = $i/3$\;
+         \If{Top 3 $b$-long elements of $S$ are \textit{isomorphic}}{
+             pop $i$ elements from $S$\;
+             $LB=S[b:1]$,
+             $LC=3$\;
+             $LS=(LB,LC)$\;
+             push $LS$ to $S$\;
+             add $LB$ to the Loop Table\;
+             \KwReduce{$S$}\;
+         }
+         \If{ $S[i]$ is a loop ($LS$) and $S[i-1:1]$ isomorphic to its loop body$LB$}{
+             $LC=LC+1$\;
+             pop $i-1$ elements from $S$\;
+             \KwReduce{$S$}\;
+         }
+     }
  }
 
  \caption{\texttt{Reduce} Procedure Adapted From the NLR algorithm }
  \label{proc:NLR}
 \end{algorithm}
 
-Each loop structure \textbf{LS} is a tuple of (loop body \textbf{LB}, loop count \textbf{LC}) where LB is a sequence of \textit{elements} and LC is an integer showing the frequency of consecutive occurrence of LB. To avoid coincidental regularity, the algorithm needs at least three consecutive terms to form a LS. The \texttt{Reduce} procedure checks to see if any three consecutive sub-sequences on top of the stack are \textit{isomorphic}. In our context, subsequences are isomorphic if they have equal lengths and all correspoding elements of each subsequence are identical. Then the three subsequences are popped from the stack and the LS=(LB,3) is pushed to stack (LB is either of subsequences). We store all distinct LBs into a hash-table, assigning each a unique ID which can be applied as heuristic to detect loops in other traces and compact representation of traces (NLR). 
- The maximum length of subsequences to examin is decided by a fixed priori $K$.  The complexity of NLR algorithm is $\Theta(K^2N)$ where $N$ is the size of the input. 
+Each loop structure \textbf{LS} is a tuple of (loop body \textbf{LB}, loop count \textbf{LC}) where LB is a sequence of elements and LC is an integer showing the frequency of consecutive occurrence of LB.
+%
+To avoid coincidental regularity, the algorithm needs at least \textit{three} consecutive terms to form an LS.
+%
+The \texttt{Reduce} procedure checks to see if any three consecutive subsequences on top of the stack are \textit{isomorphic}.
+%
+In our context, two sequences are isomorphic if both have equal lengths and identical corresponding elements.
+%
+If the check passes, then the top three consecutive subsequences (LB) are popped from the stack, and the LS=(LB,3) is pushed onto the stack. Otherwise, top elements of the stack are compared against the potential LS behind them to increment the LC in case of isomorphism.
+If either of the above examinations successes, the procedure restarts on the recently modified stack for detecting or extending potential nested loops.
 %
 
-
+We store all distinct LBs into a hash-table, assigning each a unique ID which can be applied as a heuristic to detect loops not only in the current trace but in other traces of the same execution.
+%
+The maximum length of subsequences to examine is decided by a fixed priori $K$.
+%
+The complexity of the NLR algorithm is $\Theta(K^2N)$ where $N$ is the size of the input. 
+%
 
 \subsection{Concept Lattice Construction}
 \label{subsec:algo-cl}
 
-There exist algorithms that extract concepts and their partial order from a formal context, each has their own pros and cons.
+There exist algorithms that extract concepts and their partial order from a formal context; each has its pros and cons.
 %
-Given the density/sparsness of the formal context, the efficiency of algorithms vary \cite{clgenperform}.
+Given the density/sparseness of the formal context, the efficiency of algorithms varies \cite{clgenperform}.
 %
 The basic Ganter's \textit{Next Closure} algorithm \cite{clbook} construct the lattice from the \textit{batch} of context and requires the whole context to be present in the main memory.
 %
 For large scale HPC traces, such an approach is inefficient.
 %
-We have implemented Godin's \textit{incremental} algorithm \cite{clconst} to extract concepts from traces and inject them to an initially empty  lattice.
-%
-Every time a new concept is added to the lattice, an \textit{update} procedure minimally modifies/adds/deletes edges and nodes to the lattice. 
-%
-This update procedure is guaranteed to preserve the validity of the concept lattice properties.
-%
-The complexity of Godin's algorithm is $O(2^{2K}|G|)$ where $K$ is an upper bound for number of attributes (e.g., distinct function calls in the whole execution) and $|G|$ is the number of objects (e.g., number of traces).
+\input{tabs/attributes.tex}
 
-%In DiffTrace, the upper bound for number of attribute is usually small, since traces are pre-processed and summarized in form of NLRs. Thus Godin's algorithm would perform near
+We have implemented Godin's \textit{incremental} algorithm \cite{clconst} to extract attributes (Table \ref{tab:atr}) from each trace (object) and inject them to an initially empty lattice.
+%
+Every time a new object with its set of attributes added to the lattice, an \textit{update} procedure minimally modifies/adds/deletes edges and nodes.
+
+
+%
+This procedure is guaranteed to preserve the validity of the concept lattice properties.
+%
+
+The extracted attributes are in form of \textit{\{atr:freq\}}. 
+%
+\textit{atr} is either a single entry of the trace NLR or a consecutive pair of entries. \textit{freq} is a parameter to adjust the impact of frequency of each \textit{atr} in the concept lattice.
+%
+The complexity of Godin's algorithm is $O(2^{2K}|G|)$ where $K$ is an upper bound for the number of attributes (e.g., distinct function calls in the whole execution) and $|G|$ is the number of objects (e.g., number of traces).
+
+%In DiffTrace, the upper bound for the number of attributes is usually small since traces are pre-processed and summarized in the form of NLRs. Thus Godin's algorithm would perform near
 
 
 
 \subsection{Hierarchical Clustering, Construction and Comparison}
  \label{subsec:algo-bscore}
-We have used 
+ 
+\subsubsection{SciPy}
+The table of suspicious traces is derived from the DiffJSM by hierarchical clustering algorithms in SciPy API version 1.3.0. \cite{scipy}.
+%
+DiffJSMs provide pair-wise dissimilarity measurement that can be used to combine traces (forming initial clusters).
+%
+However, to derive a flat clustering of traces to detect the outlier(s)(i.e., suspicious traces), a \textit{linkage} function is required to measure the distance between sets of traces.
+%
+SciPy provides a wide range of linkage functions: single, complete, average, weighted, centroid, median, ward.
 
-cite scipy 
-used scipy library to construct hierarchical clustering (linkage) (table) for generating the ranking table. 
+\subsubsection{Ranking Table}
+As shown in figure \ref{fig.diffTraceOverview}, each component of DiffTrace has some tunable parameters and constants.
+%
+Consequently, the suggested suspicious traces might not be accurate or drastically changes with a slight change in the parameters.
+%
+Thus a metric is needed to sort the selected suspicious traces based on.
+%
+Since each parameter combination would map to a DiffJSM, the metric can be `` the distance between two hierarchical clusterings''.
+%
+Fowlkes et al.~\cite{fowlkes83} proposed a method for comparing two hierarchical clusterings by computing their \textit{B-score}.
+%
+The B-score of two clusterings is computed by counting the number of objects that fall into different clusters.
+%
+We have not evaluated the accuracy of the proposed idea.
+%
+However, our initial experiments show that sorting suspicious traces based on the B-score of DiffJSMs is effective and brings interesting traces to attention.
+
