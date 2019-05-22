@@ -66,84 +66,78 @@ these traces to another tool, or cooperate in symbiotic ways.
 
 
 
-It is clear that we cannot collect everything that must be
-collected to detect all possible bug classes in HPC ranging
+It is clear that we cannot collect all relevant pieces of information
+necessary to detect all possible bug classes in HPC ranging
 across resource leak bugs,  deadlocks, and data races.
 %
 Each such bug requires its own attributes to be kept.
 %
 Also, it is clear that debugging is not fully automatable (it is
-an undecidable problem in general).
+an undecidable problem in general) and must involve human thinking:
+at least to reconcile what is observed against the deeper application
+level semantics.
 %
-
-...how far we can go via fn call ercording .. calling context pairs... shine light..other tool attach!..XSXg
-
-In this paper, we provide our fundamentally fresh look
-at debugging.
-
-
+However, (1)~we believe that it is still possible to collect one common form
+of information and use it to make an initial triage in such
+a way that it can guide a later deeper debugging phase to locate
+which of the finer bug gradations of bugs (resource leaks or races) brought
+an application down.
 %
-We point out three significant problems that
-we have addressed in our work, and provide our preliminary
-solutions backed up by case studies.
+Also, (2)~we believe that it is possible to engage the human {\em with respect
+to understanding structured presentations of information}---and not a general
+disorienting bug situation.
+
+
+In our effort, we address both these issues.
+%
+The common form of information we use is a {\em whole program
+function call trace} collected per process/thread.
+%
+In this paper we build a framework called DiffTrace which relies on
+novel ways to diff a normal trace and a fault-laden trace to guide the
+debugging engineer closer to the bug.
 %
 While our work has not (yet) addressed the situations in
 which millions of threads and thousands of processes run
 for days and produce an error,
-we strongly believe that we can get there only through
-a series of {\em rigorous} approaches
-that overcome key limitations found in conventional
-debugging approaches in a step-by-step manner, accompanied
-by careful measurements of the merits of the new approach.
+we strongly believe that we can get there only 
+after we understand the pros and cons of our initial
+implementation of the  DiffTrace tool (via this paper).
 %
-The main contribution of this paper is the first such
-critical measurements of our proposed approach.
+The second problem is handled in DiffTrace by offering a novel
+collection of modalities for understanding program execution diffs.
+%
+We now elaborate on these points by stating three specific
+problems we address in this paper.
 
 
-\paragraph{Problem-1: Need to Generalize Approaches for Outlier Detection:\/}
+
+\paragraph{Problem-1: Collecting Whole-Program {\em Heterogeneous} Function Call Traces
+Efficiently:\/} Not only must we have the ability
+to record function calls and returns at one
+API such as MPI, increasingly we must collect calls/returns at multiple
+interfaces (e.g., OpenMP, PThreads, and even inner levels such as TCP).
 %
+The growing use of heterogeneous programming necessitates that we have
+an understanding of MPI and OpenMP activities (for example) to locate cross-API
+bugs that are often missed by other tools.
+%
+Sometimes, these APIs are realized on newer machines, and may contain the
+actual error (not the user code itself), and it would be attractive to have
+this ability as well.
 
 
-\noindent{\em Solution to Problem-1: Whole Program Tracing for Debugging:\/}
-In this setting, our first contribution is
-a debugging approach in which the application is not merely
-run with a single symptom-specific tool attached as described earlier.
-%
-Instead, we collect {\em whole program traces} of function calls
-and returns, using a PIN-based function call tracing facility called
-ParLoT that we have developed and previously reported~\cite{parlot-paper}.
-%
-We store these traces for potential examination by multiple tools
-and approaches.
-%
-The advantage of whole program binary tracing supported
-in ParLoT is that we can
-collect function calls at {\em any desired level of abstraction}.
-%
-For instance, if the programmer wants to cover activities at the
-MPI level, the OpenMP level and perhaps even lower levels (e.g., the
-MPI library or the OpenMP runtime), they can do so using ParLoT.
 
 
-Clearly, the more APIs at which function calls are recorded, the
-more burdensome trace collection becomes.
-%
-However, the advantage is that correspondingly
-more tools can then be applied to
-the collected traces.
-%
-There is always a sweet-spot in this trade-off space,
-depending on the particular debugging situation.
-%
-However, our fundamental insight is that {\em given the
-inevitability of heterogeneous programming} (the use of multiple
-concurrency models), it is important to
-be collecting traces from a few related APIs at a time, so that
-one can study bugs in one of the concurrency models or a bug
-resulting from a bad cross-model interaction
-from a {\em single run of the program}.
 
-
+\noindent{\em Solution to Problem-1:\/}
+In DiffTrace, we choose PIN-based whole program binary tracing, with
+tracing filters that allow the designer to collect a suitable mixture of API
+calls/returns.
+%
+We realize this facility using
+ParLoT, a tool designed by us and published earlier~\cite{parlot-paper}.
+%
 In our research, we have thus far demonstrated the advantage of
 ParLoT with respect to collecting both MPI and OpenMP traces
 from a {\em single run of a hybrid MPI/OpenMP program}.
@@ -151,21 +145,14 @@ from a {\em single run of a hybrid MPI/OpenMP program}.
 We demonstrate that from this single type of traces, it is possible
 to pick out MPI-level bugs or OpenMP-level bugs.
 %
-While we have not covered all these combinations in our work
-so far, the main contribution claimed is the ability to
-cover multiple APIs while debugging, and without re-executions or
-guess-work.
-
-
 While this approach to whole-program tracing
 may sound extremely computation intensive, we employ
 novel on-the-fly compression techniques within ParLoT.
 %
-In our previous study~\cite{parlot-paper}, we report compression
-efficiencies exceeding 16,000.
-%
-This allows us to bring out the function call traces without
-significantly burdening the memory subsystem or I/O networks in the HPC cluster.
+We achieve compression efficiencies exceeding 16,000~\cite{parlot-paper},
+thus making this technique much more practical, demanding
+only a few kilobytes per second of extra bandwidth from the upper levels of
+the memory hierarchy.
 
 
 \paragraph{Problem-2: Need to Generalize Approaches for Outlier Detection:\/}
