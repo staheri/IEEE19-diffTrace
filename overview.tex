@@ -6,38 +6,36 @@
 \label{fig.diffTraceOverview}
 \end{figure*}
 
-DiffTrace employs ParLOT's \cite{parlot} whole-program function-call and return traces for fault detection and localization.
+DiffTrace employs
+ParLOT's~\cite{parlot} whole-program function-call and return trace collection
+mechanisms, where ParLOT captures traces
+via Pin~\cite{pin} and incrementally compresses them using our trainable
+compression schemes~\cite{martin-compression-paper}.
 %
-ParLOT is based on the dynamic binary instrumentation toolkit Pin \cite{pin} and incrementally compresses the generated traces on-the-fly.
+ParLoT can capture functions at two levels:
+the \textit{main image} (which does not include library code)
+and \textit{all images} (including all application code).
 %
-It can capture functions at two levels: the \textit{main image}, which does not include library code, and \textit{all images}, which includes all application code.
+As the application runs,
+ParLOT generates per-thread trace files that
+contain the compressed sequence of the IDs of the executed functions.
 %
-As the application runs, ParLOT generates per-thread trace files that contain the compressed sequence of the IDs of the executed functions.
+The compression mechanism is light-weight yet effective,
+thus not only reducing the required bandwidth and storage but also the
+runtime relative to not compressing the traces.
+As a result, ParLOT can capture whole-program traces at low overhead
+while leaving the majority of the disk bandwidth to the application. 
 %
-The compression mechanism is light-weight yet effective, thus not only reducing the required bandwidth and storage but also the runtime relative to not compressing the traces. As a result, ParLOT can capture whole-program traces at low overhead while leaving the majority of the disk bandwidth to the application. 
-%
-Using whole-program traces substantially reduces the number of overall debug iterations because it allows us to repeatedly analyze the traces offline with different filters.
-%
-Despite these benefits, raw ParLOT traces are just compressed sequences of executed function IDs.
-%
-Moreover, using ParLOT on a large-scale HPC application tends to yield thousands of long traces.
-%
-These traces need to be filtered, grouped, and transformed into a meaningful representation that reveals important facts about the dynamic behavior of the program and hides uninteresting details. This is what DiffTrace does.
+Using whole-program traces substantially reduces the number of overall
+debug iterations because it allows us to repeatedly analyze the
+traces offline with different filters.
 
-The DiffTrace tool-chain (Figure \ref{fig.diffTraceOverview}) provides the sophisticated infrastructure needed for \textit{iterative and configurable trace search space reduction for localizing errors} in a set of traces.
-%
-Considering a ``successful’’ termination of the application as \textit{normal behavior}, DiffTrace iteratively compares the traces from faulty runs against those from normal runs to progressively zero in on any \textit{abnormal behavior}.
-%
-Each abnormal behavior is considered a potential fault cause or manifestation.
-%
-However, faults may occur or influence the program behavior at different locations and granularities.
-%
+
+The DiffTrace tool-chain (Figure \ref{fig.diffTraceOverview}) provides
+
 A fault may get triggered at some point in the code and be immediately visible, or it may only manifest itself some time later.
-%
-DiffTrace feeds the normal and faulty traces through a sequence of data transformation and classification steps. It then suggests a few traces for a more detailed study (e.g., comparing the traces from a different vantage point) based on \textit{measuring and locating points of differences}.
-%
-Since each DiffTrace step can be parameterized in multiple ways, additional evidence about what went wrong may be obtained \textit{iteratively}. In each iteration, DiffTrace puts the spotlight on a separate aspect of the program's dynamic behavior.
-%
+
+
 
 \begin{figure}[]
 \centering
