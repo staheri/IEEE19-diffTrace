@@ -157,25 +157,26 @@ a \textit{linkage} function is required to measure the distance between sets of 
 %derived from the DiffJSM by hierarchical clustering algorithms in
 %
 %
-
- 
-%
-SciPy provides a wide range of linkage functions: single, complete, average, weighted, centroid, median, ward.
+ SciPy provides a wide range of linkage functions
+ such as single, complete, average, weighted, centroid, median, and ward.
 
 \subsubsection{Ranking Table}
-As shown in figure \ref{fig.diffTraceOverview}, each component of DiffTrace has some tunable parameters and constants.
+As shown in figure \ref{fig.diffTraceOverview},
+each component of DiffTrace has some tunable parameters and constants,
+and the suggested suspicious traces are a function of these.
 %
-Consequently, the suggested suspicious traces might not be accurate or drastically changes with a slight change in the parameters.
+Thus a metric is needed to serve as the sorting key of the suspicious traces.
 %
-Thus a metric is needed to sort the selected suspicious traces based on.
+Each parameter combination, in essence, creates a different DiffJSM,
+giving us the ``the distance between two hierarchical clusterings''.
 %
-Since each parameter combination would map to a DiffJSM, the metric can be ``the distance between two hierarchical clusterings''.
+Fowlkes et al.~\cite{fowlkes83} proposed a method for comparing two
+hierarchical clusterings by computing their \textit{B-score}.
 %
-Fowlkes et al.~\cite{fowlkes83} proposed a method for comparing two hierarchical clusterings by computing their \textit{B-score}.
-%
-The B-score of two clusterings is computed by counting the number of objects that fall into different clusters.
-%
-We have not evaluated the accuracy of the proposed idea.
-%
-However, our initial experiments show that sorting suspicious traces based on the B-score of DiffJSMs is effective and brings interesting traces to attention.
+%The B-score of two clusterings is computed by counting the number of objects that fall into different clusters.
+%%
+While we have not evaluated the full relevance of this idea,
+our initial experiments show that sorting suspicious traces based on the B-score of DiffJSMs is
+effective and brings interesting outliers to attention.
+%--end
 
