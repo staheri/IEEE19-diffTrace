@@ -71,8 +71,8 @@ Weber et al.'s work~\cite{weberStructural,clbook} employs FCA exactly in
 this manner (including the use of pairs of calls),
 but for grouping performance information.
 %
-Our contribution is to realize that FCA eminently suits many
-of the requirements of debugging as well.
+Our new contribution is showing that FCA can play a central
+role in debugging HPC applications.
 
 
 While faults induce asymmetries (``aberrations'') in program behaviors,
@@ -114,6 +114,23 @@ the normal and erroneous threads differ with respect to the main stem.
 %
 We show that this presentation often helps the debugging engineer
 locate the faults.
+
+
+Last but not least,
+we strongly believe that a framework such as DiffTrace can
+serve as an important HPC community resource.
+%
+Each debugging tool designer who uses DiffTrace can extend
+it by incorporating new attributes and clustering methods, but
+otherwise retain the overall tool structure.
+%
+Such a playground for developing and exploring new methods for
+debugging does not exist in HPC.
+%
+There is also the intriguing possibility that 
+many of the 30-odd tools mentioned in \S\ref{sec:intro}
+{\em can be made to focus on the problems highlighted
+by diffNLR}, thus gaining efficiency (this will be part of our future work).
 
 
 
