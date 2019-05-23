@@ -31,8 +31,9 @@ tools.
 Despite this abundance of activity and tools, many
 significant problems remain to be solved before debugging
 {\em can be approached by the HPC community as a collaborative
-activity} so that HPC developers can share their solutions
-and extend a common framework.
+activity} so that HPC developers can extend a common
+framework.
+
 
 Almost all debugging approaches seek to find outliers (``unexpected
 executions'') amongst thousands of running processes and threads.
@@ -79,8 +80,8 @@ which of the finer bug gradations (e.g., resource leaks or races) brought
 the application down.
 %
 Also, (2)~we believe that it is possible to engage the human {\em with respect
-to understanding structured presentations of information}---as opposed to a general
-disorienting bug situation.
+to understanding structured presentations of information}.
+
 
 
 Our DiffTrace framework addresses both issues.
@@ -206,7 +207,8 @@ This approach to summarizing loops can help manifest
 bugs where the program does not hang or crash but nevertheless
 runs differently in a manner that informs the developer engaged in debugging.
 
-{\bf Contributions and Organization\/}:
+{\bf Organization\/}: 
+%
 \S\ref{sec:overview} illustrates the contributions of this paper on a simple example.
 %
 \S\ref{sec:algo} presents the algorithms underlying DiffTrace in more detail.
