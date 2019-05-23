@@ -1,7 +1,6 @@
-
 \begin{frame}{}
   \lstset{language=C}
- \begin{lstlisting}[caption={My Caption}]
+ \begin{lstlisting}[caption={ILCS Overview},label={lst:ilcs}]
 main(argc,argv){
  ... // initialization
  MPI_Init();
@@ -22,7 +21,7 @@ main(argc,argv){
     if (local_result < champ[rank]){ // update local champion
      <@\textcolor{blue}{\#pragma omp cirtical}@>
      memcpy(champ[rank],local_result)}}
-  } else{ //communication thread
+  } else{ //master thread
    do{
     ...
     MPI_AllReduce(); //broadcast the global champion 
@@ -44,8 +43,5 @@ main(argc,argv){
 CPU_Init(){ /* Read coordinations, calculate distances, Initialize the champion structure, Return structure size */}
 CPU_Exec(){ /* Find local champions (TSP tours) */}
 CPU_Output(){/* Output champion */ }
-
-
 \end{lstlisting}
 \end{frame}
-

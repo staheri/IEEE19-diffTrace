@@ -1,173 +1,132 @@
 
-
-\subsection{Experimental Methodology}
 ILCS is a scalable framework for running iterative local searches on HPC platforms.
 %
 Providing a serial CPU or single-GPU code, ILCS then executes this code in parallel between compute nodes (MPI) and within them (OpenMP and multi-GPU).
 %
-To evaluate the effectiveness of ideas behind DiffTrace, we have manually injected MPI-level and OMP-level bugs to the Traveling Salesman Problem (TSP) implementation on ILCS framework.
+
+To evaluate the effectiveness of ideas behind DiffTrace, we have manually injected MPI-level and OMP-level bugs to the Traveling Salesman Problem (TSP) implementation on ILCS framework (Listing~\ref{lst:ilcs}).
 %
-Note that the GPU-related functionalities of ILCS are out of scope of this paper.
+
+The injected bugs are tend to simulate real bugs such as deadlock.
 %
+Also bugs are close to common mistakes that HPC developers usually make during developing HPC codes. In addition, there exist ``hidden'' faults that does not alarm anything during execution such as violation of critical sections or semantic-based bugs. 
+%
+
 \input{tabs/ilcsPseudoCode-compact.tex}
 
-\begin{figure*}[t]
+The injected bugs are planted in a way that might get triggered in only one or more threads (master and worker threads, one thread, every other thread, all threads except one, all threads). 
+%
+Generally, the goal is to see how effective DiffTrace can analyze and diff traces, and how close it can get to the fault root cause or its manifestation. 
+
+%
+We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process. \hl{PSC Config will be added}
+
+Note that the GPU-related activities of ILCS are out of the scope of this paper, and we have not touched them in our experiments.
+%
+
+
+\subsection{ILCS-TSP workflow}
+
+\hl{2-3 sentences about how ILCS finds local champions in TSP problem}
+
+There are two types of threads in ILCS: a \textit{master} thread per node (MPI process) and a set of \textit{worker} threads per compute node (OpenMP threads).
+%
+Master threads of compute nodes are in charge of handling local working threads and communicating with master threads on other nodes.
+%
+For each detected CPU core, the master thread forks worker OpenMP threads.
+%
+Each worker thread continually calls
+\texttt{CPU\_Exec()} to evaluate a range of seeds and record the results (lines 14-20).
+%
+Once the worker threads are running, the master thread's primary job is to scan the results of the workers to find the best solution computed so far (i.e., the local champion). This information is then globally reduced to determine the current system-wide champion (lines 22-32).
+%
+Since scanning the entire seed range in a reasonable amount of time is not feasible, ILCS terminates the search when the quality has not improved over a certain period (lines 33-34).
+
+\subsection{OpenMP Bug: Unprotected Memory Access}
+
+
+\input{tabs/mc1-mc-6-4.tex}
+
+
+The memory accesses of \texttt{memcpy} in line 20 and 30 are protected by OpenMP critical section.
+%
+If under some scenario, this shared memory location becomes unprotected, a race condition might happen and invalidate the ILCS final output.
+%
+We have simulated such a scenario and modified the ILCS source code so that the control flow of the program skip the critical section in some specific OpenMP threads.
+%
+In one case where we inject this bug to the worker thread 4 of process 6, DiffTrace generated Table~\ref{tab:mc1-mc-6-4} as top suspicious traces for further analysis.
+%
+Each table entry contains the parameter that leads to the last two column suggestions.
+%
+For example, filter ``11.mem.ompcit.cust.0K10'' briefly means that all returns and .plt calls have been removed from traces of both faulty and normal executions, and only memory-related functions, OpenMP critical section functions and custom function ``CPU\_Exec'' are kept in traces.
+%
+The K10 at the end of filter means that all filtered traces are converted to their equivalent NLR with $K$=10.
+%
+The rest of the parameters have been explained in previous sections.
+%
+
+The bold numbers in the last column are suggesting trace \textbf{6.4} (process 6, thread 4) as the trace that changed the most after we planted the bug.
+%
+diffNLR(6.4) in Figure~\ref{diffNLR-6-4} clearly shows that the normal execution of ILCS (blue blocks) protects the \texttt{memcpy} while the buggy execution does not. In this figure, L0 is \texttt{CPU\_Exec}, which has been executed several times in both versions but never reaches the optimal solution until the end.
+%
+
+
+\begin{figure}[]
 \centering
-\includegraphics[width=6in]{figs/parametersTable.png}
-\caption{Filters, Attributes and other Parameters used to pre-process ParLOT Traces (PTs)}
-\label{tab:parameters}
-\end{figure*}
-
-
-
-%
-Bugs are injected at different locations of the framework.
-%
-We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process.
-
-
-
-Table \ref{tab:parameters} shows different parameters that we can pre-process PTs with. Each combination of these parameters would result in a different concept lattice, thus different JSM and different clusterings. 
-%
-A table similar to \ref{tab:bug1candidate} is created for each injected bug.
-%
-Each row of the table is showing the set of parameters used to create JSMs.
-%
-Then by calculating $ |JSM(buggy) - JSM(bugfree)| $ we are interested to see which PT changes the most after the bug injected and falls into a single cluster.
-%
-The object(s) in the cluster with the fewest members (below a threshold) are potential candidates of \textit{threads that are manifesting the bug} and the diff(buggy,bug-free) is in our interest to see how does the bug changes its control flow.
-
-\subsection{Case Study: ILCS-TSP}
-Here is the ILCS framework pseudo-code. User needs to write \texttt{CPU\_Init()},\texttt{CPU\_Exec()} and \texttt{CPU\_Output()}.
-% ILCS Code for later references
-
-
-Table \ref{tab.ilcsTspBugs} describes the bug that I injected to ILCS-TSP
-\input{tabs/tabs.ilcsTspBugs.tex}
-
-\clearpage
-
-\subsubsection{Bug1: Wrong Operation in MPI AllReduce()}
-We have injected a bug (row 1 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong operation in one of the processes ($P_{2}$)(\texttt{MPI\_MAX} instead of \texttt{MPI\_MIN}).
-%
-
-\textbf{::What is the runtime reaction to this bug:: Program terminated well without any error, crash, hang or throwing any exception. But the results might be corrupted. This might be a silent bug that diffTrace could reveal}
-
-The last row of table \ref{tab:bug1candidate} is telling us that among all combinations of parameters (filters, attributes, etc.) PT 0 (ParLOT trace that belongs to thread 0 of process 0 got impacted the most after we inject the bug.
-\input{tabs/tabs.bug1candidate.tex}
-
-\begin{figure}[t]
-\centering
-\scalebox{0.5}{
-\includegraphics[width=6in]{figs/diffNLR/{bug1-1}.pdf}}
-\caption{Bug1: diffNLR $PT_{0,0}$ - buggy vs. native}
-\label{fig:bug1-1}
+\includegraphics[width=0.3\textwidth]{figs/diffNLR/ompBug-6-4.pdf}
+\caption{OpenMP Bug: diffNLR(6.4)}
+\label{diffNLR-6-4}
 \end{figure}
 
-The target MPI\_Allreduce() that we injected the bug to, finds the rank (i.e., process) that has the ``champion'' result among all of ranks using MPI\_MIN operator. Then that champion rank copies its ``champion results'' to a global data-structure and broadcast the ``champion results'' to all other ranks for the next time step.
-However, since we changed the MPI\_MIN to MPI\_MAX in only one of the ranks, the true champion rank would get lost, instead a false champion rank (which turned to be rank 0 or $PT_{0,0}$) would broadcast its results as champion in the first time-step, causing a potential wrong answer. 
-\clearpage
+\subsection{MPI Bug: Deadlock Caused by Fault in Collectives}
+By forcing only one of the processes (process 2) to invoke MPI\_Allreduce (line 24) with a wrong size, we have simulated a \textit{real deadlock}. 
+%
+Table~\ref{tab:ar1-ws-all-nn} shows that almost all processes are suspicious.
+%
+It turned out that ParLOT did not happen to capture function calls from all processes since the bug happens too early in the code. Thus except for process 1 and 4, all other traces are empty.
+%
+By looking at the diffNLR(1) (Figure~\ref{diffNLR-0}), we can see that both normal and the buggy trace of process $1$ identical until an invocation of MPI\_Allreduce(). After that, normal trace hits the end of the program and terminates while the buggy process is waiting for the return from the actual point of fault (process 2) and never ends (i.e., deadlocks). 
+%
+diffNLRs of other processes look the same.
+%
+This is the situation that a bug in one process manifests itself all over the 
+\input{tabs/ar1-ws-all-nn.tex}
 
-
-\subsubsection{Bug2: Wrong Size in MPI AllReduce() (one process)}
-We have injected a bug (row 2 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong size. \textbf{::MORE EXPLANATIONS ABOUT WHAT THE BUG IS::}
+\begin{figure}[]
+\centering
+\includegraphics[width=0.3\textwidth]{figs/diffNLR/mpiBug-all-nn.pdf}
+\caption{diffNLR(0)}
+\label{diffNLR-0}
+\end{figure}
 %
 
-%\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI\_Bcast: Invalid root}
-
-Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to check $PT_{1,0}$ and $PT_{3,0}$. Note that the bug injected to only one process ($P_3$) to have the wrong size.)
-
-\begin{figure}[t]
-\centering
-\scalebox{0.5}{
-\includegraphics[width=6in]{figs/diffNLR/{bug2-1}.pdf}}
-\caption{Bug2: diffNLR $PT_{3,0}$ - buggy vs. native}
-\label{fig:bug2-1}
-\end{figure}
 
 
-\begin{figure}[t]
-\centering
-\scalebox{0.5}{
-\includegraphics[width=6in]{figs/diffNLR/{bug2-2}.pdf}}
-\caption{Bug2: diffNLR $PT_{1,0}$ - buggy vs. native}
-\label{fig:bug2-2}
-\end{figure}
-
-
-\textbf{::EXPLANATIONS OF OBSERVATIONS::}
-
-\clearpage
-
-
-\subsubsection{Bug3: Wrong Size in MPI AllReduce() (all processes)}
-We have injected a bug (row 3 table \ref{tab:ilcsTspBugs}) where \texttt{MPI\_Allreduce()} had been invoked with a wrong size. \textbf{::MORE EXPLANATIONS ABOUT WHAT THE BUG IS::}
+\subsection{MPI Bug: Wrong Collective Operation}
+By changing the operation MPI\_MIN to MPI\_MAX in the input arguments of MPI\_Allreduce(), we have changed the semantics of ILCS. 
+%
+The execution of this variation terminated well, but the results might be corrupted.
 %
 
-\textbf{::What is the runtime reaction to this bug:: on node 3 (rank 3 in comm 0): Fatal error in PMPI\_Bcast: Invalid root}
+The MPI\_Allreduce() in line 24 of Listing~\ref{lst:ilcs} broadcasts the best-calculated answer among all processes.
+%
+However, by the change that we made to ILCS, now the ``worst'' answer is getting stored.
+%
+We injected the bug only to process 0.
+%
+Among all suggested suspicious processes (Table~\ref{tab:ar1-wo-0-nn}), only process 5 (bold numbers) are making sense since their filters are more relevant to the aspect that we are interested (MPI-level activities) to study deeper.
+%
+Our observation from diffNLR(5) (Figure~\ref{diffNLR-5}) is that process 5, in comparison with its corresponding normal process, involves more in updating and broadcasting the champion among all traces.
+%
+Similar to the deadlock bug, this is another instance of  ``bug manifestation'' detection by DiffTrace.
 
-Similar to table \ref{tab:bug1candidate}, the same ranking system tells us to check $PT_{1,0}$ and $PT_{3,0}$. Note that the bug injected to only one process ($P_3$) to have the wrong size.)
+\input{tabs/ar1-wo-0-nn.tex}
 
-\begin{figure}[t]
+\begin{figure}[]
 \centering
-\scalebox{0.5}{
-\includegraphics[width=6in]{figs/diffNLR/{bug2-1}.pdf}}
-\caption{Bug2: diffNLR $PT_{3,0}$ - buggy vs. native}
-\label{fig:bug2-1}
+\includegraphics[width=0.3\textwidth]{figs/diffNLR/mpiBug2-0-nn.pdf}
+\caption{diffNLR(5)}
+\label{diffNLR-5}
 \end{figure}
-
-
-\begin{figure}[t]
-\centering
-\scalebox{0.5}{
-\includegraphics[width=6in]{figs/diffNLR/{bug2-2}.pdf}}
-%\caption{Bug2: diffNLR $PT_{1,0}$ - buggy vs. native}
-\label{fig:bug2-2}
-\end{figure}
-
-
-\textbf{::EXPLANATIONS OF OBSERVATIONS::}
-
-\clearpage
-
-\subsubsection{Bug4: Wrong Op in MPI AllReduce(): no effect!,program terminates fine}
-
-maybe all images show some reflection
-
-\subsubsection{Bug5: Wrong Size in next MPI AllReduce()(one process)::no effect, program terminates fine}
-
-maybe all images show some reflection
-
-\subsubsection{Bug6: Wrong Size in next MPI AllReduce()(all processes)::no effect,program terminates fine}
-
-maybe all images show some reflection
-
-\subsubsection{Bug7: Wrong Size in MPI Bcast()(one process)::}
-
-maybe all images show some reflection
-
-\subsubsection{Bug8: Wrong Size in next MPI Bcast()(all processes)::no effect,program terminates fine}
-
-maybe all images show some reflection
-
-\subsubsection{3: Missing Critical Section one thread in on process}
-
-I planted the bug (missing critical section) in process 2
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=6in]{figs/{miscrit-1-1-ranking}.png}
-\caption{Part of ranking table for MisCrit 1-1}
-\label{miscrit-1-1-rank}
-\end{figure*}
-
-
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=5.9in]{figs/{miscrit-1-1-1.3_2.3}.pdf}
-\caption{diffNLR of process 1 thread 3 and process 2 thread 3 buggy(missing critical section) vs. bug-free}
-\label{bug2.2}
-\end{figure*}
 
 
