@@ -116,6 +116,13 @@ We have implemented Godin's \textit{incremental} algorithm \cite{clconst}
 to extract attributes (Table \ref{tab:atr})
 from each trace (object) and inject them to an initially empty lattice.
 %
+Notice that our attributes already achieve a compression of the attributes: (1) either the
+observed frequency is recorded, (2) or log10 of the frequency is recorded, or (3) ``No frequency''
+(presence/absence) of a function call are recorded.
+%
+{\em These are versatile knobs to adjust for bug-location and similarity calculation}.
+  
+
 Every time a new object with its set of attributes added to the lattice,
 an \textit{update} procedure minimally modifies/adds/deletes edges and nodes.
 %
