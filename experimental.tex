@@ -1,24 +1,15 @@
+
+
 \subsection{Experimental Methodology}
-So far, we are able to collect whole-program execution traces, preprocess them (decompress, filter, detect loops, extract attributes) and inject each $PT$ to concept lattice data structure.
+ILCS is a scalable framework for running iterative local searches on HPC platforms.
 %
-Concept lattices help us having a single model for the execution of HPC application with thousands of processes/threads.
+Providing a serial CPU or single-GPU code, ILCS then executes this code in parallel between compute nodes (MPI) and within them (OpenMP and multi-GPU).
 %
-Concept lattices also classify PTs based on their Jaccard distance.
+To evaluate the effectiveness of ideas behind DiffTrace, we have manually injected MPI-level and OMP-level bugs to the Traveling Salesman Problem (TSP) implementation on ILCS framework.
 %
-Full pair-wise Jaccard distance matrix can be extracted from the concept lattice in linear time and reduces the search space from thousands of PTs to just a few equivalent classes of PTs.
+Note that the GPU-related functionalities of ILCS are out of scope of this paper.
 %
-Studying JSM by itself helps the user to understand the program behavior as a whole, and how each process/thread behaving.
-%
-However, comparing the JSM of the bug-free version of the application versus the buggy version would reveal insights about how the bug impacted the behavior of the application.
-%
-In particular, we are interested to see how the bug changes the formation of equivalent classes of PTs.
-%
-Inspired by a method for comparing two different clustering \cite{fowlkes83}, we count the number of objects (PTs) in each cluster and see which PT(s) fall into different clusters once the bug is introduced.
-%
-A set of candidate PTs then would be reported to the user for more in-depth study.
-%
-Here is where we take advantage of diffNLR to see how does the bug changes the control flow of a candidate PT comparing to its corresponding PT of native run.
-%
+\input{tabs/ilcsPseudoCode-compact.tex}
 
 \begin{figure*}[t]
 \centering
@@ -26,6 +17,15 @@ Here is where we take advantage of diffNLR to see how does the bug changes the c
 \caption{Filters, Attributes and other Parameters used to pre-process ParLOT Traces (PTs)}
 \label{tab:parameters}
 \end{figure*}
+
+
+
+%
+Bugs are injected at different locations of the framework.
+%
+We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process.
+
+
 
 Table \ref{tab:parameters} shows different parameters that we can pre-process PTs with. Each combination of these parameters would result in a different concept lattice, thus different JSM and different clusterings. 
 %
@@ -40,7 +40,7 @@ The object(s) in the cluster with the fewest members (below a threshold) are pot
 \subsection{Case Study: ILCS-TSP}
 Here is the ILCS framework pseudo-code. User needs to write \texttt{CPU\_Init()},\texttt{CPU\_Exec()} and \texttt{CPU\_Output()}.
 % ILCS Code for later references
-\input{tabs/ilcsPseudoCode.tex}
+
 
 Table \ref{tab.ilcsTspBugs} describes the bug that I injected to ILCS-TSP
 \input{tabs/tabs.ilcsTspBugs.tex}

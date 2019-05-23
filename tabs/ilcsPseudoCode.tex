@@ -2,20 +2,30 @@
 \begin{frame}{}
   \lstset{language=C}
  \begin{lstlisting}
-int main(argc,argv){
+main(argc,argv){
+ ... // initialization
  MPI_Init();
  MPI_Comm_size()
  MPI_Comm_rank(my_rank)
- //Figuring local number of CPUs
- MPI_Reduce() // Figuring global number of CPUs
- CPU_Init();
- //For storing local champion results
- champ[CPUs] = malloc(); 
+ lCPUs = omp_get_num_procs();
+ lGPUs = ilcs_get_num_gpus();
+ MPI_Reduce(lCPUs, gCPUs,MPI_SUM) // Total number of CPUs (OMP threads)
+ MPI_Reduce(lGPUs, gGPUs,MPI_SUM) // Total number of GPUs
+ champSize = CPU_Init();
+ ... // Memory allocation for storing local and global champions w.r.t. champSize
  MPI_Barrier();
- #pragma omp parallel num_threads(CPUs+1)
- {
-  rank = omp_get_thread_num()
-  if (rank == 0){ //communication thread
+ <@\textcolor{blue}{\#pragma omp parallel num\_threads(CPUs+1)}@>
+ {rank = omp_get_thread_num()
+  if (rank != 0){ // worker threads
+   while(cont){
+    //Calculate Seed
+    local_result = CPU_Exec()
+    if (local_result < champ[rank]){
+     <@\textcolor{blue}{\#pragma omp cirtical}@>
+     memcpy(champ[rank],local_result)
+    }
+   }
+  } else{ //communication thread
    do{
     //Find and report the thread with 
     //local champion, global champion
@@ -26,22 +36,13 @@ int main(argc,argv){
     //The process with the global champion
     //copy its results to bcast_buffer	
     if (my_rank == global_champion){
-     #pragma omp cirtical
+     <@\textcolor{blue}{\#pragma omp cirtical}@>
      memcpy(bcast_buffer,local_champ)
     }
     //Broadcast the champion
     MPI_Bcast(bcast_buffer)
    } while (no_change_threshold);
    cont=0 // signal worker threads to stop
-  } else{ // worker threads
-   while(cont){
-    //Calculate Seed
-    local_result = CPU_Exec()
-    if (local_result < champ[rank]){
-     #pragma omp cirtical
-     memcpy(champ[rank],local_result)
-    }
-   }
   }
  }
  //Find and report the thread with 
@@ -53,7 +54,7 @@ int main(argc,argv){
  // The process with the global champion
  // copy its results to bcast_buffer	
  if (my_rank == global_champion){
-  #pragma omp cirtical
+  <@\textcolor{blue}{\#pragma omp cirtical}@>
   memcpy(bcast_buffer,local_champ)
  }
  //Broadcast the champion
