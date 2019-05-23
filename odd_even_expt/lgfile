@@ -1,0 +1,41 @@
+4
+1 0 0 1 1 Bcast 0_0:1:2:3: { 1 } { } Match: -1 -1 File: 14 mpi_odd_even.c 165
+1 0 1 5 5 Bcast 0_0:1:2:3: { 2 3 } { } Match: -1 -1 File: 14 mpi_odd_even.c 166
+1 0 2 9 11 Send 1 0 0_0:1:2:3: { } { } Match: 1 3 File: 14 mpi_odd_even.c 321
+1 0 3 13 10 Recv 1 0 0_0:1:2:3: { 4 5 } { } Match: 1 2 File: 14 mpi_odd_even.c 322
+1 0 4 17 19 Send 1 0 0_0:1:2:3: { } { } Match: 1 7 File: 14 mpi_odd_even.c 321
+1 0 5 18 18 Recv 1 0 0_0:1:2:3: { 6 } { } Match: 1 6 File: 14 mpi_odd_even.c 322
+1 0 6 25 33 Gather 0_0:1:2:3: { 7 } { } Match: -1 -1 File: 14 mpi_odd_even.c 227
+1 0 7 37 37 Finalize { } { } Match: -1 -1 File: 14 mpi_odd_even.c 97
+1 1 0 2 2 Bcast 0_0:1:2:3: { 1 } { } Match: -1 -1 File: 14 mpi_odd_even.c 165
+1 1 1 6 6 Bcast 0_0:1:2:3: { 2 3 } { } Match: -1 -1 File: 14 mpi_odd_even.c 166
+1 1 2 10 9 Send 0 0 0_0:1:2:3: { } { } Match: 0 3 File: 14 mpi_odd_even.c 321
+1 1 3 14 12 Recv 0 0 0_0:1:2:3: { 4 5 } { } Match: 0 2 File: 14 mpi_odd_even.c 322
+1 1 4 19 21 Send 2 0 0_0:1:2:3: { } { } Match: 2 5 File: 14 mpi_odd_even.c 333
+1 1 5 20 16 Recv 2 0 0_0:1:2:3: { 6 7 } { } Match: 2 4 File: 14 mpi_odd_even.c 334
+1 1 6 23 17 Send 0 0 0_0:1:2:3: { } { } Match: 0 5 File: 14 mpi_odd_even.c 321
+1 1 7 24 20 Recv 0 0 0_0:1:2:3: { 8 9 } { } Match: 0 4 File: 14 mpi_odd_even.c 322
+1 1 8 26 29 Send 2 0 0_0:1:2:3: { } { } Match: 2 9 File: 14 mpi_odd_even.c 333
+1 1 9 27 28 Recv 2 0 0_0:1:2:3: { 10 } { } Match: 2 8 File: 14 mpi_odd_even.c 334
+1 1 10 34 34 Gather 0_0:1:2:3: { 11 } { } Match: -1 -1 File: 14 mpi_odd_even.c 235
+1 1 11 38 38 Finalize { } { } Match: -1 -1 File: 14 mpi_odd_even.c 97
+1 2 0 3 3 Bcast 0_0:1:2:3: { 1 } { } Match: -1 -1 File: 14 mpi_odd_even.c 165
+1 2 1 7 7 Bcast 0_0:1:2:3: { 2 3 } { } Match: -1 -1 File: 14 mpi_odd_even.c 166
+1 2 2 11 23 Send 3 0 0_0:1:2:3: { } { } Match: 3 3 File: 14 mpi_odd_even.c 321
+1 2 3 15 14 Recv 3 0 0_0:1:2:3: { 4 5 } { } Match: 3 2 File: 14 mpi_odd_even.c 322
+1 2 4 21 15 Send 1 0 0_0:1:2:3: { } { } Match: 1 5 File: 14 mpi_odd_even.c 333
+1 2 5 22 22 Recv 1 0 0_0:1:2:3: { 6 7 } { } Match: 1 4 File: 14 mpi_odd_even.c 334
+1 2 6 28 31 Send 3 0 0_0:1:2:3: { } { } Match: 3 5 File: 14 mpi_odd_even.c 321
+1 2 7 29 26 Recv 3 0 0_0:1:2:3: { 8 9 } { } Match: 3 4 File: 14 mpi_odd_even.c 322
+1 2 8 32 27 Send 1 0 0_0:1:2:3: { } { } Match: 1 9 File: 14 mpi_odd_even.c 333
+1 2 9 33 30 Recv 1 0 0_0:1:2:3: { 10 } { } Match: 1 8 File: 14 mpi_odd_even.c 334
+1 2 10 35 35 Gather 0_0:1:2:3: { 11 } { } Match: -1 -1 File: 14 mpi_odd_even.c 235
+1 2 11 39 39 Finalize { } { } Match: -1 -1 File: 14 mpi_odd_even.c 97
+1 3 0 4 4 Bcast 0_0:1:2:3: { 1 } { } Match: -1 -1 File: 14 mpi_odd_even.c 165
+1 3 1 8 8 Bcast 0_0:1:2:3: { 2 3 } { } Match: -1 -1 File: 14 mpi_odd_even.c 166
+1 3 2 12 13 Send 2 0 0_0:1:2:3: { } { } Match: 2 3 File: 14 mpi_odd_even.c 321
+1 3 3 16 24 Recv 2 0 0_0:1:2:3: { 4 5 } { } Match: 2 2 File: 14 mpi_odd_even.c 322
+1 3 4 30 25 Send 2 0 0_0:1:2:3: { } { } Match: 2 7 File: 14 mpi_odd_even.c 321
+1 3 5 31 32 Recv 2 0 0_0:1:2:3: { 6 } { } Match: 2 6 File: 14 mpi_odd_even.c 322
+1 3 6 36 36 Gather 0_0:1:2:3: { 7 } { } Match: -1 -1 File: 14 mpi_odd_even.c 235
+1 3 7 40 40 Finalize { } { } Match: -1 -1 File: 14 mpi_odd_even.c 97
