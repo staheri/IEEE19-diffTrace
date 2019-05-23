@@ -1,13 +1,10 @@
-
-\noindent{\bf BEGIN Ganesh}
-
-Debugging high performance computing code
+﻿Debugging high-performance computing code
 remains a challenge at all levels of scale.
 %
 Conventional HPC debuggers~\cite{allinea-ddt,roguewave,others}
 excel at many tasks such as examining the execution
-state of a complex simulation at a detailed
-level and allowing the developer to re-execute
+state of a complex simulation in detail
+and allowing the developer to re-execute
 the program close to the point of failure.
 %
 However, they do not provide a good understanding
@@ -30,14 +27,13 @@ method types (formal methods, static analysis, dynamic
 analysis, nondeterminism control, anomaly detection,
 and parallel debugging), and lists a total of 30 specific
 tools.
-
-
+%
 Despite this abundance of activity and tools, many
 significant problems remain to be solved before debugging
 {\em can be approached by the HPC community as a collaborative
 activity} so that HPC developers can share their solutions
 and extend a common framework.
-%
+
 Almost all debugging approaches seek to find outliers (``unexpected
 executions'') amongst thousands of running processes and threads.
 %
@@ -57,80 +53,73 @@ better luck with another tool.
 %
 This iterative loop of re-execution followed by applying a
 best-guess tool for the suspected bug class can potentially consume
-large amounts of execution cycles and also waste an
+large amounts of execution cycles and wastes an
 expert developer's time.
 %
 More glaring is the fact that these tools must recreate the
-execution traces yet again: they do not have means to hand-off
-these traces to another tool, or cooperate in symbiotic ways.
+execution traces yet again: they do not have means to hand off
+these traces to another tool or cooperate in symbiotic ways.
 
 
 
-It is clear that we cannot collect all relevant pieces of information
-necessary to detect all possible bug classes in HPC ranging
-across resource leak bugs,  deadlocks, and data races.
+We cannot collect all relevant pieces of information
+necessary to detect all possible bug classes such as
+resource leaks, deadlocks, and data races.
 %
 Each such bug requires its own attributes to be kept.
 %
-Also, it is clear that debugging is not fully automatable (it is
+Also, debugging is not fully automatable (it is
 an undecidable problem in general) and must involve human thinking:
-at least to reconcile what is observed against the deeper application
-level semantics.
+at least to reconcile what is observed against the deeper application-level semantics.
 %
-However, (1)~we believe that it is still possible to collect one common form
-of information and use it to make an initial triage in such
-a way that it can guide a later deeper debugging phase to locate
-which of the finer bug gradations of bugs (resource leaks or races) brought
-an application down.
+However, (1)~we believe that it is still possible to collect one common set
+of data and use it to make an initial triage in such
+a way that it can guide a later, deeper debugging phase to locate
+which of the finer bug gradations (e.g., resource leaks or races) brought
+the application down.
 %
 Also, (2)~we believe that it is possible to engage the human {\em with respect
-to understanding structured presentations of information}---and not a general
+to understanding structured presentations of information}---as opposed to a general
 disorienting bug situation.
 
 
-In our effort, we address both these issues.
+Our DiffTrace framework addresses both issues.
 %
-The common form of information we use is a {\em whole program
+The common set of data it uses is a {\em whole program
 function call trace} collected per process/thread.
 %
-In this paper we build a framework called DiffTrace which relies on
+DiffTrace relies on
 novel ways to diff a normal trace and a fault-laden trace to guide the
 debugging engineer closer to the bug.
 %
-While our work has not (yet) addressed the situations in
+While our work has not (yet) addressed situations in
 which millions of threads and thousands of processes run
-for days and produce an error,
-we strongly believe that we can get there only 
-after we understand the pros and cons of our initial
-implementation of the  DiffTrace tool (via this paper).
+for days before they produce an error,
+we strongly believe that we can get there
+once we understand the pros and cons of our initial
+implementation of the DiffTrace tool, which are described in this paper.
 %
-The second problem is handled in DiffTrace by offering a novel
+The second issue is handled in DiffTrace by offering a novel
 collection of modalities for understanding program execution diffs.
 %
-We now elaborate on these points by stating three specific
-problems we address in this paper.
+We now elaborate on these points by addressing the following three problems.
 
 
 
-\paragraph{Problem-1: Collecting Whole-Program {\em Heterogeneous} Function Call Traces
+\paragraph{Problem 1 -- Collecting Whole-Program Heterogeneous Function-Call Traces
 Efficiently\/} Not only must we have the ability
 to record function calls and returns at one
 API such as MPI, increasingly we must collect calls/returns at multiple
 interfaces (e.g., OpenMP, PThreads, and even inner levels such as TCP).
 %
-The growing use of heterogeneous programming necessitates that we have
-an understanding of MPI and OpenMP activities (for example) to locate cross-API
+The growing use of heterogeneous parallelization necessitates that we 
+understand MPI and OpenMP activities (for example) to locate cross-API
 bugs that are often missed by other tools.
 %
-Sometimes, these APIs are realized on newer machines, and may contain the
-actual error (not the user code itself), and it would be attractive to have
-this ability as well.
+Sometimes, these APIs contain the actual error (as opposed to the user code), and it would be attractive to have this debugging ability.
 
 
-
-
-
-\noindent{\em Solution to Problem-1:\/}
+{\em Solution to Problem 1:\/}
 In DiffTrace, we choose PIN-based whole program binary tracing, with
 tracing filters that allow the designer to collect a suitable mixture of API
 calls/returns.
@@ -142,44 +131,43 @@ In our research, we have thus far demonstrated the advantage of
 ParLoT with respect to collecting both MPI and OpenMP traces
 from a {\em single run of a hybrid MPI/OpenMP program}.
 %
-We demonstrate that from this single type of traces, it is possible
-to pick out MPI-level bugs or OpenMP-level bugs.
+We demonstrate that, from this single type of trace, it is possible
+to pick out MPI-level bugs and/or OpenMP-level bugs.
 %
-While this approach to whole-program tracing
-may sound extremely computation intensive, we employ
-novel on-the-fly compression techniques within ParLoT.
+While whole-program tracing
+may sound extremely computation and storage intensive, ParLoT employs
+lightweight on-the-fly compression techniques to keep these overheads low.
 %
-We achieve compression efficiencies exceeding 16,000~\cite{parlot-paper},
-thus making this technique much more practical, demanding
-only a few kilobytes per second of extra bandwidth from the upper levels of
-the memory hierarchy.
+It achieves compression ratios exceeding 16,000~\cite{parlot-paper},
+thus making this approach practical, demanding
+only a few kilobytes per second per core of bandwidth.
 
 
-\paragraph{Problem-2: Need to Generalize Approaches for Outlier Detection\/}
+\paragraph{Problem 2 -- Need to Generalize Techniques for Outlier Detection\/}
 Given that outlier detection is central to debugging,
-it is important to be employing efficient representations of the traces
-collected from threads and processes so that one can compute
-{\em distances} between these traces more systematically, without
-involving human reasoning in the loop.
+it is important to use efficient representations of the traces
+to be able to systematically compute
+{\em distances} between them without
+involving human reasoning.
 %
 The representation must also be versatile enough to
-be able to ``Diff'' the traces
+be able to ``diff'' the traces
 with respect to {\em an extensible number of vantage points}.
 %
-These vantage points could be diffing with respect to process level activities,
-diffing with respect to thread-level activities, a combination thereof,
+These vantage points could be diffing with respect to process-level activities,
+thread-level activities, a combination thereof,
 or even finite sequences of process/thread calls (say, to locate {\em changes}
 in caller/callee relationships).
 
 
-\noindent{\em Solution to Problem-2: Use of Concept Lattices in Debugging:\/}
-In DiffTrace, we employ {\em concept lattices} to amalgamate the collected traces.
+{\em Solution to Problem 2:\/}
+DiffTrace employs {\em concept lattices} to amalgamate the collected traces.
 %
 Concept lattices have previously been employed in HPC to perform structural
 clustering of process behaviors~\cite{weber-cl} to present performance data more
 meaningfully to users.
 %
-The authors of that paper employ the notion of {\em Jaccard distances}
+The authors of that paper use the notion of {\em Jaccard distances}
 to cluster performance results that are closely related to process structures
 (determined based on caller/callee relationships).
 %
@@ -189,25 +177,25 @@ concept lattices from the ParLoT-collected traces.
 In addition to Jaccard distances, in our work we also perform hierarchical
 clustering of traces and provide a tunable threshold for outlier detection.
 %
-We believe that these uses of concept lattices and more refinement approaches
+We believe that these uses of concept lattices and refinement approaches
 for outlier detection are new in HPC debugging.
 
 
-\paragraph{Problem-3: Loop Summarization\/}
+\paragraph{Problem 3 -- Loop Summarization\/}
 Most programs spend most of their time in loops.
 %
-Therefore it is important to employ state-of-the-art algorithms for
+Therefore, it is important to employ state-of-the-art algorithms for
 loop extraction from execution traces.
 %
 It is also important
 to be able to diff two executions with respect to changes in their looping behaviors.
 %
-In our experience, such changes when presented using good visual metaphors
-immediately tends to highlight many bug types.
+In our experience, presenting such changes using good visual metaphors
+tends to immediately highlight many bug types.
 
 
-\noindent{\em Solution to Problem-3: Rigorous Approaches to Loop Analysis:\/}
-In DiffTrace, we employ the notion of NLRs (what does it stand for?) for
+{\em Solution to Problem 3:\/}
+DiffTrace utilizes the rigorous notion of Nested Loop Representations (NLRs) for
 extracting loops.
 %
 Each repetitive loop structure is given an identifier, and nested loops are
@@ -215,23 +203,21 @@ expressed as repetitions of this identifier exponentiated (as with regular
 expressions).
 %
 This approach to summarizing loops can help manifest
-bugs where the program does not hang or crash, but nevertheless
-run differently in a manner that informs the developer engaged in debugging.
+bugs where the program does not hang or crash but nevertheless
+runs differently in a manner that informs the developer engaged in debugging.
 
-\noindent{\bf Contributions, Organization:\/}
-All our contributions are first
-illustrated on a simple example (\S\ref{sec:overview}).
+{\bf Contributions and Organization\/}:
+\S\ref{sec:overview} illustrates the contributions of this paper on a simple example.
 %
-We then present the algorithms underlying DiffTrace (\S\ref{sec:algo}).
+\S\ref{sec:algo} presents the algorithms underlying DiffTrace in more detail.
 %
-A medium-sized case study involving MPI and OpenMP is next shown (\S\ref{sec:ilcs-case-study}).
+\S\ref{sec:ilcs-case-study} shows a medium-sized case study involving MPI and OpenMP.
 %
-This is followed by experimental methodology (\S\ref{sec:experimental})
-and preliminary studies on LULESH~\cite{lulesh}, 
-a DOE common mini app.
+\S\ref{sec:experimental} summaries the experimental methodology before presenting results for LULESH~\cite{lulesh}, a DOE common mini app.
 %
-Selected related works are summarized in \S\ref{sec:related}, with
-discussions and conclusions following (\S\ref{sec:discussion}).
+\S\ref{sec:related} summarizes selected related works.
+%
+\S\ref{sec:discussion} concludes the paper with a discussion.
 
 % 
 % \Noindent To summarize, the key contributions of this paper are the following
@@ -254,13 +240,13 @@ discussions and conclusions following (\S\ref{sec:discussion}).
 % \hl{[[Ganesh and Saeed have written some text before for the intro which is available in v0/intro.tex (also available but commented in current file). Current version is based on our discussion on May 8th]]}
 % 
 % \begin{itemize}
-% 	\item Importance of whole program diffing : understand changes, debug (DOE REPORT \cite{hpcdoe})
+% 	\item Importance of whole program diffing: understand changes, debug (DOE REPORT \cite{hpcdoe})
 % 	\item Efficient tracing supports selective monitoring at multiple levels
 % 	\begin{itemize}
 % 		\item Bugs not there at a predictable API level
 % 		\item Prior work (ParLoT) supports whole program tr.
 % 	\end{itemize}
-% 	\item Dissimilarity is important to know: bugs, changes during porting,...
+% 	\item Dissimilarity is important to know: bugs, changes during porting, ...
 % 	\item Key enablers of meaningful diffing:
 % 	\begin{itemize}
 % 		\item Formal concepts (novel contrib to debugging)
@@ -299,13 +285,13 @@ discussions and conclusions following (\S\ref{sec:discussion}).
 % %When a failure occurs (e.g., a deadlock or crash) or the application outputs an unexpected result, it is not economic to rerun the application and consume resources to reproduce the failure. Moreover, HPC bugs might not be reproducible due to non-deterministic behavior, which is common in HPC applications. Also, the failure might be caused by a bug present at different APIs, system levels or the network, thus multiple reruns might be needed to locate the bug.
 % 
 % %ParLOT introduction
-% %In previous work \cite{parlot}, we have introduced ParLOT, a tool that efficiently collects whole program function-call traces using dynamic binary instrumentation.
+% %In previous work \cite{parlot}, we have introduced ParLoT, a tool that efficiently collects whole program function-call traces using dynamic binary instrumentation.
 % %
 % %ParLOT captures function calls and returns at different levels (e.g., application and library code) and incrementally compress them on-the-fly, resulting in low runtime overhead and low tracing bandwidth, preserving the whole-program dynamic behavior for offline analysis.
 % %
 % 
 % % Post-mortem analysis to obtain understanding about different aspects of the dynamic behavior
-% %In the current work, we introduce DiffTrace, a tool-chain for the post-mortem analysis of \textit{ParLOT Traces} (PTs) that supplies developers with information about dynamic behavior of HPC applications at different levels with different granularities towards debugging. 
+% %In the current work, we introduce DiffTrace, a tool-chain for the post-mortem analysis of \textit{ParLoT Traces} (PTs) that supplies developers with information about dynamic behavior of HPC applications at different levels with different granularities towards debugging. 
 % %
 % %The topology of HPC tasks on both distributed and shared memory often follows a ``symmetric'' flow of control such as SPMD, master/slave, or odd/even where multiple tasks contain \textit{similar} events in their control flow.
 % %
@@ -319,7 +305,7 @@ discussions and conclusions following (\S\ref{sec:discussion}).
 % %
 % %Since HPC applications spend most of their time in an outer main loop, every single PT also may contain sequences of millions of trace entries (i.e., function calls and returns).
 % %
-% %Finding the bug manifestation (i.e., dissimilarities caused by the bug) among a large number of long PTs is the problem of finding the needle in the haystack.
+% %Finding the bug manifestation (i.e., dissimilarities caused by the bug) among many long PTs is the problem of finding the needle in the haystack.
 % 
 % %
 % %Decompressing PTs collected from long-running large-scale HPC applications for offline analysis produces an overwhelming amount of data. However, missing any piece of collected data may result in losing key information about the application behavior.
@@ -347,7 +333,7 @@ discussions and conclusions following (\S\ref{sec:discussion}).
 % 
 % In summary, this paper makes the following main contributions:
 % \begin{itemize}
-% \item A tunable tracing and trace-analysis tool-chain for HPC application program understanding and debugging
+% \item A tunable tracing and trace-analysis toolchain for HPC application program understanding and debugging
 % \item A variation of the NLR algorithm to compress traces in lossless fashion for easier analysis and detecting (broken) loop structures
 % \item An FCA-based clustering approach to efficiently classify traces with similar behavior
 % \item A tunable ranking mechanism to highlight suspicious trace instances for deeper study
@@ -369,3 +355,4 @@ discussions and conclusions following (\S\ref{sec:discussion}).
 % - Sec 6: Concluding Remarks
 % }
 %
+
