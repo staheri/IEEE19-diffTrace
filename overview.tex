@@ -130,7 +130,27 @@ debugging does not exist in HPC.
 There is also the intriguing possibility that 
 many of the 30-odd tools mentioned in \S\ref{sec:intro}
 {\em can be made to focus on the problems highlighted
-by diffNLR}, thus gaining efficiency (this will be part of our future work).
+  by diffNLR}, thus gaining efficiency (this will be part of our future work).
+
+
+In this paper, we describe DiffTrace as a
+{\em relative debugging}~\cite{cray-rel-debug}
+tool, in that bugs are caught with respect
+to JSM$_{D}$ which is a {\em change} from
+the previous code version found working.
+%
+However, many types of faults may be apparent
+just by analyzing JSM$_{faulty}$: for instance,
+processes whose execution got truncated 
+will look highly dissimilar to those that
+terminated normally.
+%
+In those use cases of DiffTrace,
+the B-score based ranking can then be made
+on JSM$_{faulty}$ directly.
+
+%---
+
 
 
 
