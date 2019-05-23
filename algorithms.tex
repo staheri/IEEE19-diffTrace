@@ -1,10 +1,9 @@
-
 \subsection{Nested Loop Recognition (NLR)}
 \label{subsec:algo-nlr}
 
-We build NLRs based on the work by Ketterlin and Clauss~\cite{Ketterlin-nlr}
-whose use of this algorithm is for trace compression,
-and Kobayashi and MacDougall~\cite{kobayashi-84} who propose
+We build NLRs based on the work by Ketterlin and Clauss~\cite{Ketterlin-nlr},
+who use this algorithm for trace compression,
+and the work by Kobayashi and MacDougall~\cite{kobayashi-84}, who propose
 a similar bottom-up strategy to build loop nests from traces,
 replacing each recognized loop with a new symbol.
 %(sequence of string instructions) where each 
@@ -17,19 +16,18 @@ replacing each recognized loop with a new symbol.
 %
 %we have re-implemented the NLR algorithm (DiffTrace-NLR) for detecting repetitive patterns
 We adapt these algorithms
-to function call traces
+to function-call traces
 wherein we record
 identical loops at different locations by introducing
 a single new (made-up) function ID that represents the entire loop.
 %
-This process is restarted once the whole trace has been analyzed for depth-2 loops,
-until a function-ID replacement is performed.
+This process is restarted once the whole trace has been analyzed for depth-2 loops and so on until a function-ID replacement is performed.
 %
 DiffTrace-NLR works by incrementally pushing trace entries (function IDs)
-into a stack of \textit{elements} (i.e., function IDs
-representing actually detected loop structures).
+onto a stack of \textit{elements} (i.e., function IDs
+representing detected loop structures).
 %
-Whenever an element is pushed to the stack $S$,
+Whenever an element is pushed onto the stack $S$,
 the upper elements of the stack are recursively
 examined for potential loop detection or loop extensions (Procedure \ref{proc:NLR}). 
 
@@ -63,7 +61,7 @@ examined for potential loop detection or loop extensions (Procedure \ref{proc:NL
      }
  }
 
- \caption{\texttt{Reduce} Procedure Adapted From the NLR algorithm }
+ \caption{\texttt{Reduce} procedure adapted from the NLR algorithm }
  \label{proc:NLR}
 \end{algorithm}
 \end{small}
@@ -77,15 +75,15 @@ examined for potential loop detection or loop extensions (Procedure \ref{proc:NL
 % In our context, two sequences are isomorphic if both have equal lengths and identical corresponding elements.
 % %
 % If the check passes, then the top three consecutive subsequences (LB) are popped from the stack, and the LS=(LB,3) is pushed onto the stack. Otherwise, top elements of the stack are compared against the potential LS behind them to increment the LC in case of isomorphism.
-% If either of the above examinations successes, the procedure restarts on the recently modified stack for detecting or extending potential nested loops.
+% If either of the above examinations succeeds, the procedure restarts on the recently modified stack for detecting or extending potential nested loops.
 %
 
 We store all distinct loop bodies (LBs)
-into a hash-table, assigning each a unique ID which can be applied as
-a heuristic to detect loops not only in the current trace but in other
+in a hash-table, assigning each a unique ID, which can be applied as
+a heuristic to detect loops not only in the current trace but also in other
 traces of the same execution.
 %
-The maximum length of subsequences to examine is decided by a fixed priori $K$.
+The maximum length of the subsequences to examine is decided by a fixed $K$.
 %
 The complexity of the NLR algorithm is $\Theta(K^2N)$ where $N$ is the size of the input. 
 %
@@ -105,8 +103,7 @@ depends on the sparseness of the formal context~\cite{clgenperform}.
 %
 Ganter's \textit{Next Closure} algorithm \cite{clbook}
 constructs the lattice from a
-\textit{batch} of contexts, and requires the whole context to be present in the main memory
-(hence inefficient for long HPC traces).
+\textit{batch} of contexts and requires the whole context to be present in main memory and is, therefore, inefficient for long HPC traces.
 %
 %For large scale HPC traces, such an approach is inefficient.
 %
@@ -114,33 +111,33 @@ constructs the lattice from a
 %
 We have implemented Godin's \textit{incremental} algorithm \cite{clconst}
 to extract attributes (Table \ref{tab:atr})
-from each trace (object) and inject them to an initially empty lattice.
+from each trace (object) and inject them into an initially empty lattice.
 %
-Notice that our attributes already achieve a compression of the attributes: (1) either the
-observed frequency is recorded, (2) or log10 of the frequency is recorded, or (3) ``No frequency''
-(presence/absence) of a function call are recorded.
+Notice that our representation already includes compression of the attributes as (1) either the
+observed frequency is recorded, (2) the log10 of the frequency is recorded, or (3) ``no frequency''
+(presence/absence) of a function call is recorded.
 %
 {\em These are versatile knobs to adjust for bug-location and similarity calculation}.
   
 
-Every time a new object with its set of attributes added to the lattice,
-an \textit{update} procedure minimally modifies/adds/deletes edges and nodes.
+Every time a new object with its set of attributes is added to the lattice,
+an \textit{update} procedure minimally modifies/adds/deletes edges and nodes of the lattice.
 %
 %This procedure is guaranteed to preserve the validity of the concept lattice properties.
 %
-The extracted attributes are in form of \textit{\{atr:freq\}}. 
+The extracted attributes are in the form \textit{\{attr:freq\}}. 
 %
-\textit{atr} is either a single entry of the trace NLR or a consecutive pair of entries.
-\textit{freq} is a parameter to adjust the impact of frequency of each \textit{atr}
+\textit{attr} is either a single entry of the trace NLR or a consecutive pair of entries.
+\textit{freq} is a parameter to adjust the impact of the frequency of each \textit{attr}
 in the concept lattice.
 %
-The complexity of Godin's algorithm is $O(2^{2K}|G|)$ where $K$ is an upper bound for the number of attributes (e.g., distinct function calls in the whole execution) and $|G|$ is the number of objects (e.g., number of traces).
+The complexity of Godin's algorithm is $O(2^{2K}|G|)$, where $K$ is an upper bound for the number of attributes (e.g., distinct function calls in the whole execution) and $|G|$ is the number of objects (e.g., the number of traces).
 
 %In DiffTrace, the upper bound for the number of attributes is usually small since traces are pre-processed and summarized in the form of NLRs. Thus Godin's algorithm would perform near
 
 
 
-\subsection{Hierarchical Clustering, Construction and Comparison}
+\subsection{Hierarchical Clustering, Construction, and Comparison}
 \label{subsec:algo-bscore}
 
  DiffJSMs provide pair-wise dissimilarity
@@ -161,14 +158,14 @@ a \textit{linkage} function is required to measure the distance between sets of 
  such as single, complete, average, weighted, centroid, median, and ward.
 
 \subsubsection{Ranking Table}
-As shown in figure \ref{fig.diffTraceOverview},
+As shown in Figure \ref{fig.diffTraceOverview},
 each component of DiffTrace has some tunable parameters and constants,
-and the suggested suspicious traces are a function of these.
+and the suggested suspicious traces are a function of them.
 %
-Thus a metric is needed to serve as the sorting key of the suspicious traces.
+Thus, a metric is needed to serve as the sorting key of the suspicious traces.
 %
 Each parameter combination, in essence, creates a different DiffJSM,
-giving us the ``the distance between two hierarchical clusterings''.
+giving us ``the distance between two hierarchical clusterings''.
 %
 Fowlkes et al.~\cite{fowlkes83} proposed a method for comparing two
 hierarchical clusterings by computing their \textit{B-score}.
@@ -179,4 +176,5 @@ While we have not evaluated the full relevance of this idea,
 our initial experiments show that sorting suspicious traces based on the B-score of DiffJSMs is
 effective and brings interesting outliers to attention.
 %--end
+
 
