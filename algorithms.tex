@@ -141,14 +141,24 @@ The complexity of Godin's algorithm is $O(2^{2K}|G|)$ where $K$ is an upper boun
 
 
 \subsection{Hierarchical Clustering, Construction and Comparison}
- \label{subsec:algo-bscore}
+\label{subsec:algo-bscore}
+
+ DiffJSMs provide pair-wise dissimilarity
+ measurements that can be used to combine traces (forming initial clusters).
+%
+% However, to derive a flat clustering of traces to detect the outlier(s)
+To obtain outliers (suspicious traces),
+we form dendrograms for which
+a \textit{linkage} function is required to measure the distance between sets of traces.
+% 
+ We currently employ SciPy (version 1.3.0. \cite{scipy}) for these tasks.
+% for clustering and obtaining
+% the table of suspicious traces.
+%derived from the DiffJSM by hierarchical clustering algorithms in
+%
+%
+
  
-\subsubsection{SciPy}
-The table of suspicious traces is derived from the DiffJSM by hierarchical clustering algorithms in SciPy API version 1.3.0. \cite{scipy}.
-%
-DiffJSMs provide pair-wise dissimilarity measurement that can be used to combine traces (forming initial clusters).
-%
-However, to derive a flat clustering of traces to detect the outlier(s)(i.e., suspicious traces), a \textit{linkage} function is required to measure the distance between sets of traces.
 %
 SciPy provides a wide range of linkage functions: single, complete, average, weighted, centroid, median, ward.
 
