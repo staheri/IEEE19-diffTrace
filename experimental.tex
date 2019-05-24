@@ -6,10 +6,11 @@ Providing a serial CPU or single-GPU code, ILCS then executes this code in paral
 
 To evaluate the effectiveness of ideas behind DiffTrace, we have manually injected MPI-level and OMP-level bugs to the Traveling Salesman Problem (TSP) implementation on ILCS framework (Listing~\ref{lst:ilcs}).
 %
-
-The injected bugs are tend to simulate real bugs such as deadlock.
+The injected bugs are tend to simulate real HPC bugs such as deadlocks.
 %
-Also bugs are close to common mistakes that HPC developers usually make during developing HPC codes. In addition, there exist ``hidden'' faults that does not alarm anything during execution such as violation of critical sections or semantic-based bugs. 
+Also bugs are close to common mistakes that HPC developers usually make during developing HPC codes.
+%
+In addition, there exist ``hidden'' faults that does not alarm anything during execution such as violation of critical sections or semantic-based bugs. 
 %
 
 \input{tabs/ilcsPseudoCode-compact.tex}
@@ -19,10 +20,8 @@ The injected bugs are planted in a way that might get triggered in only one or m
 Generally, the goal is to see how effective DiffTrace can analyze and diff traces, and how close it can get to the fault root cause or its manifestation. 
 
 %
-We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process. \hl{PSC Config will be added}
-
-Note that the GPU-related activities of ILCS are out of the scope of this paper, and we have not touched them in our experiments.
-%
+We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process. \hl{PSC Config will be added}. Note that the GPU-related activities of ILCS are out of the scope of this paper, and we have not touched them in our experiments.
+Here, after a general explanation of ILCS behavior, we explain the injected bugs and the observations from DiffTrace.%
 
 
 \subsection{ILCS-TSP workflow}
@@ -64,6 +63,7 @@ The K10 at the end of filter means that all filtered traces are converted to the
 %
 The rest of the parameters have been explained in previous sections.
 %
+\hl{I will remove two unnecessary columns from the tables (threshold and linkage function) to save space and add 2-3 sentences explaining what was them}
 
 The bold numbers in the last column are suggesting trace \textbf{6.4} (process 6, thread 4) as the trace that changed the most after we planted the bug.
 %
@@ -85,11 +85,11 @@ Table~\ref{tab:ar1-ws-all-nn} shows that almost all processes are suspicious.
 %
 It turned out that ParLOT did not happen to capture function calls from all processes since the bug happens too early in the code. Thus except for process 1 and 4, all other traces are empty.
 %
-By looking at the diffNLR(1) (Figure~\ref{diffNLR-0}), we can see that both normal and the buggy trace of process $1$ identical until an invocation of MPI\_Allreduce(). After that, normal trace hits the end of the program and terminates while the buggy process is waiting for the return from the actual point of fault (process 2) and never ends (i.e., deadlocks). 
+By looking at the diffNLR(1) (Figure~\ref{diffNLR-0}), we can see that both normal and the buggy trace of process $1$ are identical until an invocation of MPI\_Allreduce(). After that, normal trace hits the end of the program and terminates while the buggy process is waiting for the return from the actual point of fault (process 2) and never ends (i.e., deadlocks). 
 %
 diffNLRs of other processes look the same.
 %
-This is the situation that a bug in one process manifests itself all over the 
+
 \input{tabs/ar1-ws-all-nn.tex}
 
 \begin{figure}[]
