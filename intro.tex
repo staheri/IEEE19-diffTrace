@@ -1,7 +1,7 @@
 Debugging high-performance computing code
 remains a challenge at all levels of scale.
 %
-Conventional HPC debuggers~\cite{allinea-ddt,roguewave,others}
+Conventional HPC debuggers~\cite{ddt,totalview}
 excel at many tasks such as examining the execution
 state of a complex simulation in detail
 and allowing the developer to re-execute
@@ -16,7 +16,7 @@ salient differences between two executions in a manner
 that makes debugging easier as well as more systematic.
 %
 A recent study conducted under the auspices of the
-DOE~\cite{DBLP:journals/corr/GopalakrishnanH17}
+DOE~\cite{hpcdoe}
 provides a comprehensive survey
 of existing debugging tools.
 %
@@ -121,25 +121,25 @@ Sometimes, these APIs contain the actual error (as opposed to the user code), an
 
 
 {\em Solution to Problem 1:\/}
-In DiffTrace, we choose PIN-based whole program binary tracing, with
+In DiffTrace, we choose Pin-based whole program binary tracing, with
 tracing filters that allow the designer to collect a suitable mixture of API
 calls/returns.
 %
 We realize this facility using
-ParLoT, a tool designed by us and published earlier~\cite{parlot-paper}.
+ParLOT, a tool designed by us and published earlier~\cite{parlot}.
 %
 In our research, we have thus far demonstrated the advantage of
-ParLoT with respect to collecting both MPI and OpenMP traces
+ParLOT with respect to collecting both MPI and OpenMP traces
 from a {\em single run of a hybrid MPI/OpenMP program}.
 %
 We demonstrate that, from this single type of trace, it is possible
 to pick out MPI-level bugs and/or OpenMP-level bugs.
 %
 While whole-program tracing
-may sound extremely computation and storage intensive, ParLoT employs
+may sound extremely computation and storage intensive, ParLOT employs
 lightweight on-the-fly compression techniques to keep these overheads low.
 %
-It achieves compression ratios exceeding 16,000~\cite{parlot-paper},
+It achieves compression ratios exceeding 21,000~\cite{parlot},
 thus making this approach practical, demanding
 only a few kilobytes per second per core of bandwidth.
 
