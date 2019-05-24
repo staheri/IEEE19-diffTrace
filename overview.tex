@@ -8,11 +8,7 @@
 \label{fig.diffTraceOverview}
 \end{figure*}
 
-DiffTrace employs
-ParLoT's~\cite{parlot} whole-program function-call and return trace collection
-mechanism, where ParLoT captures traces
-via Pin~\cite{pin} and incrementally compresses them using new
-compression schemes~\cite{martin-compression-paper}.
+DiffTrace employs ParLoT's whole-program function-call and return trace-collection mechanism, where ParLoT captures traces via Pin~\cite{pin} and incrementally compresses them using a new compression scheme~\cite{parlot}.
 %
 ParLoT can capture functions at two levels:
 the \textit{main image} (which does not include library code)
@@ -181,7 +177,7 @@ the odd processes exchange values with their right neighbors.\footnote{The
 
 A waiting trap in this example is this: the user may have
 swapped the {\tt Recv; Send} order in the {\tt else} part,
-creating head-to-head {\tt ``Send; Send''} deadlock
+creating head-to-head {\tt ``Send || Send''} deadlock
 under low-buffering (MPI EAGER limit).
 %
 We will now show how DiffTrace helps picks out this root-cause.
@@ -364,9 +360,8 @@ JSM$_{normal}$[i][j] (JSM$_{faulty}$[i][j]) shows the Jaccard similarity score o
 %
 %In other words, DiffTrace abstracts function call traces into JSMs, which are reflections of asymmetry among traces.
 As explained earlier, we compute
-JSM$_{D}$ to detect outlier executions.
-
-JSM$_{D}$ = $|$JSM$_{faulty} - $JSM$_{normal}|$
+JSM$_{D}$ to detect outlier executions, where
+JSM$_{D}$ = $|$JSM$_{faulty} - $JSM$_{normal}|$.
 
 %
 We sort the suggestion table based on the \textit{B-score}
@@ -432,7 +427,7 @@ respectively (except for the first and last traces, which loop just eight times)
 
 After constructing concept lattices and their corresponding JSMs, trace 5 appears as the trace that got
 affected the most by the bugs because row 5 (showing the similarity score of $T_5$ relative to all other traces)
-($JSM_{normal}[5][i]$ for $i \in [0,16)$)
+(JSM$_{normal}$[5][i] for $i \in [0,16)$)
   changed the most after the bug was introduced.
   %Consequently, it means that $T^\prime_5$ affected the asymmetry of all $T_i$s.
 %
