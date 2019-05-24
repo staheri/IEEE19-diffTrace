@@ -1,3 +1,28 @@
+\begin{figure*}
+     \centering
+     \begin{subfigure}[b]{0.31\textwidth}
+        \centering
+\includegraphics[width=\textwidth]{figs/diffNLR/ompBug-6-4-x0.pdf}
+\caption{diffNLR(6.4)}
+\label{diffNLR-6-4}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.31\textwidth}
+       \centering
+\includegraphics[width=\textwidth]{figs/diffNLR/mpiBug-all-nn-x0.pdf}
+\caption{diffNLR(0)}
+\label{diffNLR-0}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.31\textwidth}
+         \centering
+\includegraphics[width=0.9\textwidth]{figs/diffNLR/mpiBug2-0-nn-x0.pdf}
+\caption{diffNLR(5)}
+\label{diffNLR-5}
+     \end{subfigure}
+        \caption{Three simple graphs}
+        \label{fig:three graphs}
+\end{figure*}
 
 ILCS is a scalable framework for running iterative local searches on HPC platforms.
 %
@@ -20,15 +45,18 @@ The injected bugs are planted in a way that might get triggered in only one or m
 Generally, the goal is to see how effective DiffTrace can analyze and diff traces, and how close it can get to the fault root cause or its manifestation. 
 
 %
-We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process. \hl{PSC Config will be added}. Note that the GPU-related activities of ILCS are out of the scope of this paper, and we have not touched them in our experiments.
-Here, after a general explanation of ILCS behavior, we explain the injected bugs and the observations from DiffTrace.%
-
+We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process. We performed our experiments on XSEDE-PSC Bridges supercomputer nodes with 2 Intel Haswell (E5-2695 v3) CPUs; 14 cores/CPU; 2.3 - 3.3 GHz and 128 GB of memory on each.
+%
+Note that the GPU-related activities of ILCS are out of the scope of this paper, and we have not touched them in our experiments.
+%
+Collected traces (faulty and normal) then fed into DiffTrace with the MPI and OMP and custom (ILCS-TSP user codes) filters enabled and NLR constant K set to 10 for all iterations.
+%
+For each injected bug, we present our results as ranking tables of suggested traces by DiffNLR as ``suspicious''. Furthermore, we show diffNLRs of either top suggested trace or a selected trace.
 
 \subsection{ILCS-TSP workflow}
 
 \hl{2-3 sentences about how ILCS finds local champions in TSP problem}
-
-There are two types of threads in ILCS: a \textit{master} thread per node (MPI process) and a set of \textit{worker} threads per compute node (OpenMP threads).
+There are two types of threads in ILCS: a \textit{master} thread per node (MPI process) and a set of \textit{worker} threads per compute node (OpenMP threads)
 %
 Master threads of compute nodes are in charge of handling local working threads and communicating with master threads on other nodes.
 %
@@ -44,7 +72,7 @@ Since scanning the entire seed range in a reasonable amount of time is not feasi
 \subsection{OpenMP Bug: Unprotected Memory Access}
 
 
-\input{tabs/mc1-mc-6-4.tex}
+
 
 
 The memory accesses of \texttt{memcpy} in line 20 and 30 are protected by OpenMP critical section.
@@ -71,12 +99,14 @@ diffNLR(6.4) in Figure~\ref{diffNLR-6-4} clearly shows that the normal execution
 %
 
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.3\textwidth]{figs/diffNLR/ompBug-6-4.pdf}
-\caption{OpenMP Bug: diffNLR(6.4)}
-\label{diffNLR-6-4}
-\end{figure}
+%\begin{figure}[]
+%\centering
+%\includegraphics[width=0.3\textwidth]{figs/diffNLR/ompBug-6-4.pdf}
+%\caption{OpenMP Bug: diffNLR(6.4)}
+%\label{diffNLR-6-4}
+%\end{figure}
+
+
 
 \subsection{MPI Bug: Deadlock Caused by Fault in Collectives}
 By forcing only one of the processes (process 2) to invoke MPI\_Allreduce (line 24) with a wrong size, we have simulated a \textit{real deadlock}. 
@@ -90,17 +120,19 @@ By looking at the diffNLR(1) (Figure~\ref{diffNLR-0}), we can see that both norm
 diffNLRs of other processes look the same.
 %
 
-\input{tabs/ar1-ws-all-nn.tex}
+%\input{tabs/ar1-ws-all-nn.tex}
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.3\textwidth]{figs/diffNLR/mpiBug-all-nn.pdf}
-\caption{diffNLR(0)}
-\label{diffNLR-0}
-\end{figure}
+%\begin{figure}[]
+%\centering
+%\includegraphics[width=0.3\textwidth]{figs/diffNLR/mpiBug-all-nn.pdf}
+%\caption{diffNLR(0)}
+%\label{diffNLR-0}
+%\end{figure}
 %
 
+\input{tabs/mc1-mc-6-4.tex}
 
+\input{tabs/ar1-ws-all-nn.tex}
 
 \subsection{MPI Bug: Wrong Collective Operation}
 By changing the operation MPI\_MIN to MPI\_MAX in the input arguments of MPI\_Allreduce(), we have changed the semantics of ILCS. 
@@ -122,11 +154,11 @@ Similar to the deadlock bug, this is another instance of  ``bug manifestation'' 
 
 \input{tabs/ar1-wo-0-nn.tex}
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.3\textwidth]{figs/diffNLR/mpiBug2-0-nn.pdf}
-\caption{diffNLR(5)}
-\label{diffNLR-5}
-\end{figure}
+%\begin{figure}[]
+%\centering
+%\includegraphics[width=0.3\textwidth]{figs/diffNLR/mpiBug2-0-nn.pdf}
+%\caption{diffNLR(5)}
+%\label{diffNLR-5}
+%\end{figure}
 
 

@@ -30,7 +30,7 @@ main(argc,argv){
     ...
     if (my_rank == global_champion_P_id){
      <@\textcolor{blue}{\#pragma omp cirtical}@>
-     memcpy(bcast_buffer,local_champ); // 
+     memcpy(bcast_buffer,champ[rank]); // 
     }
     MPI_Bcast(bcast_buffer); // broadcast the local champion to all nodes
    } while (no_change_threshold);

@@ -2,14 +2,14 @@
 
 \begin{figure*}[]
 \caption{DiffTrace Overview}
-\includegraphics[width=1\textwidth]{figs/overview2.pdf}
+\includegraphics[width=1\textwidth]{figs/overview3.pdf}
 %\includegraphics[]{figs/overview.png}
 %\includegraphics[]{figs/overv}
 \label{fig.diffTraceOverview}
 \end{figure*}
 
 DiffTrace employs
-ParLoT's~\cite{ParLoT} whole-program function-call and return trace collection
+ParLoT's~\cite{parlot} whole-program function-call and return trace collection
 mechanism, where ParLoT captures traces
 via Pin~\cite{pin} and incrementally compresses them using new
 compression schemes~\cite{martin-compression-paper}.
@@ -399,6 +399,26 @@ Figure \ref{fig.diffTraceOverview}.
 %Also, a different set of parameters might produce inaccurate suggestions (false positives).
 %
 
+\begin{figure}
+
+     \centering
+     \begin{subfigure}[b]{0.15\textwidth}
+        \centering
+		\includegraphics[width=\textwidth]{figs/legend.pdf}
+		\caption{Legend}
+		\label{fig:legend}
+	\end{subfigure}
+	     \hfill
+     \begin{subfigure}[b]{0.31\textwidth}
+         \centering
+\includegraphics[width=\textwidth]{figs/{b-11.mpi.0K10-5}.pdf}
+\caption{swapBug}
+\label{fig:swapbug}
+     \end{subfigure}
+\caption{diffNLR legend and sample}
+\label{fig:sampleDiffNLR}
+
+\end{figure}
 
 To evaluate the effectiveness of DiffJSM, we planted two artificial bugs (\textit{swapBug}
 and \textit{dlBug}) in the code from Figure \ref{fig.oddEven} and ran it with 16 processes.
@@ -428,14 +448,16 @@ and its corresponding normal trace ($T_s$) is visualized by \textit{diffNLR}.
 To highlight the differences in an easy-to-understand manner, DiffTrace visually separates the common and different blocks of a pair of pre-processed traces via \textit{diffNLR}, a graphical visualization of the \texttt{diff} algorithm \cite{diff-myers}.
 %
 
-\begin{figure}[]
+
+
+
+
+\begin{figure}[t]
 \centering
-\caption{(a) The legend of \textit{diffNLR} and the list of loop structures (b) \textit{diffNLR(5)} of \textit{swapBug} (c) \textit{diffNLR(5)} of \textit{dlBug}}
-\includegraphics[width=0.45\textwidth]{figs/sampleGdiff.png}
-\label{fig.gdiffs}
+\includegraphics[width=0.35\textwidth]{figs/{adl-11.mpi.0K10-5}.pdf}
+\caption{dlBug}
+\label{fig:dlbug}
 \end{figure}
-
-
 \texttt{diff} takes two sequences $S_A$ and $S_B$ and computes the minimal \textit{edit} to convert $S_A$ to $S_B$. This algorithm is used in the GNU \texttt{diff} utility to compare two text files and in git for efficiently keeping track of file changes.
 Since ParLoT preserves the order of function calls, each trace $T_i$ is totally ordered. Thus \textit{diff} can expose the differences of a pair of $T$s. \textit{diffNLR} aligns common and different blocks of a pair of sequences (e.g., traces) horizontally and vertically, making it easier for the analyst to see the differences at a glance.
 For simplicity, our implementation of \textit{gdiff} only takes one argument $x$ that denotes \textit{the suspicious trace}.

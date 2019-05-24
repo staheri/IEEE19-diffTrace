@@ -1,98 +1,68 @@
 
 
-\subsubsection{HPC debugging}
+Similar to DiffTrace, majority of HPC debuggers analysis is based on computing  \textit{dissimilarities}, detecting \textit{anomalies} and measuring \textit{progress}.
+%
+AutomaDeD~\cite{automaded-GBron}\cite{automaded-laguna} statically models the application's control flow into Semi Markov Models and detects outlier states of the model in the suspicious period of time.
+%
+STAT~\cite{stat} merges stack traces from all processes into a prefix tree, and identifies equivalent classes of processes and outliers for further study.
+%
+STAT uses StackWalker API from Dyninst~\cite{dyninst} to gather stack traces, and handles the movement of traces by deploying a tree based overlay network via MRnet~\cite{mrnet}.
+%
+PRODOMETER~\cite{prodometer} detect loops in AutomaDeD models and introduces the least progressed tasks via analyzing a progress dependency graph.
+%
+D4~\cite{liu-18} detects concurrent bugs from statically analyzing source codes \textit{changes} and DMTracker~\cite{dmtracker} detects anomaly in data movements.
 
-The general idea of most HPC debugging tools are first collecting some information from the applications
-Top:
-STAT: stack trace analysis for large scale debugging - Dorian Arnold \cite{stat}
- PRODOMETER: Accurate application progress analysis for large-scale parallel debugging - subatra mitra \cite{prodometer}
- Automaded : Automata-based debugging for dissimilar parallel tasks - greg \cite{automaded-GBron}\cite{automaded-laguna}
- D4 : real time concurrency debugging, detecting changes in source code iteratively
-Marmot : mpi debugger deadlock detection
-MPI checker static analysis for MPI
+Obtaining and analyzing a \textit{model} from execution data is another common approach in HPC debugging and program understanding. 
+Synoptic~\cite{beschastnikh-synoptic} and similar works~\cite{beschastnikh-pologs}\cite{beschastnikh-csight} derive and infer different models and invariants from logs of concurrent and distributed systems.
+%
+Communication patterns of HPC applications are automatically characterized by diffing the communication matrix with common known patterns in~\cite{roth-15} and by detecting repetitive patterns in \cite{preissl-08}.
+%
+ScalaTrace~\cite{scalatrace} also captures and compresses communication traces for later replay. 
+%
 
-DM-tracker Detecting anomaly in data movements 
+FCA-based approaches have been widely used  in data mining~\cite{cldm}, machine learning~\cite{clml} and information retrieval \cite{ignatov17}. Vijay Garg uses lattic theories and algorithms to model and analyze distributed systems~\cite{latticeForDistConst}\cite{garg_2015}.
 
-
-Other: 
-Inferring models of concurrent systems from logs of their behavior with CSight - ivan \cite{beschastnikh-csight}
-\begin{itemize}
-\item Inferring and asserting distributed system invariants -  ivan beschastnikh - stewart grant \cite{grant18}
-\item Mining temporal invariants from partially ordered logs -  ivan beschastnikh \cite{beschastnikh-pologs}
-\item Model Based fault localization in large-scale computing systems - Naoya Maruyama \cite{satoshi-08}
-\item Synoptic: Studying logged behavior with inferred models - ivan beschastnikh \cite{beschastnikh-synoptic}
-\item Barrier Matching for Programs with Textually unaligned barriers \cite{zhang07}
-\item Pivot Tracing: Dynamic causal monitoring for distributed systems - Johnathan mace \cite{pivot}
-\item Automated Charecterization of parallel application communication patterns \cite{roth-15}
-\item Problem Diagnosis in Large Scale Computing environments \cite{miller06}
-\item Probablistic diagnosis of performance faults in large-scale parallel applications \cite{laguna-12}
-\item detecting patterns in MPI communication traces - robert preissl \cite{preissl-08}
+Visualizing HPC execution traces is another effort that DiffTrace and others made towards program understanding. Ravel~\cite{ravel} systematically visualizes large-scale application communication by assigning logical ideas to trace events~\cite{charmVis}. 
 
 
 
 
-\item Score-P \cite{scorep}
-\item TAU \cite{tau}
-\item ScalaTrace: Scalable compression and replay of communication traces for HPC  \cite{scalatrace}
-
-\end{itemize}
 
 
 
-
-\subsection{Trace Analysis}
-
-
+\subsection{OTHERS}
+\hl{in case of lack of material}
 \begin{itemize}
 \item Trace File Comparison with a hierarchical Sequence Alignment algorithm \cite{weber-seqAlign}
 \item structural clustering : matthias weber \cite{weberStructural}
 \item building a better backtrace: techniques for postmortem program analysis - ben liblit \cite{liblit02}
 \item automatically charecterizing large scale program behavior - timothy sherwood \cite{sherwood02}
-\end{itemize}
-
-
-\subsection{Visualizations}
-
-
-\begin{itemize}
-\item Combing the communication hairball: Visualizing large-scale parallel execution traces using logical time - katherine e isaacs \cite{ravel}
-\item recovering logical structure from charm++ event traces \cite{charmVis}
-\item ShiViz - Debugging distributed systems - \cite{shiviz}
+\item Score-P \cite{scorep}
+\item TAU \cite{tau}
+\item ScalaTrace: Scalable compression and replay of communication traces for HPC  \cite{scalatrace}
 \end{itemize}
 
 
 
-\subsection{Concept Lattice and LCA}
-
-
-\begin{itemize}
-\item Vijay Garg - Applications of lattice theory in distributed systems
-
-\item Dimitry Ignatov \cite{ignatov} - Concept Lattice Applications in Information Retrieval
-
-\item \cite{clbook} \cite{clconst} \cite{bender05} \cite{latticeForDistConst} 
-\end{itemize}
-
-\subsection{Repetitive Patterns}
 
 
 
-
-\subsection{STAT}
-
-Parallel debugger STAT\cite{stat}
-\begin{itemize}
-\item STAT gathers stack traces from all processes
-\item Merge them into prefix tree
-\item Groups processes that exhibit similar behavior into equivalent classes
-\item A single representative of each equivalence can then be examined with a full-featured debugger like TotalView or DDT
-\end{itemize}
-
-What STAT does not have?
-
-\begin{itemize}
-\item FP debugging
-\item Portability (too many dependencies)
-\item Domain-specific
-\item Loop structures and detection
-\end{itemize}
+%
+%\subsection{STAT}
+%
+%Parallel debugger STAT\cite{stat}
+%\begin{itemize}
+%\item STAT gathers stack traces from all processes
+%\item Merge them into prefix tree
+%\item Groups processes that exhibit similar behavior into equivalent classes
+%\item A single representative of each equivalence can then be examined with a full-featured debugger like TotalView or DDT
+%\end{itemize}
+%
+%What STAT does not have?
+%
+%\begin{itemize}
+%\item FP debugging
+%\item Portability (too many dependencies)
+%\item Domain-specific
+%\item Loop structures and detection
+%\end{itemize}
