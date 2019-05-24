@@ -353,11 +353,11 @@ Next, we show how the differences between two hierarchical clusterings from two 
 (faulty vs.~normal) reveal which traces have been affected the most by the fault.
 
 
-\subsection{Detecting Suspicious Traces via DiffJSM}
+\subsection{Detecting Suspicious Traces via JSM$_{D}$}
 % So far,
 % we have explained how DiffTrace can narrow down the search space from numerous long traces to just a few equivalent JSMs (i.e., clusters).
 % %
-$JSM_{normal}[i][j]$ ($JSM_{faulty}[i][j]$) shows the Jaccard similarity score of $T_i$ and $T_j$ from the normal trace ($T_i^\prime$ and $T_j^\prime$).
+JSM$_{normal}$[i][j] (JSM$_{faulty}$[i][j]) shows the Jaccard similarity score of $T_i$ and $T_j$ from the normal trace ($T_i^\prime$ and $T_j^\prime$).
 % 
 % However, we are interested in detecting what changed the most due to the fault.
 % with respect to the ``natural asymmetry'' of the application.
@@ -365,12 +365,9 @@ $JSM_{normal}[i][j]$ ($JSM_{faulty}[i][j]$) shows the Jaccard similarity score o
 %In other words, DiffTrace abstracts function call traces into JSMs, which are reflections of asymmetry among traces.
 As explained earlier, we compute
 JSM$_{D}$ to detect outlier executions.
-%
-The construction
-of JSM$_{D}$ 
-involves obtaining the hierarchical clustering based on \textit{DiffJSM},
-followed by the subtraction of the faulty JSM from its corresponding normal JSM.
-$DiffJSM = |JSM_{faulty} - JSM_{normal}|$.
+
+JSM$_{D}$ = $|$JSM$_{faulty} - $JSM$_{normal}|$
+
 %
 We sort the suggestion table based on the \textit{B-score}
 similarity metric of two hierarchical clusterings \cite{fowlkes83} (cf.~Section \ref{subsec:algo-bscore}).
@@ -429,7 +426,7 @@ simulating a potential deadlock. \textit{dlBug} simulates an actual deadlock in 
 %
 Upon collection of ParLoT traces from the execution of the buggy code versions,
 DiffTrace first decompresses them and filters out all non-MPI functions.
-Then two major loops are detected, \textbf{L0} and \textbf{L1} (Figure \ref{fig.gdiffs}-(a)),
+Then two major loops are detected, \textbf{L0} and \textbf{L1} (identical to the ones in Table \ref{tab:oddEvenPT-NLR}),
 that are supposed to loop 16 times in the even and odd traces,
 respectively (except for the first and last traces, which loop just eight times).
 
