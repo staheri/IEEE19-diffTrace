@@ -52,49 +52,42 @@ The collected traces (faulty and normal) are fed to DiffTrace. We enabled the MP
 %
 We present the results in form of ranking tables that show which traces (processes and threads) DiffTrace considers ``suspicious''. Furthermore, we show diffNLRs for selected traces.
 
+
+
 \subsection{ILCS-TSP Workflow}
 
-\hl{2-3 sentences about how ILCS finds local champions in TSP problem}
-There are two types of threads in ILCS: a \textit{master} thread per node (MPI process) and a set of \textit{worker} threads per compute node (OpenMP threads)
-%
-Master threads of compute nodes are in charge of handling local working threads and communicating with master threads on other nodes.
-%
-For each detected CPU core, the master thread forks worker OpenMP threads.
+The TSP code starts with a random tour and iteratively shortens it using the 2-opt improvement heuristic~\cite{2-opt} until a local minimum is reached. ILCS automatically and asynchronously distributes unique seed values to each worker thread, runs the TSP code, reduces the results to find the best solution, and repeats these steps until the termination criterion is met. It employs two types of threads per node: a \textit{master} thread (MPI process) that handles the communication and local work distribution and a set of \textit{worker} threads (OpenMP threads) that execute the provided TSP code. The master thread forks a worker thread for each detected CPU core.
 %
 Each worker thread continually calls
-\texttt{CPU\_Exec()} to evaluate a range of seeds and record the results (lines 14-20).
+\texttt{CPU\_Exec()} to evaluate a seed and records the result (lines 14-20).
 %
 Once the worker threads are running, the master thread's primary job is to scan the results of the workers to find the best solution computed so far (i.e., the local champion). This information is then globally reduced to determine the current system-wide champion (lines 22-32).
 %
-Since scanning the entire seed range in a reasonable amount of time is not feasible, ILCS terminates the search when the quality has not improved over a certain period (lines 33-34).
+ILCS terminates the search when the quality has not improved over a certain period (lines 33-34).
+
+
 
 \subsection{OpenMP Bug: Unprotected Memory Access}
 
+The memory accesses performed by the \texttt{memcpy} calls on lines 20 and 30 are protected by an OpenMP critical section.
+%
+Not protecting them results in a data race that might lead to incorrect final program output.
+%
+To simulate this scenario, we modified the ILCS source code to omit the critical section in worker thread 4 of process 6.
 
+Table~\ref{tab:mc1-mc-6-4} lists the top suspicious traces that DiffTrace finds when injecting this bug.
+%
+Each row presents results for different filters and attributes.
+%
+For example, the filter ``11.mem.ompcit.cust.0K10'' removes all function returns and .plt calls from the traces and only keeps memory-related calls, OpenMP critical-section functions, and the custom function ``CPU\_Exec''.
+%
+The ``K10'' at the end of filter means that the filtered traces are converted into an NLR with $K$=10.
+%
+%\hl{I will remove two unnecessary columns from the tables (threshold and linkage function) to save space and add 2-3 sentences explaining what was them}
+%
+The bold numbers in the rightmost column of the table flag trace 6.4 (i.e., process 6, thread 4) as the trace that was affected the most by the bug.
 
-
-
-The memory accesses of \texttt{memcpy} in line 20 and 30 are protected by OpenMP critical section.
-%
-If under some scenario, this shared memory location becomes unprotected, a race condition might happen and invalidate the ILCS final output.
-%
-We have simulated such a scenario and modified the ILCS source code so that the control flow of the program skip the critical section in some specific OpenMP threads.
-%
-In one case where we inject this bug to the worker thread 4 of process 6, DiffTrace generated Table~\ref{tab:mc1-mc-6-4} as top suspicious traces for further analysis.
-%
-Each table entry contains the parameter that leads to the last two column suggestions.
-%
-For example, filter ``11.mem.ompcit.cust.0K10'' briefly means that all returns and .plt calls have been removed from traces of both faulty and normal executions, and only memory-related functions, OpenMP critical section functions and custom function ``CPU\_Exec'' are kept in traces.
-%
-The K10 at the end of filter means that all filtered traces are converted to their equivalent NLR with $K$=10.
-%
-The rest of the parameters have been explained in previous sections.
-%
-\hl{I will remove two unnecessary columns from the tables (threshold and linkage function) to save space and add 2-3 sentences explaining what was them}
-
-The bold numbers in the last column are suggesting trace \textbf{6.4} (process 6, thread 4) as the trace that changed the most after we planted the bug.
-%
-diffNLR(6.4) in Figure~\ref{diffNLR-6-4} clearly shows that the normal execution of ILCS (blue blocks) protects the \texttt{memcpy} while the buggy execution does not. In this figure, L0 is \texttt{CPU\_Exec}, which has been executed several times in both versions but never reaches the optimal solution until the end.
+The corresponding diffNLR(6.4) presented in Figure~\ref{diffNLR-6-4} clearly shows that the normal execution of ILCS (green and blue blocks) protects the \texttt{memcpy} while the buggy execution (green and red blocks) does not. Here, L0 represents \texttt{CPU\_Exec}, which is called multiple times in both the fault-free and the buggy version (the call frequencies are different due to the asynchronous nature of ILCS).
 %
 
 
