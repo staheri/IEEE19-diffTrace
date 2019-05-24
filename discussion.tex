@@ -1,26 +1,38 @@
-
-
-
-
-Correctness and performance in HPC are severely challenged 
-doe and other
-
-community
-bold new
-
-fund rethink comm parti
-
-DiffTrace is the first tool we know of that (1)~situates debugging around {\em whole program}
-diffing, (2)~provides user-selectable front-end filters of function calls to keep,
-(3)~summarizes loops based on state-of-the-art algorithms to detect loop-level
+DiffTrace is the first tool we know of that situates debugging around {\em whole program}
+diffing, provides user-selectable front-end filters of function calls to keep,
+summarizes loops based on state-of-the-art algorithms to detect loop-level
 behavioral differences,
-(3)~summarizes the loop-summarized
+summarizes the loop-summarized
 traces around concept lattices that have been realized using incremental
-algorithms, (4)~clusters behaviors using hierarchical clustering and ranks as per similarity,
-and (5)~presents salient differences 
+algorithms, clusters behaviors using hierarchical clustering and ranks as per similarity,
+and presents salient differences.
+%
+We deliberately chose the path of a clean start that addresses missing features
+in existing tools and missing collectivism in the debugging community.
+%
+Our initial assessment of our design presented in this paper is encouraging.
 
-knob filter
-sampling
-ML
+
+Scalability, parameterization, and machine learning are our three remaining major tasks.
+%
+Debugging is always scalability-challenged because of growing application-scale.
+%
+Modularity and scalability can be achieved by handing off detailed debugging from
+DiffTrace to specialized tools such as Archer~\cite{archer} that
+our group has developed, and finds use within actual DOE lab projects.
+%
+One can gain scalability by further developing DiffTrace's mechanisms to filter function
+calls, improve on ParLoT's compression methods, and discovering semantic clustering
+methods that are tuned to the bug class being worked on.
+%
+We plan to research the role machine learning can play by taking concept lattices
+and loop structures as elevated features, and conduct systematic bug-injection
+studies to see whether bug classifications can be computed with high precision
+and recall.
+%
+Our one-year plans are to take up more challenging examples, beginning with DOE miniapps,
+stabilize DiffTrace, and release it to the community.
+
+
  
 %--end
