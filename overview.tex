@@ -179,11 +179,10 @@ the odd processes exchange values with their right neighbors.\footnote{The
 %
 %The for loop in line 4 of \texttt{oddEvenSort()} iterates over the phases of the algorithm. Based on the phase, the appropriate partner for each rank is computed by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and sort, merge, and copy operations are performed on the received data (denoted by \texttt{...} in line 15 for simplicity).
 
-A waiting trap in this example is this:
-the \texttt{MPI\_Send} call may need to \textit{block} if there is not enough system buffer space available (EAGER limit is set low).
-%
-Thus, in low-buffer situations, the statements on lines 11 and 12 of
-this figure can end up in a deadlock.
+A waiting trap in this example is this: the user may have
+swapped the {\tt Recv; Send} order in the {\tt else} part,
+creating head-to-head {\tt ``Send; Send''} deadlock
+under low-buffering (MPI EAGER limit).
 %
 We will now show how DiffTrace helps picks out this root-cause.
 
