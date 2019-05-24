@@ -177,7 +177,7 @@ the odd processes exchange values with their right neighbors.\footnote{The
 
 A waiting trap in this example is this: the user may have
 swapped the {\tt Recv; Send} order in the {\tt else} part,
-creating head-to-head {\tt ``Send; Send''} deadlock
+creating head-to-head {\tt ``Send || Send''} deadlock
 under low-buffering (MPI EAGER limit).
 %
 We will now show how DiffTrace helps picks out this root-cause.
