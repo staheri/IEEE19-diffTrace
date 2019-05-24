@@ -1,31 +1,30 @@
-There have been three major recent studies
-that have emphasized the need for better debugging tools
+Three major recent studies
+have emphasized the need for better debugging tools
 {\em and} the need to build a community that can share debugging
-methods and infrastructures: the DOE report mentioned
+methods and infrastructure: the DOE report mentioned
 earlier \cite{hpcdoe},
 an NSF workshop~\cite{Cohen:2018:IRC:3297279}, and an ASCR report on
 extreme heterogeneity~\cite{ascr-report-extreme-heterogeneity}.
 %
 Our key contribution in this paper is a fresh approach to debugging
-methods that (1)~incorporates methods to debug across an API-stack
+that (1)~incorporates methods to debug across the API-stack
 by resorting to binary tracing and thereby being able to ``dial into''
-MPI bugs or OpenMP bugs (as shown in the ILCS case study), (2)~makes
-an initial triage of debugging methods possible via function call traces,
-and (3)~allowing the verification community to cohere around DiffTrace
-by allowing their tools to be applied as extensions of the DiffNLR
-findings.
+MPI bugs and/or OpenMP bugs (as shown in the ILCS case study), (2)~makes
+an initial triage of debugging methods possible via function-call traces,
+and (3)~enables the verification community to cohere around DiffTrace
+by allowing other tools to extend our tool chain (they can tap into it at various places).
 
 
-Many HPC debugging efforts have, in the past, emphasized
+Many HPC debugging efforts have emphasized
 the need to highlight dissimilarities and
-incorporate progress measures on loops: we now
-provide a representative survey.\footnote{Unfortunately with inevitable omissions.}
+incorporate progress measures on loops. We now
+summarize a few of them.
 %
 AutomaDeD~\cite{automaded-GBron}\cite{automaded-laguna}
 captures the application's control flow
 via Semi Markov Models and detects outlier executions.
 %
-PRODOMETER~\cite{prodometer} detect loops in
+PRODOMETER~\cite{prodometer} detects loops in
 AutomaDeD models and introduces the
 notion of {\em least progressed tasks} by analyzing {\em progress dependency graphs}.
 %
@@ -34,39 +33,37 @@ computes changes in loop {\em structure}.
 %
 Prodometer's methods are ripe for symbiotic incorporation into DiffTrace.
 %
-We also plan to incorporate {\em happens-before} computation as a progress measure,
-thanks to FCA-based algorithms
-to compute happens-before from Garg et al.~\cite{latticeForDistConst,garg_2015}.
+We also plan to incorporate {\em happens-before} computation as a progress measure using FCA-based algorithms by Garg et al.~\cite{latticeForDistConst,garg_2015}.
 %
-FCA-based approaches have been widely used  in data mining~\cite{cldm},
+FCA-based approaches have been widely used in data mining~\cite{cldm},
 machine learning~\cite{clml}, and information retrieval \cite{ignatov17}.
 
 
 In terms of computing differences with previous executions,
 we draw inspirations from
 Zeller's delta-debugging~\cite{DBLP:conf/esec/Zeller99}
-and De Rose et al's relative debugging~\cite{relative-debugging}.
+and De Rose et al.'s relative debugging~\cite{relative-debugging}.
 %
-The power of equivalence-classes for outlier detection are
+The power of equivalence classes for outlier detection is
 researched in STAT~\cite{stat}, which
 merges stack traces from processes into a prefix tree,
 looking for equivalence-class outliers.
 %
-STAT uses StackWalker API from Dyninst~\cite{dyninst} to gather stack traces,
+STAT uses the StackWalker API from Dyninst~\cite{dyninst} to gather stack traces
 and efficiently handles scaling issues
-through tree based overlay networks such as MRnet~\cite{mrnet}.
+through tree-based overlay networks such as MRnet~\cite{mrnet}.
 %
-D4~\cite{liu-18} detects concurrent bugs from statically analyzing source code
+D4~\cite{liu-18} detects concurrency bugs by statically analyzing source-code
 changes, and DMTracker~\cite{dmtracker} detects anomalies in data movement.
 %
-Communication patterns of HPC applications are automatically characterized by
-diffing the communication matrix with common known patterns in~\cite{roth-15} and by
+The communication patterns of HPC applications can be automatically characterized by
+diffing the communication matrix with common patterns~\cite{roth-15} or by
 detecting repetitive patterns~\cite{preissl-08}.
 %
 ScalaTrace~\cite{scalatrace} captures and compresses communication traces for later replay. 
 %
 Synoptic~\cite{beschastnikh-synoptic} is applied to distributed
-system logs and find bugs.
+system logs to find bugs.
 %
 Ravel~\cite{ravel} systematically visualizes
 large-scale application communications~\cite{charmVis}. 
@@ -109,3 +106,4 @@ large-scale application communications~\cite{charmVis}.
 %\item Domain-specific
 %\item Loop structures and detection
 %\end{itemize}
+
