@@ -1,48 +1,89 @@
-
-
-aims to build
-
-Similar to DiffTrace, majority of HPC debuggers analysis is based on computing  \textit{dissimilarities}, detecting \textit{anomalies} and measuring \textit{progress}.
+There have been three major recent studies
+that have emphasized the need for better debugging tools
+{\em and} the need to build a community that can share debugging
+methods and infrastructures: the DOE report mentioned
+earlier \cite{hpcdoe},
+an NSF workshop~\cite{Cohen:2018:IRC:3297279}, and an ASCR report on
+extreme heterogeneity~\cite{ascr-report-extreme-heterogeneity}.
 %
-AutomaDeD~\cite{automaded-GBron}\cite{automaded-laguna} statically models the application's control flow into Semi Markov Models and detects outlier states of the model in the suspicious period of time.
+Our key contribution in this paper is a fresh approach to debugging
+methods that (1)~incorporates methods to debug across an API-stack
+by resorting to binary tracing and thereby being able to ``dial into''
+MPI bugs or OpenMP bugs (as shown in the ILCS case study), (2)~makes
+an initial triage of debugging methods possible via function call traces,
+and (3)~allowing the verification community to cohere around DiffTrace
+by allowing their tools to be applied as extensions of the DiffNLR
+findings.
+
+
+Many HPC debugging efforts have, in the past, emphasized
+the need to highlight dissimilarities and
+incorporate progress measures on loops: we now
+provide a representative survey.\footnote{Unfortunately with inevitable omissions.}
 %
-STAT~\cite{stat} merges stack traces from all processes into a prefix tree, and identifies equivalent classes of processes and outliers for further study.
+AutomaDeD~\cite{automaded-GBron}\cite{automaded-laguna}
+captures the application's control flow
+via Semi Markov Models and detects outlier executions.
 %
-STAT uses StackWalker API from Dyninst~\cite{dyninst} to gather stack traces, and handles the movement of traces by deploying a tree based overlay network via MRnet~\cite{mrnet}.
+PRODOMETER~\cite{prodometer} detect loops in
+AutomaDeD models and introduces the
+notion of {\em least progressed tasks} by analyzing {\em progress dependency graphs}.
 %
-PRODOMETER~\cite{prodometer} detect loops in AutomaDeD models and introduces the least progressed tasks via analyzing a progress dependency graph.
+DiffTrace's DiffNLR method does not (yet) incorporate progress measures; it only
+computes changes in loop {\em structure}.
 %
-D4~\cite{liu-18} detects concurrent bugs from statically analyzing source codes \textit{changes} and DMTracker~\cite{dmtracker} detects anomaly in data movements.
-
-Obtaining and analyzing a \textit{model} from execution data is another common approach in HPC debugging and program understanding. 
-Synoptic~\cite{beschastnikh-synoptic} and similar works~\cite{beschastnikh-pologs}\cite{beschastnikh-csight} derive and infer different models and invariants from logs of concurrent and distributed systems.
+Prodometer's methods are ripe for symbiotic incorporation into DiffTrace.
 %
-Communication patterns of HPC applications are automatically characterized by diffing the communication matrix with common known patterns in~\cite{roth-15} and by detecting repetitive patterns in \cite{preissl-08}.
+We also plan to incorporate {\em happens-before} computation as a progress measure,
+thanks to FCA-based algorithms
+to compute happens-before from Garg et al.~\cite{latticeForDistConst,garg_2015}.
 %
-ScalaTrace~\cite{scalatrace} also captures and compresses communication traces for later replay. 
+FCA-based approaches have been widely used  in data mining~\cite{cldm},
+machine learning~\cite{clml}, and information retrieval \cite{ignatov17}.
+
+
+In terms of computing differences with previous executions,
+we draw inspirations from
+Zeller's delta-debugging~\cite{DBLP:conf/esec/Zeller99}
+and De Rose et al's relative debugging~\cite{relative-debugging}.
 %
+The power of equivalence-classes for outlier detection are
+researched in STAT~\cite{stat}, which
+merges stack traces from processes into a prefix tree,
+looking for equivalence-class outliers.
+%
+STAT uses StackWalker API from Dyninst~\cite{dyninst} to gather stack traces,
+and efficiently handles scaling issues
+through tree based overlay networks such as MRnet~\cite{mrnet}.
+%
+D4~\cite{liu-18} detects concurrent bugs from statically analyzing source code
+changes, and DMTracker~\cite{dmtracker} detects anomalies in data movement.
+%
+Communication patterns of HPC applications are automatically characterized by
+diffing the communication matrix with common known patterns in~\cite{roth-15} and by
+detecting repetitive patterns~\cite{preissl-08}.
+%
+ScalaTrace~\cite{scalatrace} captures and compresses communication traces for later replay. 
+%
+Synoptic~\cite{beschastnikh-synoptic} is applied to distributed
+system logs and find bugs.
+%
+Ravel~\cite{ravel} systematically visualizes
+large-scale application communication by assigning logical ideas to trace events~\cite{charmVis}. 
 
-FCA-based approaches have been widely used  in data mining~\cite{cldm}, machine learning~\cite{clml} and information retrieval \cite{ignatov17}. Vijay Garg uses lattic theories and algorithms to model and analyze distributed systems~\cite{latticeForDistConst}\cite{garg_2015}.
-
-Visualizing HPC execution traces is another effort that DiffTrace and others made towards program understanding. Ravel~\cite{ravel} systematically visualizes large-scale application communication by assigning logical ideas to trace events~\cite{charmVis}. 
-
-
-
-
-
-
-
-\subsection{OTHERS}
-\hl{in case of lack of material}
-\begin{itemize}
-\item Trace File Comparison with a hierarchical Sequence Alignment algorithm \cite{weber-seqAlign}
-\item structural clustering : matthias weber \cite{weberStructural}
-\item building a better backtrace: techniques for postmortem program analysis - ben liblit \cite{liblit02}
-\item automatically charecterizing large scale program behavior - timothy sherwood \cite{sherwood02}
-\item Score-P \cite{scorep}
-\item TAU \cite{tau}
-\item ScalaTrace: Scalable compression and replay of communication traces for HPC  \cite{scalatrace}
-\end{itemize}
+%
+%
+%\subsection{OTHERS}
+%\hl{in case of lack of material}
+%\begin{itemize}
+%\item Trace File Comparison with a hierarchical Sequence Alignment algorithm \cite{weber-seqAlign}
+%\item structural clustering : matthias weber \cite{weberStructural}
+%\item building a better backtrace: techniques for postmortem program analysis - ben liblit \cite{liblit02}
+%\item automatically charecterizing large scale program behavior - timothy sherwood \cite{sherwood02}
+%\item Score-P \cite{scorep}
+%\item TAU \cite{tau}
+%\item ScalaTrace: Scalable compression and replay of communication traces for HPC  \cite{scalatrace}
+%\end{itemize}
 
 
 
