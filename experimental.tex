@@ -24,36 +24,35 @@
         \label{fig:three graphs}
 \end{figure*}
 
-ILCS is a scalable framework for running iterative local searches on HPC platforms.
+ILCS is a scalable framework for running iterative local searches on HPC platforms~\cite{ilcs}.
 %
-Providing a serial CPU or single-GPU code, ILCS then executes this code in parallel between compute nodes (MPI) and within them (OpenMP and multi-GPU).
-%
-
-To evaluate the effectiveness of ideas behind DiffTrace, we have manually injected MPI-level and OMP-level bugs to the Traveling Salesman Problem (TSP) implementation on ILCS framework (Listing~\ref{lst:ilcs}).
-%
-The injected bugs are tend to simulate real HPC bugs such as deadlocks.
-%
-Also bugs are close to common mistakes that HPC developers usually make during developing HPC codes.
-%
-In addition, there exist ``hidden'' faults that does not alarm anything during execution such as violation of critical sections or semantic-based bugs. 
+Providing serial CPU and/or single-GPU code, ILCS executes this code in parallel between compute nodes (MPI) and within them (OpenMP and CUDA).
 %
 
+To evaluate DiffTrace, we manually injected MPI-level and OMP-level bugs into the Traveling Salesman Problem (TSP) running on ILCS (Listing~\ref{lst:ilcs}).
+%
+The injected bugs simulate real HPC bugs such as deadlocks.
+%
+%These bugs are close to common mistakes that HPC developers usually make during developing HPC codes.
+%
+Moreover, we inserted ``hidden'' faults that do not crash the program such as violations of critical sections and semantic bugs. 
+%
+%The injected bugs are planted in a way that might get triggered in only one or more threads (master and worker threads, one thread, every other thread, all threads except one, all threads). 
+%
+The goal is to see how effectively DiffTrace can analyze the resulting traces and how close it can get to the root cause of the fault.
+%
 \input{tabs/ilcsPseudoCode-compact.tex}
 
-The injected bugs are planted in a way that might get triggered in only one or more threads (master and worker threads, one thread, every other thread, all threads except one, all threads). 
 %
-Generally, the goal is to see how effective DiffTrace can analyze and diff traces, and how close it can get to the fault root cause or its manifestation. 
+We collected ParLoT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads per process on the XSEDE-PSC Bridges supercomputer whose compute nodes have 128 GB of main memory and contain 2 Intel Haswell (E5-2695 v3) CPUs with 14 cores each running at 2.3 - 3.3 GHz.
+%
+Note that we did not provide any GPU code to ILCS.
+%
+The collected traces (faulty and normal) are fed to DiffTrace. We enabled the MPI, OpenMP, and custom (ILCS-TSP user code) filters and set the NLR constant K to 10 for all experiments.
+%
+We present the results in form of ranking tables that show which traces (processes and threads) DiffTrace considers ``suspicious''. Furthermore, we show diffNLRs for selected traces.
 
-%
-We have collected ParLOT (main image) traces from the execution of ILCS-TSP with 8 MPI processes and 4 OpenMP threads on each process. We performed our experiments on XSEDE-PSC Bridges supercomputer nodes with 2 Intel Haswell (E5-2695 v3) CPUs; 14 cores/CPU; 2.3 - 3.3 GHz and 128 GB of memory on each.
-%
-Note that the GPU-related activities of ILCS are out of the scope of this paper, and we have not touched them in our experiments.
-%
-Collected traces (faulty and normal) then fed into DiffTrace with the MPI and OMP and custom (ILCS-TSP user codes) filters enabled and NLR constant K set to 10 for all iterations.
-%
-For each injected bug, we present our results as ranking tables of suggested traces by DiffNLR as ``suspicious''. Furthermore, we show diffNLRs of either top suggested trace or a selected trace.
-
-\subsection{ILCS-TSP workflow}
+\subsection{ILCS-TSP Workflow}
 
 \hl{2-3 sentences about how ILCS finds local champions in TSP problem}
 There are two types of threads in ILCS: a \textit{master} thread per node (MPI process) and a set of \textit{worker} threads per compute node (OpenMP threads)
@@ -160,5 +159,6 @@ Similar to the deadlock bug, this is another instance of  ``bug manifestation'' 
 %\caption{diffNLR(5)}
 %\label{diffNLR-5}
 %\end{figure}
+
 
 

@@ -1,47 +1,47 @@
 \begin{frame}{}
   \lstset{language=C}
  \begin{lstlisting}[caption={ILCS Overview},label={lst:ilcs}]
-main(argc,argv){
+main(argc, argv) {
  ... // initialization
  MPI_Init();
- MPI_Comm_size()
- MPI_Comm_rank(my_rank)
+ MPI_Comm_size();
+ MPI_Comm_rank(my_rank);
  ... // Obtain number of local CPUs and GPUs
- MPI_Reduce(lCPUs, gCPUs,MPI_SUM) // Total # of CPUs
- MPI_Reduce(lGPUs, gGPUs,MPI_SUM) // Total # of GPUs
+ MPI_Reduce(lCPUs, gCPUs, MPI_SUM); // Total # of CPUs
+ MPI_Reduce(lGPUs, gGPUs, MPI_SUM); // Total # of GPUs
  champSize = CPU_Init();
  ... // Memory allocation for storing local and global champions w.r.t. champSize
  MPI_Barrier();
- <@\textcolor{blue}{\#pragma omp parallel num\_threads(lCPUs+1)}@>
- {rank = omp_get_thread_num()
-  if (rank != 0){ // worker threads
-   while(cont){
-    ...//Calculate Seed
-    local_result = CPU_Exec()
-    if (local_result < champ[rank]){ // update local champion
-     <@\textcolor{blue}{\#pragma omp cirtical}@>
-     memcpy(champ[rank],local_result)}}
-  } else{ //master thread
-   do{
+ <@\textcolor{blue} {\#pragma omp parallel num\_threads(lCPUs+1)}@>
+ {rank = omp_get_thread_num();
+  if (rank != 0) { // worker threads
+   while (cont) {
+    ... // calculate seed
+    local_result = CPU_Exec();
+    if (local_result < champ[rank]) { // update local champion
+     <@\textcolor{blue}{\#pragma omp critical}@>
+     memcpy(champ[rank], local_result);}}
+  } else { //master thread
+   do {
     ...
     MPI_AllReduce(); //broadcast the global champion 
 	  ...
     MPI_AllReduce(); //broadcast the global champion P_id
     ...
-    if (my_rank == global_champion_P_id){
-     <@\textcolor{blue}{\#pragma omp cirtical}@>
-     memcpy(bcast_buffer,champ[rank]); // 
+    if (my_rank == global_champion_P_id) {
+     <@\textcolor{blue}{\#pragma omp critical}@>
+     memcpy(bcast_buffer, champ[rank]);
     }
     MPI_Bcast(bcast_buffer); // broadcast the local champion to all nodes
    } while (no_change_threshold);
-   cont=0; // signal worker threads to terminate
+   cont = 0; // signal worker threads to terminate
   }}
- if(my_rank==0){ CPU_Output(champ);}
+ if (my_rank == 0) {CPU_Output(champ);}
  MPI_Finalize();}
 
 /* User code for TSP problem */
-CPU_Init(){ /* Read coordinations, calculate distances, Initialize the champion structure, Return structure size */}
-CPU_Exec(){ /* Find local champions (TSP tours) */}
-CPU_Output(){/* Output champion */ }
+CPU_Init() {/* Read coordinates, calculate distances, initialize champion structure, return structure size */}
+CPU_Exec() {/* Find local champions (TSP tours) */}
+CPU_Output() {/* Output champion */}
 \end{lstlisting}
 \end{frame}
