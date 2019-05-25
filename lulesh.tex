@@ -1,2 +1,38 @@
 
 % study of LULESH (prelim)
+
+
+We have implemented DiffTrace components \textit{pre-processor}, \textit{nested loop recognition (NLR)} and \textit{concept lattice generation (FCA)} in C++ and hierarchical clustering in Python. 
+We have build DiffTrace with GCC 5.5.0, Python 2.7 and Scipy 1.3.0.
+
+As our initial experiment, we have executed the single-cycle LULESH version 2.0 with 8 MPI processes and 4 OMP threads (system configuration described in \S\ref{sec:ilcs-case-study}) and collected ParLOT (main image) function calls.
+%
+
+LULESH is ...\\
+
+The goal was first to gain insight about the general control flow of LULESH and observe its MPI and OpenMP activities, and then inject bugs to see how DiffTrace reacts on larger examples. 
+%
+Our primary results show that ParLOT instruments and captures \textbf{410 distinct function} calls on average per process (length of trace INFO file), and stores them in compressed trace files of size less than \textbf{2.8 KB} on average per thread.
+%
+Upon decompression of traces, each per process trace turns into sequences of \textbf{421503} function calls on average.
+%
+Without ignoring or filtering any class of functions, we let DiffTrace preprocess traces, converting them into their equivalent NLRs and generate concept lattices and JSMs. 
+%
+
+With NLR constant $K$ set to 10, the average NLR compression ratio is \textbf{1.92}, while the process of loop detection took about 260 seconds to complete per trace.
+%
+By increasing $K$ to 50, the NLR compression ratio drastically increased to \textbf{16.74} but it took more than an hour for each trace to convert to its equivalent NLR. 
+%
+The decompression and concept lattice generation times were not significant (a few milliseconds).
+%
+
+For further evaluation of DiffTrace, we injected a fault to the LULESH source code so that the process with rank = 2 would not invoke the function \texttt{LagrangeLeapFrog} that is in charge of updating ``domain'' distances and send/receive MPI messages from other processes (via \texttt{CommSend}/\texttt{CommRecv} functions).
+%
+
+By forcing ParLOT to only instrument MPI functions, we were only interested in observing the behavior of communications after we introduce the bug.
+%
+Table \ref{tab:lulesh} reflects the ID of processes (rightmost column) that DiffTrace ranking system suggests as the most affected traces by the bug.
+%
+Since the fault in process 2 prevents other processes from making progress and successfully terminate, all of the process IDs appeared in the table. Generated diffNLRs clearly show the point that each process stop making progress. Due to lack of space, we did not include the relatively long diffNLRs of LULESH in this paper. However, all diffNLRs and related observations are available online via~\cite{diffTraceMaterials}.
+\input{tabs/luleshTable.tex}
+
