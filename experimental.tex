@@ -140,19 +140,17 @@ Beyond this point, the bug-free process continues to the end of the program
 
 \subsection{MPI Bug: Wrong Collective Operation}
 
-By changing the MPI\_MIN argument to MPI\_MAX in the MPI\_Allreduce() call on line 24 of Listing~\ref{lst:ilcs}, the semantics of ILCS change. 
+By changing the MPI\_MIN argument to MPI\_MAX in the MPI\_Allreduce call on line 24 of Listing~\ref{lst:ilcs}, the semantics of ILCS change. 
 %
 Instead of computing the best answer, the modified code computes the worst answer.
 %
 Hence, this code variation terminates but is likely to yield the wrong result.
 %
-We injected this bug only into process 0.
+We injected this bug into process 0.
 
-Among all suggested suspicious processes (Table~\ref{tab:ar1-wo-0-nn}), only process 5 (bold numbers) are making sense since their filters are more relevant to the aspect that we are interested (MPI-level activities) to study deeper.
+The first few suspicious processes listed in Table~\ref{tab:ar1-wo-0-nn} are inconclusive. However, the filters that include MPI all agree that process 5 changed the most.
 %
-Our observation from diffNLR(5) (Figure~\ref{diffNLR-5}) is that process 5, in comparison with its corresponding normal process, involves more in updating and broadcasting the champion among all traces.
-%
-Like the deadlock bug, this is another instance of ``bug manifestation'' detection by DiffTrace.
+Looking at the corresponding diffNLR(5) output in Figure~\ref{diffNLR-5} makes it clear why process 5 was singled out. In the buggy run, it executes many more MPI\_Bcast calls than in the bug-free run because the frequency in which local ``optimums'' are produced has changed (though this should affect all traces equally)...
 
 \input{tabs/ar1-wo-0-nn.tex}
 
