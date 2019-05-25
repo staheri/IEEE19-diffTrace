@@ -1,30 +1,53 @@
 
 % study of LULESH (prelim)
 
-The ultimate goal is to apply our approach to complex HPC codes.
+Our ultimate goal is to apply DiffTrace to complex HPC codes.
 %
-As a more complex example, we have executed the single-cycle LULESH2\cite{LULESH2:changes} with 8 MPI processes and 4 OMP threads (system configuration described in \S\ref{sec:ilcs-case-study}) and collected ParLOT (main image) function calls.
-%
+As a more complex example, we have executed the single-cycle LULESH2\cite{LULESH2:changes} with 8 MPI processes
+and 4 OMP threads (system configuration described in \S\ref{sec:ilcs-case-study})
+and collected ParLOT (main image) function calls.
 
-Before bug injection, we analyzed LULESH2 traces and computed some statistics to gain insight into the general control flow of LULESH2 and also to evaluate DiffTrace performance and effectiveness. Our primary results show that ParLOT instruments and captures \textbf{410 distinct function} calls on average per process, and stores them in compressed trace files of size less than \textbf{2.8 KB} on average per thread.
+
+Before bug injection, we analyzed LULESH2 traces and computed some statistics to gain insight into the
+general control flow of LULESH2 and also to evaluate DiffTrace's
+performance and effectiveness.
 %
-Upon decompression of traces, each per process trace turns into sequences of \textbf{421503} function calls on average.
+Our primary results show that ParLOT instruments and captures \textbf{410 distinct function} calls on
+average per process, and stores them in compressed trace files of size less than \textbf{2.8 KB}
+on average per thread.
 %
-Without ignoring or filtering any class of functions, we let DiffTrace preprocesses traces, converts them into their equivalent NLRs, and generates concept lattices and JSMs. 
+Upon decompression, each per process trace file
+turns into a sequence of \textbf{421503} function calls on average.
 %
-With NLR constant $K$ set to 10, the average NLR compression ratio is \textbf{1.92}, while the process of loop detection took about 260 seconds to complete per trace.
+We let DiffTrace preprocess traces
+without ignoring or filtering any of the functions,
+convert them into their equivalent NLRs, and generate
+concept lattices and JSMs. 
 %
-By increasing $K$ to 50, the NLR compression ratio drastically shifted up to \textbf{16.74} on average. However, it took more than an hour for DiffTrace to convert each trace to its equivalent NLR. 
+With NLR constant $K$ set to 10, the average NLR compression ratio is \textbf{1.92},
+while the process of loop detection took about 260 seconds to complete per trace.
+%
+By increasing $K$ to 50, the NLR compression ratio drastically shifted up to \textbf{16.74} on average.
+%
+However, it took more than an hour for DiffTrace to convert each trace to its equivalent NLR. 
 %
 The decompression and concept lattice generation times were not significant (e.g., a few milliseconds).
+
+
+For further evaluation of DiffTrace, we injected a fault into the LULESH source code so that the process with rank 2
+would not invoke the function \texttt{LagrangeLeapFrog} that is in charge of updating ``domain'' distances and send/receive
+MPI messages from other processes.
 %
 
-For further evaluation of DiffTrace, we injected a fault to the LULESH source code so that the process with rank = 2 would not invoke the function \texttt{LagrangeLeapFrog} that is in charge of updating ``domain'' distances and send/receive MPI messages from other processes.
 %
-
+Table \ref{tab:lulesh} reflects the ID of processes (rightmost column)
+that DiffTrace's ranking system suggests as the most affected traces by the bug.
 %
-Table \ref{tab:lulesh} reflects the ID of processes (rightmost column) that DiffTrace ranking system suggests as the most affected traces by the bug.
+Since the fault in process 2 prevents other processes from making progress and successfully terminate,
+all of the process IDs appeared in the table.
+The generated diffNLRs clearly showed the point at which each process stopped making progress.
 %
-Since the fault in process 2 prevents other processes from making progress and successfully terminate, all of the process IDs appeared in the table. Generated diffNLRs clearly show the point that each process stops making progress. Due to lack of space, we did not include the relatively long diffNLRs of LULESH in this paper. However, all diffNLRs and related observations are available online via~\cite{diffTraceMaterials}.
+Due to lack of space, we did not include the relatively large diffNLRs of LULESH in this paper.
+However, all diffNLRs and related observations are available online via~\cite{diffTraceMaterials}.
 \input{tabs/luleshTable.tex}
 
