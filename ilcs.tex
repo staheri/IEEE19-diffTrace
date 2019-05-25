@@ -51,12 +51,12 @@ Note that we did not provide any GPU code to ILCS.
 
 The collected traces (faulty and normal) are fed to DiffTrace. We enabled the MPI, OpenMP, and custom (ILCS-TSP user code) filters and set the NLR constant K to 10 for all experiments.
 %
-Current version of DiffTrace is implemented and built using C++ GCC 5.5.0, Pin 3.8, Python 2.7 and Scipy 1.3.0.
+The current version of DiffTrace is implemented and built using C++ GCC 5.5.0, Pin 3.8, Python 2.7, and Scipy 1.3.0.
 
 %
-We present the results in form of ranking tables that show which traces (processes and threads) DiffTrace considers ``suspicious''. Since DiffTrace output is highly dependent to ``parameters'', each row in ranking tables starts with parameters whom the suspicious traces are result of.
+We present the results in the form of ranking tables that show which traces (processes and threads) DiffTrace considers ``suspicious''. Since DiffTrace output is highly dependent to ``parameters'', each row in ranking tables starts with parameters whom the suspicious traces are the result of.
 
-The linkage method that converts JSMs to flat clustering is ``ward'' for all of the top reported suspicious traces that we removed from tables for better readability. Ward linkage function in SciPy uses \textit{Ward variance minimization algorithm} to calculate distance between newly formed clusters~\cite{scipy}. Furthermore, we show diffNLRs for selected traces.
+The linkage method that converts JSMs to flat clustering is ``ward'' for all of the top reported suspicious traces that we removed from tables for better readability. Ward linkage function in SciPy uses \textit{Ward variance minimization algorithm} to calculate the distance between newly formed clusters~\cite{scipy}. Furthermore, we show diffNLRs for selected traces.
 
 
 
@@ -109,7 +109,7 @@ The corresponding diffNLR(6.4) presented in Figure~\ref{diffNLR-6-4} clearly sho
 
 \subsection{MPI Bug: Deadlock Caused by Fault in Collective}
 
-By forcing process 2 to invoke MPI\_Allreduce (line 24) with a wrong size, we are able to inject a \textit{real deadlock}.
+By forcing process 2 to invoke MPI\_Allreduce (line 24) with a wrong size, we can inject a \textit{real deadlock}.
 %
 Because the deadlock happens early in the execution, the resulting traces are very different from their fault-free counterparts.
 %
@@ -157,7 +157,7 @@ We injected this bug into process 0.
 
 The first few suspicious processes listed in Table~\ref{tab:ar1-wo-0-nn} are inconclusive. However, the filters that include MPI all agree that process 5 changed the most.
 %
-Looking at the corresponding diffNLR(5) output in Figure~\ref{diffNLR-5} makes it clear why process 5 was singled out. In the buggy run, it executes many more MPI\_Bcast calls than in the bug-free run because the frequency in which local ``optimums'' are produced has changed. Though this should affect all traces equally which has reflected in the diffNLR of other traces. We are presenting these tables and figures to show DiffTrace can reveal impact of silent bugs like wrong operation. Such data representation via suggested tables and diffNLRs helps developers to gain insight into the general behavior of the execution. More accurate results can be obtained by refining the parameters and collecting deeper traces (e.g., ParLOT(all images)). This would be part of our future work to find the set of parameters for different classes of bugs to maximize the accuracy.
+Looking at the corresponding diffNLR(5) output in Figure~\ref{diffNLR-5} makes it clear why process 5 was singled out. In the buggy run, it executes many more MPI\_Bcast calls than in the bug-free run because the frequency in which local ``optimums'' are produced has changed. Though this should affect all traces equally, which has reflected in the diffNLR of other traces. We are presenting these tables and figures to show DiffTrace can reveal the impact of silent bugs like wrong operation. Such data representation via suggested tables and diffNLRs helps developers to gain insight into the general behavior of the execution. More accurate results can be obtained by refining the parameters and collecting deeper traces (e.g., ParLOT(all images)). This would be part of our future work to find the set of parameters for different classes of bugs to maximize accuracy.
 
 \input{tabs/ar1-wo-0-nn.tex}
 
