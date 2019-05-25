@@ -2,7 +2,7 @@
 
 \begin{figure*}[]
 \caption{DiffTrace Overview}
-\includegraphics[width=1\textwidth]{figs/overview3.pdf}
+\includegraphics[width=1\textwidth]{figs/overview4.pdf}
 %\includegraphics[]{figs/overview.png}
 %\includegraphics[]{figs/overv}
 \label{fig.diffTraceOverview}
@@ -130,7 +130,7 @@ many of the 30-odd tools mentioned in \S\ref{sec:intro}
 
 
 In this paper, we describe DiffTrace as a
-{\em relative debugging}~\cite{cray-rel-debug}
+{\em relative debugging}~\cite{relative-debugging}
 tool, in that bugs are caught with respect
 to JSM$_{D}$ which is a {\em change} from
 the previous code version found working.
@@ -169,9 +169,7 @@ of bubble sort
 and operates in two alternating phases:
 in the \textit{even phase}, the even processes exchange (conditionally swap)
 values with their right neighbors, and in the \textit{odd phase},
-the odd processes exchange values with their right neighbors.\footnote{The
-  details of this algorithm are unimportant for this paper and may be
-  found in standard MPI textbooks such as by Pacheco~\cite{pacheco}.}
+the odd processes exchange values with their right neighbors.
 %
 %The for loop in line 4 of \texttt{oddEvenSort()} iterates over the phases of the algorithm. Based on the phase, the appropriate partner for each rank is computed by the function \texttt{findPtr()} (line 6). The odd/even ranks then exchange their chunks of data (lines 9-13) and sort, merge, and copy operations are performed on the received data (denoted by \texttt{...} in line 15 for simplicity).
 
@@ -231,7 +229,7 @@ success to being able to efficiently collect stack traces (nested sequences of f
 calls), organize them as prefix-trees, and equivalence the processes into teams that
 evolve in different ways.
 %
-Coalesced stack trace graphs (CSTG, \cite{cstg-journal-paper}) have proven effective in
+Coalesced stack trace graphs (CSTG, \cite{cstg}) have proven effective in
 locating bugs within Uintah~\cite{uintah} and perform stat-like equivalence class formation,
 albeit with the added detail of maintaining calling contexts.
 %
@@ -258,8 +256,6 @@ Table \ref{tab:sampleContext} shows the formal context of the preprocessed odd/e
 We can employ as attributes either the function calls themselves or the detected loop bodies
 (each detected loop is assigned a unique ID, and one can diff with respect to these IDs).
 %
-Table (\hl{the table that shows attributes in the next section})
-shows the attributes that we have extracted from the traces.
 The context shows that all traces include the functions MPI\_Init(),
 MPI\_Comm\_size(), MPI\_Comm\_rank() and MPI\_Finalize().
 The even traces contain the loop \textit{L0} and the odd traces the loop \textit{L1}.
@@ -302,7 +298,7 @@ Table~\ref{tab:sampleContext} and is interpreted as follows:
 \centering
 \scalebox{0.5}{
 \includegraphics[width=3.4in]{figs/sampleCL.png}}
-\caption{Sample Concept Lattice from Obj-Atr Context in Table \ref{tab:sampleContext}}
+\caption{Sample Concept Lattice from Object-Attribute Context in Table \ref{tab:sampleContext}}
 \label{fig:sampleCL}
 \end{figure}
 
@@ -319,7 +315,7 @@ Table~\ref{tab:sampleContext} and is interpreted as follows:
 \centering
 \scalebox{0.8}{
 \includegraphics[width=3.4in]{figs/oddEvenJSM2.pdf}}
-\caption{Pairwise Jaccard Similarity Matrix (JSM) of MPI processes in sample code}
+\caption{Pairwise Jaccard Similarity Matrix (JSM) of MPI Processes in Sample Code}
 \label{fig:jsm2}
 \end{figure}
 
@@ -406,7 +402,7 @@ Figure \ref{fig.diffTraceOverview}.
 \caption{swapBug}
 \label{fig:swapbug}
      \end{subfigure}
-\caption{diffNLR legend and sample}
+\caption{diffNLR Example}
 \label{fig:sampleDiffNLR}
 
 \end{figure}
@@ -445,7 +441,7 @@ To highlight the differences in an easy-to-understand manner, DiffTrace visually
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.35\textwidth]{figs/{adl-11.mpi.0K10-5}.pdf}
+\includegraphics[width=0.3\textwidth]{figs/{adl-11.mpi.0K10-5}.pdf}
 \caption{dlBug}
 \label{fig:dlbug}
 \end{figure}
@@ -453,12 +449,12 @@ To highlight the differences in an easy-to-understand manner, DiffTrace visually
 Since ParLoT preserves the order of function calls, each trace $T_i$ is totally ordered. Thus \textit{diff} can expose the differences of a pair of $T$s. \textit{diffNLR} aligns common and different blocks of a pair of sequences (e.g., traces) horizontally and vertically, making it easier for the analyst to see the differences at a glance.
 For simplicity, our implementation of \textit{gdiff} only takes one argument $x$ that denotes \textit{the suspicious trace}.
 
-diffNLR$(x) \equiv $ diffNKR$(T_x,T_x^\prime)$
+diffNLR$(x) \equiv $ diffNLR$(T_x,T_x^\prime)$
 %
 where $T_x$ is the trace of thread/process $x$ of a normal execution and $T^\prime_x$ is the corresponding trace of the faulty execution.
 
-Figure \ref{fig.gdiffs}-(b) shows the $diffNLR(5)$ of \textit{swapBug} where $T_5$ iterates over the loop [MPI\_Recv - MPI\_Send] 16 times (L1\^{}16) after the MPI initialization while the order swap is well reflected in $T_5^\prime$ (L1\^{}7 - L0\^{}9). Both processes seem to terminate fine by executing MPI\_Finalize(). 
-However, $diffNLR(5)$ of \textit{dlBug} (Figure \ref{fig.gdiffs}-(c)) shows that, while $T_5$ executed MPI\_Finalize, $T_5^\prime$ got stuck after executing L1 seven times and never reached MPI\_Finalize.
+Figure \ref{fig:swapbug} shows the diffNLR(5) of \textit{swapBug} where $T_5$ iterates over the loop [MPI\_Recv - MPI\_Send] 16 times (L1\^{}16) after the MPI initialization while the order swap is well reflected in $T_5^\prime$ (L1\^{}7 - L0\^{}9). Both processes seem to terminate fine by executing MPI\_Finalize(). 
+However, diffNLR(5) of \textit{dlBug} (Figure \ref{fig:dlbug}) shows that, while $T_5$ executed MPI\_Finalize, $T_5^\prime$ got stuck after executing L1 seven times and never reached MPI\_Finalize.
 
 This example illustrates how our approach can locate the part of each execution that was impacted by a fault. Having an understanding of \textit{how the application should behave normally} can reduce the number of iterations by picking the right set of parameters sooner. 
 
