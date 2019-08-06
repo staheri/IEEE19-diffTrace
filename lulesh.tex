@@ -12,26 +12,22 @@ Before bug injection, we analyzed LULESH2 traces and computed some statistics to
 general control flow of LULESH2 and also to evaluate DiffTrace's
 performance and effectiveness.
 %
-Our primary results show that ParLOT instruments and captures \textbf{410 distinct function} calls on
+\hl{Our primary results show that ParLOT instruments and captures \textbf{410 distinct function} calls on
 average per process, and stores them in compressed trace files of size less than \textbf{2.8 KB}
 on average per thread.
 %
 Upon decompression, each per process trace file
-turns into a sequence of \textbf{421503} function calls on average.
+turns into a sequence of \textbf{421503} function calls on average. The equivalent NLR of each trace file reduces the sequence size by a factor of \textbf{1.92} and \textbf{16.74}, for constant $K$ set to 10 and 50, respectively.}
 %
-We let DiffTrace preprocess traces
-without ignoring or filtering any of the functions,
-convert them into their equivalent NLRs, and generate
-concept lattices and JSMs. 
+%We let DiffTrace preprocess traces without ignoring or filtering any of the functions, convert them into their equivalent NLRs, and generate concept lattices and JSMs. 
 %
-With NLR constant $K$ set to 10, the average NLR compression ratio is \textbf{1.92},
-while the process of loop detection took about 260 seconds to complete per trace.
+%With NLR constant $K$ set to 10, the average NLR compression ratio is \textbf{1.92}, while the process of loop detection took about 260 seconds to complete per trace.
 %
-By increasing $K$ to 50, the NLR compression ratio drastically shifted up to \textbf{16.74} on average.
+%By increasing $K$ to 50, the NLR compression ratio drastically shifted up to \textbf{16.74} on average.
 %
-However, it took more than an hour for DiffTrace to convert each trace to its equivalent NLR. 
+%However, it took more than an hour for DiffTrace to convert each trace to its equivalent NLR. 
 %
-The decompression and concept lattice generation times were not significant (e.g., a few milliseconds).
+%The decompression and concept lattice generation times were not significant (e.g., a few milliseconds).
 
 
 For further evaluation of DiffTrace, we injected a fault into the LULESH source code so that the process with rank 2

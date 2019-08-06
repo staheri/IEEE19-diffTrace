@@ -5,20 +5,20 @@ behavioral differences,
 condenses the loop-summarized
 traces into concept lattices that are built using incremental
 algorithms, and clusters behaviors using hierarchical clustering and ranks them by similarity to detect and highlight the most salient differences.
-%
+%a
 We deliberately chose the path of a clean start that addresses missing features
 in existing tools and missing collectivism in the debugging community.
 %
 The initial assessment of our design presented in this paper is encouraging.
+\hl{
+After we submitted the paper, we parallelized the trace preprocessing phase of DiffTrace using 24 OpenMP threads and gained up to \textbf{31x} and on average \textbf{10x} speedup. 
 
 
-Scalability, parameterization, and machine learning are our three remaining major tasks.
+Timestamping trace entries, parameterization, and machine learning are our three remaining major tasks.
 %
-Debugging is always scalability-challenged because of growing application scales.
+The idea is to convert ParLOT traces into Open Trace Format (OTF2)}~\cite{otf2}\hl{, a widely used format by existing tools such as Score-p and TAU, by assigning a logical timestamp to each entry per trace.
 %
-Modularity and scalability can be achieved by handing off detailed debugging from
-DiffTrace to specialized tools such as Archer~\cite{archer}.
-% that our group has developed and that is used in DOE lab projects.
+Traces then can be visualized and Happens-Before}~\cite{lamport}\hl{ relation can be mined to infer about the flow of the program formally.}
 %
 One can gain scalability by further developing DiffTrace's mechanisms to filter function
 calls, improving on ParLOT, and discovering semantic clustering
@@ -29,7 +29,7 @@ and loop structures as elevated features and by conducting systematic bug-inject
 studies to see whether bug classifications can be computed with high precision
 and recall.
 %
-Our one-year plans are to take up more challenging examples, beginning with DOE miniapps, stabilize DiffTrace, and release it to the community.
+Our one-year plans are to take up more challenging examples, beginning with DOE miniapps, stabilize DiffTrace \hl{and evaluate it against similar tools}, and release it to the community.
  
 %--end
 
