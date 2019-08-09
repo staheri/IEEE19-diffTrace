@@ -10,26 +10,22 @@ We deliberately chose the path of a clean start that addresses missing features
 in existing tools and missing collectivism in the debugging community.
 %
 The initial assessment of our design presented in this paper is encouraging.
+%
+
 \hl{
-After we submitted the paper, we parallelized the trace preprocessing phase of DiffTrace using 24 OpenMP threads and gained up to \textbf{31x} and on average \textbf{10x} speedup. 
-
-
-Timestamping trace entries, parameterization, and machine learning are our three remaining major tasks.
+As our ongoing and future plans, we aim to stabilize, improve, and expand DiffTrace components by: 
 %
-The idea is to convert ParLOT traces into Open Trace Format (OTF2)}~\cite{otf2}\hl{, a widely used format by existing tools such as Score-p and TAU, by assigning a logical timestamp to each entry per trace.
+(1)~optimizing DiffTrace components to exploit processing cores and reduce analysis time of traces. 
 %
-Traces then can be visualized and Happens-Before}~\cite{lamport}\hl{ relation can be mined to infer about the flow of the program formally.}
+So far, we have parallelized the \textit{preprocessing} and \textit{loop detection} phases using OpenMP threads. 
 %
-One can gain scalability by further developing DiffTrace's mechanisms to filter function
-calls, improving on ParLOT, and discovering semantic clustering
-methods that are tuned to the bug class being worked on.
+Our initial experiments on traces of LULESH2 execution with 8 processes and 4 OpenMP threads on each process (32 total traces) show that we can gain up to more than \textbf{37x} (\textbf{11x} on average) using 24 OpenMP threads
 %
-We plan to research the role machine learning can play by using concept lattices
-and loop structures as elevated features and by conducting systematic bug-injection
-studies to see whether bug classifications can be computed with high precision
-and recall.
+(2)~converting ParLOT traces into Open Trace Format (OTF2)~}\cite{otf2} \hl{by logically timestamping trace entries to mine temporal properties of functions such as \textit{happened-before}}~\cite{lamport}\hl{
 %
-Our one-year plans are to take up more challenging examples, beginning with DOE miniapps, stabilize DiffTrace \hl{and evaluate it against similar tools}, and release it to the community.
- 
+(3)~conducting systematic bug-injection to see whether concept lattices and loop structures can be used as elevated features for precise bug classifications.
+%
+(4)~taking up more challenging and real-world examples to evaluate DiffTrace against similar tools, and release it to the community.
+}
 %--end
 
