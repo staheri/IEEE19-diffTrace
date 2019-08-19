@@ -12,7 +12,6 @@ in existing tools and missing collectivism in the debugging community.
 The initial assessment of our design presented in this paper is encouraging.
 %
 
-\hl{
 As our ongoing and future plans, we aim to stabilize, improve, and expand DiffTrace components by: 
 %
 (1)~optimizing DiffTrace components to exploit processing cores and reduce analysis time of traces. 
@@ -21,11 +20,10 @@ So far, we have parallelized the \textit{preprocessing} and \textit{loop detecti
 %
 Our initial experiments on traces of LULESH2 execution with 8 processes and 4 OpenMP threads on each process (32 total traces) show that we can gain up to more than \textbf{37x} (\textbf{11x} on average) using 24 OpenMP threads
 %
-(2)~converting ParLOT traces into Open Trace Format (OTF2)~}\cite{otf2} \hl{by logically timestamping trace entries to mine temporal properties of functions such as \textit{happened-before}}~\cite{lamport}\hl{
+(2)~converting ParLOT traces into Open Trace Format (OTF2)~\cite{otf2} by logically timestamping trace entries to mine temporal properties of functions such as \textit{happened-before}~\cite{lamport}
 %
 (3)~conducting systematic bug-injection to see whether concept lattices and loop structures can be used as elevated features for precise bug classifications.
 %
 (4)~taking up more challenging and real-world examples to evaluate DiffTrace against similar tools, and release it to the community.
-}
 %--end
 

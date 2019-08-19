@@ -153,7 +153,7 @@ on JSM$_{faulty}$ directly.
 \begin{figure}[]
 \centering
 \caption{Simplified MPI implementation of Odd/Even Sort}
-\includegraphics[width=0.45\textwidth]{figs/oddEven.png}
+\includegraphics[width=0.40\textwidth]{figs/oddEven.png}
 \label{fig.oddEven}
 \end{figure}
 
@@ -192,9 +192,11 @@ Table \ref{tab:oddEvenPT} shows the pre-processed traces ($T_i$) of odd/even sor
 $T_i$ is the trace that stores the function calls of process $i$.
 \input{tabs/oddEvenPT.tex}
 
-\subsection{Nested Loop Representation}
+
 
 \input{tabs/oddEvenPT-NLR.tex}
+
+\subsection{Nested Loop Representation}
 
 Virtually all dynamic statements are found within loops.
 %
@@ -219,7 +221,7 @@ represent the \textit{loop body} [\texttt{MPI\_Send}-\texttt{MPI\_Recv}] and
 The integer after the \^{} symbol in NLR represents the \textit{loop iteration count}.
 Note that, since the first and last processes only have one-way communication with their neighbors,
 $T_0$ and $T_3$ perform only half as many iterations.
-
+\input{tabs/tabs.sampleContext.tex}
 
 \subsection{Hierarchical Clustering via FCA}
 Processes in HPC applications are known to fall into predictable equivalence classes.
@@ -286,7 +288,7 @@ Table~\ref{tab:sampleContext} and is interpreted as follows:
     \item The middle nodes show that $T_0$ and $T_2$ are different from  $T_1$ and $T_3$.
 \end{compactitem}
 
-\input{tabs/tabs.sampleContext.tex}
+
 
 % Once the redundant labels are removed from the lattice, each object (trace) and attribute appears in the lattice exactly once. Consequently, the nodes of the lattice form the desired grouping, since it is guaranteed that each trace belongs to exactly one group. However, the concept lattice itself does not provide similarity values for the distinct groups of traces. The \textit{Jaccard Index}, also known as \textit{Intersection over Union}, measures the \textit{distance} between sets $A$ and $B$ in terms of the ratio of the \textit{intersection} size of $A$ and $B$ over the size of their \textit{union}.
 % 
