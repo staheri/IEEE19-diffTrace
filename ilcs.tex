@@ -83,7 +83,7 @@ To simulate this scenario, we modified the ILCS source code to omit the critical
 
 Table~\ref{tab:mc1-mc-6-4} lists the top suspicious traces that DiffTrace finds when injecting this bug.
 %
-Each row presents results for different filters and attributes.
+Each row presents the results for different filters and attributes.
 %
 For example, the filter ``11.mem.ompcit.cust.0K10'' removes all function returns and .plt calls from the traces and only keeps memory-related calls, OpenMP critical-section functions, and the custom function ``CPU\_Exec''.
 %
@@ -157,7 +157,7 @@ We injected this bug into process 0.
 
 The first few suspicious processes listed in Table~\ref{tab:ar1-wo-0-nn} are inconclusive. However, the filters that include MPI all agree that process 5 changed the most.
 %
-Looking at the corresponding diffNLR(5) output in Figure~\ref{diffNLR-5} makes it clear why process 5 was singled out. In the buggy run, it executes many more MPI\_Bcast calls than in the bug-free run because the frequency in which local ``optimums'' are produced has changed. Though this should affect all traces equally, which has reflected in the diffNLR of other traces. We are presenting these tables and figures to show DiffTrace can reveal the impact of silent bugs like wrong operation. Such data representation via suggested tables and diffNLRs helps developers to gain insight into the general behavior of the execution. More accurate results can be obtained by refining the parameters and collecting deeper traces (e.g., ParLOT(all images)). This would be part of our future work to find the set of parameters for different classes of bugs to maximize accuracy.
+Looking at the corresponding diffNLR(5) output in Figure~\ref{diffNLR-5} makes it clear why process 5 was singled out. In the buggy run, it executes many more MPI\_Bcast calls than in the bug-free run because the frequency in which local ``optimums'' are produced has changed. Though this should affect all traces equally, which has reflected in the diffNLR of other traces. We are presenting these tables and figures to show that DiffTrace can reveal the impact of silent bugs like the wrong operation. Such data representation via suggested tables and diffNLRs helps developers to gain insight into the general behavior of the execution. More accurate results can be obtained by refining the parameters and collecting more profound traces (e.g., ParLOT(all images)). This would be part of our future work to find the set of parameters for different classes of bugs to maximize accuracy.
 
 \input{tabs/ar1-wo-0-nn.tex}
 
@@ -167,6 +167,7 @@ Looking at the corresponding diffNLR(5) output in Figure~\ref{diffNLR-5} makes i
 %\caption{diffNLR(5)}
 %\label{diffNLR-5}
 %\end{figure}
+
 
 
 

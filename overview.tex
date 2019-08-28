@@ -19,7 +19,7 @@ ParLoT generates per-thread trace files that
 contain the compressed sequence of the IDs of the executed functions.
 %
 The compression mechanism is light-weight yet effective,
-thus not only reducing the required bandwidth and storage but also the
+thus reducing not only the required bandwidth and storage but also the
 runtime relative to not compressing the traces.
 As a result, ParLoT can capture whole-program traces at low overhead
 while leaving most of the disk bandwidth to the application. 
@@ -65,7 +65,7 @@ context---etc.).
 %
 Weber et al.'s work~\cite{weberStructural,clbook} employs FCA exactly in
 this manner (including the use of pairs of calls),
-but for grouping performance information.
+however, for grouping performance information.
 %
 Our new contribution is showing that FCA can play a central
 role in debugging HPC applications.
@@ -91,7 +91,7 @@ iconify the {\em Jaccard similarity
 the erroneous behavior (below).
 %
 This is shown as
-the ``diff Jaccard similarity matrix'' in grey scale at the
+the ``diff Jaccard similarity matrix'' in greyscale at the
 juncture of JSM$_{normal}$ and JSM$_{faulty}$.
 
 
@@ -118,7 +118,7 @@ serve as an important HPC community resource.
 %
 Each debugging tool designer who uses DiffTrace can extend
 it by incorporating new attributes and clustering methods, but
-otherwise retain the overall tool structure.
+otherwise, retain the overall tool structure.
 %
 Such a playground for developing and exploring new methods for
 debugging does not exist in HPC.
@@ -227,7 +227,7 @@ $T_0$ and $T_3$ perform only half as many iterations.
 Processes in HPC applications are known to fall into predictable equivalence classes.
 %
 The widely used and highly successful STAT tool~\cite{stat} owes most of its
-success to being able to efficiently collect stack traces (nested sequences of function
+success for being able to efficiently collect stack traces (nested sequences of function
 calls), organize them as prefix-trees, and equivalence the processes into teams that
 evolve in different ways.
 %
@@ -381,7 +381,7 @@ Figure \ref{fig.diffTraceOverview}.
 
 \subsection{Evaluation}
 
-%The resulting outlier traces are candidates for the potential cause of the change in the program behavior and thus a potential fault root cause or fault manifestation.
+%The resulting outlier traces are candidates for the potential cause of the change in the program behavior and thus, a potential fault root cause or fault manifestation.
 %
 
 %
@@ -467,6 +467,7 @@ This example illustrates how our approach can locate the part of each execution 
 %\includegraphics[width=0.45\textwidth]{figs/oddEvenDL.png}
 %\label{fig.oddEvenDL}
 %\end{figure}
+
 
 
 
