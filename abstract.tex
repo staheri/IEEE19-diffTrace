@@ -1,22 +1,22 @@
-We present a tool
+We present a tool called
 DiffTrace that approaches debugging via {\em whole program} tracing and
 diffing of typical and erroneous traces.
 %
 After collecting these traces,
-a user-configurable front-end filters out irrelevant function calls,
-and then summarizes loops of executions of the retained function
+a user-configurable front-end filters out irrelevant function calls
+and then summarizes loops in the retained function
 calls based on state-of-the-art loop extraction algorithms.
 %
 Information about these loops is inserted 
-into concept lattices, which helps
-computes salient dissimilarities to help narrow down bugs.
+into concept lattices, which we use to
+compute salient dissimilarities to narrow down bugs.
 %
-DiffTrace is a clean start that addresses many
+DiffTrace is a clean start that addresses
 debugging features missing in existing approaches.
 %
-Our experiments on a heterogeneous MPI/OpenMP program called
+Our experiments on an MPI/OpenMP program called
 ILCS and initial measurements on LULESH, a DOE miniapp,
-helps demonstrate the advantages of the proposed debugging approach.
+demonstrate the advantages of the proposed debugging approach.
 
 
 
