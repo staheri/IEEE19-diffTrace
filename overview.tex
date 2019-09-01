@@ -8,20 +8,20 @@
 \label{fig.diffTraceOverview}
 \end{figure*}
 
-DiffTrace employs ParLoT's whole-program function-call and return trace-collection mechanism, where ParLoT captures traces via Pin~\cite{pin} and incrementally compresses them using a new compression scheme~\cite{parlot}.
+DiffTrace employs ParLOT's whole-program function-call and return trace-collection mechanism, where ParLOT captures traces via Pin~\cite{pin} and incrementally compresses them using a new compression scheme~\cite{parlot}.
 %
-ParLoT can capture functions at two levels:
+ParLOT can capture functions at two levels:
 the \textit{main image} (which does not include library code)
-and \textit{all images} (including all application code).
+and \textit{all images} (including all library code).
 %
 As the application runs,
-ParLoT generates per-thread trace files that
+ParLOT generates per-thread trace files that
 contain the compressed sequence of the IDs of the executed functions.
 %
 The compression mechanism is light-weight yet effective,
 thus reducing not only the required bandwidth and storage but also the
 runtime relative to not compressing the traces.
-As a result, ParLoT can capture whole-program traces at low overhead
+As a result, ParLOT can capture whole-program traces at low overhead
 while leaving most of the disk bandwidth to the application. 
 %
 Using whole-program traces substantially reduces the number of overall
@@ -56,8 +56,7 @@ serves as a lossless abstraction to
 ease the rest of the trace analysis but also
 serves as a {\em per-thread measure of progress}.
 %
-The FCA stage conducts {\em formal concept analysis}, which
-is a systematic way to arrange objects (in our case threads)
+The FCA (Formal Concept Analysis) stage conducts a systematic way to arrange objects (in our case threads)
 and attributes (we support a rich collection of attributes
 including the set of function calls a thread makes, the
 set of {\em pairs} of function calls made---this reflects calling
@@ -118,9 +117,9 @@ serve as an important HPC community resource.
 %
 Each debugging tool designer who uses DiffTrace can extend
 it by incorporating new attributes and clustering methods, but
-otherwise, retain the overall tool structure.
+otherwise retain the overall tool structure.
 %
-Such a playground for developing and exploring new methods for
+Such a ``playground'' for developing and exploring new methods for
 debugging does not exist in HPC.
 %
 There is also the intriguing possibility that 
@@ -178,11 +177,11 @@ swapped the {\tt Recv; Send} order in the {\tt else} part,
 creating head-to-head {\tt ``Send || Send''} deadlock
 under low-buffering (MPI EAGER limit).
 %
-We will now show how DiffTrace helps picks out this root-cause.
+We will now show how DiffTrace helps pick out this root-cause.
 
 \subsection{Pre-processing}
 \input{tabs/filters.tex}
-Using ParLoT's decoder, each trace is first decompressed.
+Using ParLOT's decoder, each trace is first decompressed.
 Next, the desired functions are extracted based on predefined
 (Table \ref{tab:filters}) or custom regular expressions
 (i.e., \textit{filters}) and kept for later phases.
@@ -201,12 +200,12 @@ $T_i$ is the trace that stores the function calls of process $i$.
 Virtually all dynamic statements are found within loops.
 %
 Function calls within a loop body yield \textit{repetitive patterns}
-in ParLoT traces.
+in ParLOT traces.
 %
 Inspired by ideas for the detection of repetitive patterns in strings \cite{nakamura_fast_2013}
 and other data structures \cite{kmr},
 we have adapted the Nested Loop Recognition (NLR) algorithm by Ketterlin et al.~\cite{Ketterlin-nlr}
-to detect repetitive patterns in ParLoT traces (cf.~Section \ref{subsec:algo-nlr}).
+to detect repetitive patterns in ParLOT traces (cf.~Section \ref{subsec:algo-nlr}).
 Detecting such patterns can be used to measure the progress of each thread,
 revealing unfinished or broken loops that may be the consequence of a fault.
 
@@ -417,7 +416,7 @@ after the seventh iteration of the loop in line 3 of \texttt{oddEvenSort},
 simulating a potential deadlock. \textit{dlBug} simulates an actual deadlock in the same location
 (rank 5 after the seventh iteration).
 %
-Upon collection of ParLoT traces from the execution of the buggy code versions,
+Upon collection of ParLOT traces from the execution of the buggy code versions,
 DiffTrace first decompresses them and filters out all non-MPI functions.
 Then two major loops are detected, \textbf{L0} and \textbf{L1} (identical to the ones in Table \ref{tab:oddEvenPT-NLR}),
 that are supposed to loop 16 times in the even and odd traces,
@@ -448,7 +447,7 @@ To highlight the differences in an easy-to-understand manner, DiffTrace visually
 \label{fig:dlbug}
 \end{figure}
 \texttt{diff} takes two sequences $S_A$ and $S_B$ and computes the minimal \textit{edit} to convert $S_A$ to $S_B$. This algorithm is used in the GNU \texttt{diff} utility to compare two text files and in git for efficiently keeping track of file changes.
-Since ParLoT preserves the order of function calls, each trace $T_i$ is totally ordered. Thus \textit{diff} can expose the differences of a pair of $T$s. \textit{diffNLR} aligns common and different blocks of a pair of sequences (e.g., traces) horizontally and vertically, making it easier for the analyst to see the differences at a glance.
+Since ParLOT preserves the order of function calls, each trace $T_i$ is totally ordered. Thus \textit{diff} can expose the differences of a pair of $T$s. \textit{diffNLR} aligns common and different blocks of a pair of sequences (e.g., traces) horizontally and vertically, making it easier for the analyst to see the differences at a glance.
 For simplicity, our implementation of \textit{gdiff} only takes one argument $x$ that denotes \textit{the suspicious trace}.
 
 diffNLR$(x) \equiv $ diffNLR$(T_x,T_x^\prime)$

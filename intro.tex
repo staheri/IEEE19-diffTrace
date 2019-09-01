@@ -155,7 +155,7 @@ The representation must also be versatile enough to
 be able to ``diff'' the traces
 with respect to {\em an extensible number of vantage points}.
 %
-These vantage points could be diffing concerning process-level activities,
+These vantage points could be diffing traces concerning process-level activities,
 thread-level activities, a combination thereof,
 or even finite sequences of process/thread calls (say, to locate {\em changes}
 in caller/callee relationships).
@@ -173,7 +173,7 @@ to cluster performance results that are closely related to process structures
 (determined based on caller/callee relationships).
 %
 In DiffTrace, we employ incremental algorithms for building and maintaining
-concept lattices from the ParLoT-collected traces.
+concept lattices from the ParLOT-collected traces.
 %
 In addition to Jaccard distances, in our work, we also perform hierarchical
 clustering of traces and provide a tunable threshold for outlier detection.
@@ -197,7 +197,7 @@ tends to highlight many bug types immediately.
 
 {\em Solution to Problem 3:\/}
 DiffTrace utilizes the rigorous notion of Nested Loop Representations (NLRs) for
-extracting loops.
+summarizing traces and representing loops.
 %
 Each repetitive loop structure is given an identifier, and nested loops are
 expressed as repetitions of this identifier exponentiated (as with regular

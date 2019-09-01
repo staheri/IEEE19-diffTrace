@@ -1,26 +1,31 @@
 DiffTrace is the first tool we know of that situates debugging around {\em whole program}
-diffing provides user-selectable front-end filters of function calls to keep,
-summarizes loops based on state-of-the-art algorithms to detect loop-level
-behavioral differences,
-condenses the loop-summarized
+diffing, and~(1)~provides user-selectable front-end filters of function calls to keep;
+~(2)~summarizes loops based on state-of-the-art algorithms to detect loop-level
+behavioral differences;
+~(3)~condenses the loop-summarized
 traces into concept lattices that are built using incremental
-algorithms, and clusters behaviors using hierarchical clustering and ranks them by similarity to detect and highlight the most salient differences.
+algorithms;~(4)~and clusters behaviors using hierarchical clustering and ranks them by similarity to detect and highlight the most salient differences.
 %a
 We deliberately chose the path of a clean start that addresses missing features
 in existing tools and missing collectivism in the debugging community.
 %
-The initial assessment of our design presented in this paper is encouraging.
+Our initial assessment of this design is encouraging.
 %
 
-As our ongoing and future plans, we aim to stabilize, improve, and expand DiffTrace components by: 
+In our future work we will improve DiffTrace components as follows:
 %
 %
-(1)~optimizing DiffTrace components to exploit multi-core CPUs, thus reducing the overall analysis time.  Our initial results in this regard are quite promising. 
+(1)~Optimizing them to exploit multi-core CPUs, thus reducing the overall analysis time;
 %
-(2)~converting ParLOT traces into Open Trace Format (OTF2)~\cite{otf2} by logically timestamping trace entries to mine temporal properties of functions such as \textit{happened-before}~\cite{lamport}
+(2)~Converting ParLOT traces into Open Trace Format (OTF2)~\cite{otf2} by logically timestamping trace entries to mine temporal properties of functions such as \textit{happened-before}~\cite{lamport};
 %
-(3)~conducting systematic bug-injection to see whether concept lattices and loop structures can be used as elevated features for precise bug classifications via machine learning and neural network techniques.
+(3)~Conducting systematic bug-injection to see whether concept lattices and loop structures can be used as elevated features for precise bug classifications via machine learning and neural network techniques; and
 %
-(4)~taking up more challenging and real-world examples to evaluate DiffTrace against similar tools, and release it to the community.
+(4)~Taking up more challenging and real-world examples to evaluate DiffTrace against similar tools, and release it to the community.
 %--end
+% leave a blank line
+
+\noindent{\bf Acknowledgements:\/} Supported in part by 
+NSF awards CCF 1817073 and 1704715.
+
 
